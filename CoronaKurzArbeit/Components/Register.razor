@@ -1,0 +1,12 @@
+﻿@inject IModalService Modal
+
+<button @onclick="BookTime" class="btn btn-primary">Zeit buchen</button>
+
+@code {
+
+    void BookTime()
+    {
+        var param = new ModalParameters();
+        Modal.Show<BookTime>("Zeit buchen", param);
+    }
+}

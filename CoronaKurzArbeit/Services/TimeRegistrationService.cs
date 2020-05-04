@@ -1,0 +1,75 @@
+﻿using CoronaKurzArbeit.Data;
+using CoronaKurzArbeit.Extensions;
+using CoronaKurzArbeit.Models;
+using CoronaKurzArbeit.Models.Exceptions;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Security.Cryptography.X509Certificates;
+using System.Threading.Tasks;
+
+namespace CoronaKurzArbeit.Services
+{
+    public interface ITimeRegistrationService
+    {
+        Task AddRegistration(TimeRegistration registration);
+    }
+
+    public class TimeRegistrationService : ITimeRegistrationService
+    {
+        private readonly ApplicationDbContext _context;
+
+        public TimeRegistrationService(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
+        public async Task AddRegistration(TimeRegistration registration)
+        {
+            try
+            {
+                if (registration.Type == InOutType.IN || registration.Type == InOutType.OUT)
+                {
+                    if (await _context.TimeRegistrations.CountAsync(x =>
+                        x.Type == registration.Type &&
+                        (
+                            x.RegistrationMoment >= registration.RegistrationMoment.NormalizeAsOnlyDate() &&
+                            x.RegistrationMoment < registration.RegistrationMoment.NormalizeAsOnlyDate().AddDays(1)
+                        )) > 0)
+                    {
+                        throw new InOutException(registration.Type, "Bereits registriert!");
+                    }
+                }
+
+                _context.Add(registration);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task GetRegistrationsOfDay(DateTime theDay)
+        {
+            var ret = new List<TimeRegistration>();
+
+            var regs = await _context.TimeRegistrations.Where(x => x.RegistrationMoment >= theDay.NormalizeAsOnlyDate() && x.RegistrationMoment < theDay.NormalizeAsOnlyDate().AddDays(1)).ToListAsync();
+                        
+            if(regs.Any(x => x.Type == InOutType.IN))
+            {
+                ret.Add(regs.First(x => x.Type == InOutType.IN));
+            }
+
+
+
+            if (regs.Any(x => x.Type == InOutType.OUT))
+            {
+                ret.Add(regs.First(x => x.Type == InOutType.OUT));
+            }
+        }
+    }
+}
