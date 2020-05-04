@@ -1,12 +1,25 @@
-﻿@inject IModalService Modal
+﻿@using Models
+@using Data
 
-<button @onclick="BookTime" class="btn btn-primary">Zeit buchen</button>
+@inject IModalService Modal
+@inject ApplicationDbContext context
+
+<button @onclick="RegisterTime" class="btn btn-primary">Zeit buchen</button>
 
 @code {
 
-    void BookTime()
+    async Task RegisterTime()
     {
         var param = new ModalParameters();
-        Modal.Show<BookTime>("Zeit buchen", param);
+        param.Add(nameof(BookTime.Booking2Change), new TimeBooking());
+        var ret = Modal.Show<BookTime>("Zeit buchen", param);
+        var result = await ret?.Result;
+        if (!result.Cancelled)
+        {
+            var changed = (TimeBooking)result.Data;
+            context.TimeBookings.Add(changed);
+            await context.SaveChangesAsync();
+            StateHasChanged();
+        }
     }
 }

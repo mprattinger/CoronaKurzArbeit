@@ -1,65 +1,13 @@
 ﻿@page "/"
-@inject IModalService Modal
-
-
-@using CoronaKurzArbeit.Models
-
-    <div class="command-list">
-        <button @onclick="Kommen" class="btn btn-primary">Gekommen</button>
-        <button @onclick="PauseStart" class="btn btn-primary">Pause Beginn</button>
-        <button @onclick="PauseEnd" class="btn btn-primary">Pause Ende</button>
-        <button @onclick="Gehen" class="btn btn-primary">Gehen</button>
-    </div>
 
 
 <Register />
-
+<br />
+<br />
+<BookingList />
 
 @code {
 
-    public string In { get; set; } = string.Empty;
-
-    async Task Kommen()
-    {
-        var param = new ModalParameters();
-        param.Add(nameof(InOutModal.IOType), InOutType.IN);
-        Modal.Show<InOutModal>("Kommen", param);
-    }
-
-    async Task PauseStart()
-    {
-        var param = new ModalParameters();
-        param.Add(nameof(InOutModal.IOType), InOutType.POUT);
-        var inOutResult = Modal.Show<InOutModal>("Pause Beginn", param);
-        var res = await inOutResult.Result;
-        if (!res.Cancelled)
-        {
-            
-        }
-    }
-
-    async Task PauseEnd()
-    {
-        var param = new ModalParameters();
-        param.Add(nameof(InOutModal.IOType), InOutType.PIN);
-        var inOutResult = Modal.Show<InOutModal>("Pause Ende", param);
-        var res = await inOutResult.Result;
-        if (!res.Cancelled)
-        {
-            
-        }
-    }
-
-    async Task Gehen()
-    {
-        var param = new ModalParameters();
-        param.Add(nameof(InOutModal.IOType), InOutType.OUT);
-        var inOutResult = Modal.Show<InOutModal>("Gehen", param);
-        var res = await inOutResult.Result;
-        if (!res.Cancelled)
-        {
-            
-        }
-    }
+    
 
 }

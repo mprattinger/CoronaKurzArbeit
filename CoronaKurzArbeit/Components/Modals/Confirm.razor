@@ -1,15 +1,21 @@
 ﻿<div>
-    <p>Please click one of the buttons below to close or cancel the modal.</p>
+    <p>@Message</p>
 
-    <button @onclick="Close" class="btn btn-primary">Close</button>
+    <button @onclick="Close" class="btn btn-primary">@OkButtonText</button>
     <button @onclick="Cancel" class="btn btn-secondary">Cancel</button>
 </div>
 
 @code {
 
-    [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
+    [CascadingParameter] BlazoredModalInstance? BlazoredModal { get; set; }
 
-    void Close() => BlazoredModal.Close(ModalResult.Ok(true));
-    void Cancel() => BlazoredModal.Cancel();
+    [Parameter]
+    public string Message { get; set; } = string.Empty;
+
+    [Parameter]
+    public string OkButtonText { get; set; } = "Ja";
+
+    void Close() => BlazoredModal?.Close(ModalResult.Ok(true));
+    void Cancel() => BlazoredModal?.Cancel();
 
 }

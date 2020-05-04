@@ -7,7 +7,7 @@ namespace CoronaKurzArbeit.Data
     {
         public DbSet<TimeRegistration>? TimeRegistrations { get; set; }
 
-        public DbSet<TimeBooking> TimeBookings { get; set; }
+        public DbSet<TimeBooking>? TimeBookings { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {

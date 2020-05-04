@@ -2,10 +2,10 @@
 
     <div class="form-group">
         <label for="message">Zeit buchen</label>
-        <input type="time" class="form-control" @bind="Time" />
+        <input type="time" class="form-control" @bind="Booking2Change.BookingTime" />
     </div>
     <div class="form-group">
-        <input class="form-check-input" type="checkbox" @bind="Pause" id="PauseCheckbox">
+        <input class="form-check-input" type="checkbox" @bind="Booking2Change.IsPause" id="PauseCheckbox">
         <label class="form-check-label" for="PauseCheckbox">
             Pause
         </label>

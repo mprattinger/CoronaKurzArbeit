@@ -1,0 +1,85 @@
+﻿@using CoronaKurzArbeit.Extensions
+@using Microsoft.EntityFrameworkCore
+@using Models
+@using Data
+
+@inject IModalService? Modal
+@inject ApplicationDbContext context
+
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">Zeitpunkt</th>
+            <th scope="col">Pause</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var booking in Bookings)
+        {
+            <tr>
+                <td>@booking.BookingTime.ToShortTimeString()</td>
+                <td>@(booking.IsPause ? "Pause" : "")</td>
+                <td>
+                    <button @onclick="async () => { await Edit(booking); }" class="btn btn-primary">Zeit ändern</button>
+                    <button @onclick="async () => { await Delete(booking); }" class="btn btn-warning">Zeit löschen</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    [Inject]
+    public Data.ApplicationDbContext Context { get; set; } = null;
+
+    [Parameter]
+    public DateTime AtDate { get; set; } = DateTime.Now;
+
+    public List<Models.TimeBooking> Bookings { get; set; } = new List<TimeBooking>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await loadData();
+    }
+
+    public async Task Edit(TimeBooking bTime)
+    {
+        var param = new ModalParameters();
+        param.Add(nameof(BookTime.Booking2Change), bTime);
+        var ret = Modal?.Show<BookTime>("Zeit ändern", param);
+        var result = await ret?.Result;
+        if (!result.Cancelled)
+        {
+            var changed = (TimeBooking)result.Data;
+            Context.Update(changed);
+            await context.SaveChangesAsync();
+            await loadData();
+            StateHasChanged();
+        }
+    }
+
+    public async Task Delete(TimeBooking bTime)
+    {
+        var param = new ModalParameters();
+        param.Add(nameof(Confirm.Message), "Wollen Sie diesen Zeitpunkt wirklich löschen?");
+        param.Add(nameof(Confirm.OkButtonText), "Löschen");
+        var ret = Modal?.Show<Confirm>("Wirklich löschen", param);
+        var result = await ret?.Result;
+        if (!result.Cancelled)
+        {
+            if ((bool)result.Data == true)
+            {
+                context.TimeBookings?.Remove(bTime);
+                await context.SaveChangesAsync();
+                await loadData();
+                StateHasChanged();
+            }
+        }
+    }
+
+    private async Task loadData()
+    {
+        Bookings = await Context.TimeBookings.Where(x => x.BookingTime > AtDate.NormalizeAsOnlyDate() && x.BookingTime <= AtDate.NormalizeAsOnlyDate().AddDays(1)).ToListAsync();
+    }
+}
