@@ -1,5 +1,7 @@
 using Blazored.Modal;
 using CoronaKurzArbeit.Data;
+using CoronaKurzArbeit.Models;
+using CoronaKurzArbeit.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -25,11 +27,17 @@ namespace CoronaKurzArbeit
             services.AddRazorPages();
             services.AddServerSideBlazor();
 
+            var kaSettings = new KurzarbeitSettingsConfiguration();
+            Configuration.Bind("KurzarbeitSettings", kaSettings);
+            services.AddSingleton(kaSettings);
+
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
             );
 
             services.AddBlazoredModal();
+
+            services.AddScoped<IAppState, AppState>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

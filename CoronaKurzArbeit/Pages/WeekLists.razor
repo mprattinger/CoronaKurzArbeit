@@ -1,0 +1,14 @@
+﻿@page "/weeklist"
+
+    <div class="week-list">
+        @*<CascadingValue Value="@TimeBookings">
+            @foreach (var w in WeekStarts)
+            {
+                <Week WeekStartDay="w" />
+            }
+        </CascadingValue>*@
+        @foreach (var w in WeekStarts)
+        {
+            <Week WeekStartDay="w" />
+        }
+    </div>

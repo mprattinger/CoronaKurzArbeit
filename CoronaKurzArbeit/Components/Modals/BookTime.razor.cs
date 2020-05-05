@@ -32,7 +32,7 @@ namespace CoronaKurzArbeit.Components.Modals
         //    }
         //}
 
-        public async Task SubmitForm()
+        public void SubmitForm()
         {
             //if (Booking2Change != null)
             //{

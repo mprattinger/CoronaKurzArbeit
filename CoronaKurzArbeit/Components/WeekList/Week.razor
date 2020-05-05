@@ -1,0 +1,51 @@
+﻿@using System.Globalization;
+
+<div class="card">
+    <div class="card-header">
+        @Header
+    </div>
+    <div class="card-body">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Datum</th>
+                    <th scope="col">Gekommen</th>
+                    <th scope="col">Gegangen</th>
+                    <th scope="col">Pause</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var d in Days)
+                {
+                    <Day TheDay="d" />
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public DateTime WeekStartDay { get; set; }
+
+    public string Header { get; set; } = string.Empty;
+
+    public List<DateTime> Days { get; set; } = new List<DateTime>();
+
+    protected override void OnInitialized()
+    {
+        CultureInfo CUI = CultureInfo.CurrentCulture;
+        var w = CUI.Calendar.GetWeekOfYear(WeekStartDay, CUI.DateTimeFormat.CalendarWeekRule, CUI.DateTimeFormat.FirstDayOfWeek);
+
+        Header = $"Woche {w}: {WeekStartDay.ToShortDateString()} - {WeekStartDay.AddDays(5).ToShortDateString()}";
+
+        var start = WeekStartDay;
+        while(start <= WeekStartDay.AddDays(5))
+        {
+            Days.Add(start);
+            start = start.AddDays(1);
+        }
+    }
+
+}
