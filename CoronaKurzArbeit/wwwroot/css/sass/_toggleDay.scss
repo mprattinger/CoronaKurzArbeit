@@ -1,0 +1,41 @@
+﻿.toggle-day-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+
+    .toggle-day-controls-container {
+        display: flex;
+        flex-direction: row;
+
+        .toggle-day-controls-left {
+            width: 50%;
+            display: flex;
+            flex-direction: column;
+            margin-right: 20px;
+
+            .toggle-day-controls {
+                display: flex;
+                flex-direction: row;
+                margin: 10px;
+                justify-content: space-around;
+                margin-bottom: 20px;
+            }
+
+            .toggle-day-content-register {
+                margin-bottom: 20px;
+            }
+        }
+
+        .toggle-day-controls-right {
+            .toggle-day-controls-info {
+                width: 50%;
+            }
+        }
+    }
+
+    .toggle-day-content {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+}

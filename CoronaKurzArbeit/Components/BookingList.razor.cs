@@ -27,7 +27,24 @@ namespace CoronaKurzArbeit.Components
         public IAppState AppState { get; set; } = default!;
 
         [Parameter]
-        public DateTime AtDate { get; set; } = DateTime.Now;
+        public DateTime AtDate { get; set; } = DateTime.MinValue;
+
+        [CascadingParameter]
+        public DateTime TheDate { get; set; } = DateTime.MinValue;
+
+
+        [Parameter]
+        public string Class { get; set; } = "";
+
+
+        private string fixedClass = "table";
+        private string Classes
+        {
+            get
+            {
+                return $"{fixedClass} {Class}";
+            }
+        }
 
         public List<TimeBooking> Bookings { get; set; } = new List<TimeBooking>();
 
@@ -78,8 +95,9 @@ namespace CoronaKurzArbeit.Components
 
         private async Task loadData()
         {
+            var baseDate = AtDate == DateTime.MinValue ? TheDate : AtDate;
             Bookings = await Context.TimeBookings
-                .Where(x => x.BookingTime > AtDate.NormalizeAsOnlyDate() && x.BookingTime <= AtDate.NormalizeAsOnlyDate().AddDays(1))
+                .Where(x => x.BookingTime > baseDate.NormalizeAsOnlyDate() && x.BookingTime <= baseDate.NormalizeAsOnlyDate().AddDays(1))
                 .OrderBy(x => x.BookingTime)
                 .ToListAsync();
         }

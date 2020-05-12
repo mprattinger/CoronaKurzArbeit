@@ -3,7 +3,7 @@
 @using Extensions;
 @using Services;
 
-<button @onclick="RegisterTime" class="btn btn-primary">Zeit buchen</button>
+<button @onclick="RegisterTime" class="@Classes">Zeit buchen</button>
 
 @code {
 
@@ -17,13 +17,30 @@
     public ApplicationDbContext Context { get; set; } = default!;
 
     [Parameter]
-    public DateTime TheDay { get; set; } = DateTime.Now;
+    public DateTime AtDate { get; set; } = DateTime.MinValue;
+
+    [CascadingParameter]
+    public DateTime TheDate { get; set; } = DateTime.MinValue;
+
+    [Parameter]
+    public string Class { get; set; } = "";
+
+
+    private string fixedClass = "btn btn-primary btn-block";
+    private string Classes
+    {
+        get
+        {
+            return $"{fixedClass} {Class}";
+        }
+    }
 
     async Task RegisterTime()
     {
+        var baseDate = AtDate == DateTime.MinValue ? TheDate : AtDate;
         var param = new ModalParameters();
         var tb = new TimeBooking();
-        tb.BookingTime = TheDay.NormalizeAsOnlyDate().AddHours(DateTime.Now.Hour).AddMinutes(DateTime.Now.Minute);
+        tb.BookingTime = baseDate.NormalizeAsOnlyDate().AddHours(DateTime.Now.Hour).AddMinutes(DateTime.Now.Minute);
         param.Add(nameof(BookTime.Booking2Change), tb);
         var ret = Modal.Show<BookTime>("Zeit buchen", param);
         var result = await ret.Result;

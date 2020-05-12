@@ -26,7 +26,8 @@ namespace CoronaKurzArbeit.Pages
         protected override void OnInitialized()
         {
             var start = KAConfig.Started;
-            while (start < DateTime.Now)
+            var end = start.AddMonths(3);
+            while (start < end)
             {
                 WeekStarts.Add(start);
                 start = start.AddDays(7);

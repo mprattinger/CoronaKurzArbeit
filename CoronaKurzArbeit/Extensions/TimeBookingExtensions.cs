@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 namespace CoronaKurzArbeit.Extensions
@@ -29,6 +30,35 @@ namespace CoronaKurzArbeit.Extensions
             }
 
             return ret;
+        }
+
+        public static double GetWorkhours(this DateTime current, KurzarbeitSettingsConfiguration config)
+        {
+            var props = config.GetType().GetProperties();
+            foreach (var p in props)
+            {
+                if (p.Name == current.DayOfWeek.ToString())
+                {
+                    return Convert.ToDouble(p.GetValue(config) ?? default(double));
+                }
+            }
+            return 0;
+        }
+
+        public static double GetCoronaWorkhours(this DateTime current, KurzarbeitSettingsConfiguration config)
+        {
+            var props = config.GetType().GetProperties();
+            var wh = double.MinValue;
+            foreach (var p in props)
+            {
+                if (p.Name == current.DayOfWeek.ToString())
+                {
+                    wh = Convert.ToDouble(p.GetValue(config) ?? default(double));
+                }
+            }
+            if (wh == double.MinValue) return 0;
+
+            return wh * config.CoronaSoll;
         }
     }
 }
