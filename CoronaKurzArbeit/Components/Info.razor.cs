@@ -16,9 +16,9 @@ namespace CoronaKurzArbeit.Components
         [Inject]
         public KurzarbeitSettingsConfiguration KAConfig { get; set; } = new KurzarbeitSettingsConfiguration();
 
-        public double SollArbeitszeit { get; set; }
+        public decimal SollArbeitszeit { get; set; }
 
-        public double CoronaSollArbeitszeit { get; set; }
+        public decimal CoronaSollArbeitszeit { get; set; }
 
         protected override void OnInitialized()
         {

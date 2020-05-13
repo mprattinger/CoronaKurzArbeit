@@ -23,6 +23,7 @@ namespace CoronaKurzArbeit.Extensions
             else return false;
         }
 
+        [Obsolete]
         public static DateTime NormalizeAsOnlyDate(this DateTime date) => DateTime.Parse(date.ToShortDateString());
 
         public static DateTime NormalizeDateTime(this DateTime date)
@@ -33,6 +34,12 @@ namespace CoronaKurzArbeit.Extensions
         public static DateTime NormalizeFullHour(this DateTime date)
         {
             return new DateTime(date.Year, date.Month, date.Day, date.Hour, 0, 0);
+        }
+
+        public static DateTime FirstDayOfWeek(this DateTime dt, DayOfWeek startOfWeek)
+        {
+            int diff = (7 + (dt.DayOfWeek - startOfWeek)) % 7;
+            return dt.AddDays(-1 * diff).Date;
         }
 
         public static DateTime FirstDayOfMonth(this DateTime dayOfMonth)

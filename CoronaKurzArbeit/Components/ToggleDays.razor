@@ -23,10 +23,10 @@
 
 @code {
     [Parameter]
-    public RenderFragment ChildContent { get; set; }
+    public RenderFragment ChildContent { get; set; } = default!;
 
     [CascadingParameter]
-    public DateTime TheDate { get; set; } = DateTime.Now.NormalizeAsOnlyDate();
+    public DateTime TheDate { get; set; } = DateTime.Now.Date;
 
     void back()
     {

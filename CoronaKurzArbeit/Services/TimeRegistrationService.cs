@@ -3,6 +3,7 @@ using CoronaKurzArbeit.Extensions;
 using CoronaKurzArbeit.Models;
 using CoronaKurzArbeit.Models.Exceptions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,10 +21,12 @@ namespace CoronaKurzArbeit.Services
     public class TimeRegistrationService : ITimeRegistrationService
     {
         private readonly ApplicationDbContext _context;
+        private readonly ILogger<TimeRegistrationService> _logger;
 
-        public TimeRegistrationService(ApplicationDbContext context)
+        public TimeRegistrationService(ApplicationDbContext context, ILogger<TimeRegistrationService> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         public async Task AddRegistration(TimeRegistration registration)
@@ -35,8 +38,8 @@ namespace CoronaKurzArbeit.Services
                     if (await _context.TimeRegistrations.CountAsync(x =>
                         x.Type == registration.Type &&
                         (
-                            x.RegistrationMoment >= registration.RegistrationMoment.NormalizeAsOnlyDate() &&
-                            x.RegistrationMoment < registration.RegistrationMoment.NormalizeAsOnlyDate().AddDays(1)
+                            x.RegistrationMoment >= registration.RegistrationMoment.Date &&
+                            x.RegistrationMoment < registration.RegistrationMoment.Date.AddDays(1)
                         )) > 0)
                     {
                         throw new InOutException(registration.Type, "Bereits registriert!");
@@ -48,8 +51,8 @@ namespace CoronaKurzArbeit.Services
             }
             catch (Exception ex)
             {
-
-                throw;
+                _logger.LogError(ex, "Error in adding Registration");
+                throw new Exception($"Error in adding Registration: {ex.Message}", ex);
             }
         }
 
@@ -57,7 +60,7 @@ namespace CoronaKurzArbeit.Services
         {
             var ret = new List<TimeRegistration>();
 
-            var regs = await _context.TimeRegistrations.Where(x => x.RegistrationMoment >= theDay.NormalizeAsOnlyDate() && x.RegistrationMoment < theDay.NormalizeAsOnlyDate().AddDays(1)).ToListAsync();
+            var regs = await _context.TimeRegistrations.Where(x => x.RegistrationMoment >= theDay.Date && x.RegistrationMoment < theDay.Date.AddDays(1)).ToListAsync();
                         
             if(regs.Any(x => x.Type == InOutType.IN))
             {

@@ -40,7 +40,7 @@
         var baseDate = AtDate == DateTime.MinValue ? TheDate : AtDate;
         var param = new ModalParameters();
         var tb = new TimeBooking();
-        tb.BookingTime = baseDate.NormalizeAsOnlyDate().AddHours(DateTime.Now.Hour).AddMinutes(DateTime.Now.Minute);
+        tb.BookingTime = baseDate.Date.AddHours(DateTime.Now.Hour).AddMinutes(DateTime.Now.Minute);
         param.Add(nameof(BookTime.Booking2Change), tb);
         var ret = Modal.Show<BookTime>("Zeit buchen", param);
         var result = await ret.Result;

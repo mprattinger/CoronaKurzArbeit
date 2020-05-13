@@ -97,7 +97,7 @@ namespace CoronaKurzArbeit.Components
         {
             var baseDate = AtDate == DateTime.MinValue ? TheDate : AtDate;
             Bookings = await Context.TimeBookings
-                .Where(x => x.BookingTime > baseDate.NormalizeAsOnlyDate() && x.BookingTime <= baseDate.NormalizeAsOnlyDate().AddDays(1))
+                .Where(x => x.BookingTime > baseDate.Date && x.BookingTime <= baseDate.Date.AddDays(1))
                 .OrderBy(x => x.BookingTime)
                 .ToListAsync();
         }

@@ -1,0 +1,13 @@
+﻿.flex-tab {
+    display: flex;
+    flex-direction: column;
+
+    .flex-r {
+        display: flex;
+        flex-direction: row;
+
+        .flex-c {
+            padding: 10px;
+        }
+    }
+}

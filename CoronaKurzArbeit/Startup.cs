@@ -38,6 +38,7 @@ namespace CoronaKurzArbeit
             services.AddBlazoredModal();
 
             services.AddScoped<IAppState, AppState>();
+            services.AddSingleton<IFeiertagService, FeiertagService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

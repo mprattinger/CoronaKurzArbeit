@@ -19,11 +19,20 @@
       .toggle-day-container .toggle-day-controls-container .toggle-day-controls-left .toggle-day-content-register {
         margin-bottom: 20px; }
     .toggle-day-container .toggle-day-controls-container .toggle-day-controls-right .toggle-day-controls-info {
-      width: 50%; }
+      width: 100%; }
   .toggle-day-container .toggle-day-content {
     width: 100%;
     display: flex;
     flex-direction: column; }
+
+.flex-tab {
+  display: flex;
+  flex-direction: column; }
+  .flex-tab .flex-r {
+    display: flex;
+    flex-direction: row; }
+    .flex-tab .flex-r .flex-c {
+      padding: 10px; }
 
 .line {
   display: flex;
