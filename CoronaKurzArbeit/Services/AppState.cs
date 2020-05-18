@@ -10,15 +10,18 @@ namespace CoronaKurzArbeit.Services
     {
         Task BookingListChangedAsync(List<TimeBooking> list);
         Task RegisteredAsync(TimeBooking newBooking);
+        void CurrentDayChanged(DateTime newDate);
 
         event Func<List<TimeBooking>, Task> OnBookingListChanged;
         event Func<TimeBooking, Task> OnRegistered;
+        event Action<DateTime>? OnCurrentDayChanged;
     }
 
     public class AppState : IAppState
     {
         public event Func<List<TimeBooking>, Task>? OnBookingListChanged;
         public event Func<TimeBooking, Task>? OnRegistered;
+        public event Action<DateTime>? OnCurrentDayChanged;
 
         public async Task BookingListChangedAsync(List<TimeBooking> list)
         {
@@ -33,6 +36,14 @@ namespace CoronaKurzArbeit.Services
             if(OnRegistered != null)
             {
                 await OnRegistered.Invoke(newBooking);
+            }
+        }
+
+        public void CurrentDayChanged(DateTime newDate)
+        {
+            if(OnCurrentDayChanged != null)
+            {
+                OnCurrentDayChanged.Invoke(newDate);
             }
         }
     }

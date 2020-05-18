@@ -15,7 +15,14 @@ namespace CoronaKurzArbeit.Services
         Free
     }
 
-    public class CoronaService
+    public interface ICoronaService
+    {
+        decimal GetKATime();
+        List<(DateTime day, decimal arbeitsZeit, WorkDayType type)> GetWorkDaysForWeek(DateTime dayInWeek);
+        decimal KAAusfallPerDay(DateTime value);
+    }
+
+    public class CoronaService : ICoronaService
     {
         private readonly ILogger<CoronaService> _logger;
         private readonly KurzarbeitSettingsConfiguration _config;
@@ -39,7 +46,7 @@ namespace CoronaKurzArbeit.Services
 
             if (day.type == WorkDayType.Workday) return Math.Round(workDayKa, 3); //Normaler Arbeitstag
             if (day.type == WorkDayType.KAday) return Math.Round(day.arbeitsZeit, 3); //Kurzarbeitstag
-            
+
             return default;
 
         }
@@ -75,7 +82,8 @@ namespace CoronaKurzArbeit.Services
                         {
                             //Ja
                             workDays.Add((f, f.GetWorkhours(_config), WorkDayType.KAday));
-                        } else
+                        }
+                        else
                         {
                             //Nein
                             //-> Arbeitstag

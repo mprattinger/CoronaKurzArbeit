@@ -1,40 +1,42 @@
 ﻿@using Extensions
-
-<div class="toggle-day-container">
-    <div class="toggle-day-controls-container">
-        <div class="toggle-day-controls-left">
-            <div class="toggle-day-controls">
-                <button @onclick="back" class="btn btn-primary">Zurück</button>
-                <span>@TheDate.ToShortDateString()</span>
-                <button @onclick="next" class="btn btn-primary">Nächster</button>
+        <div class="toggle-day-container">
+            <div class="toggle-day-controls-container">
+                <div class="toggle-day-controls-left">
+                    <div class="toggle-day-controls">
+                        <button @onclick="back" class="btn btn-primary">Zurück</button>
+                        <span>@CurrentDate.ToShortDateString()</span>
+                        <button @onclick="next" class="btn btn-primary">Nächster</button>
+                    </div>
+                    <Register Class="toggle-day-content-register" />
+                </div>
+                <div class="toggle-day-controls-right">
+                    <Info />
+                </div>
             </div>
-            <Register Class="toggle-day-content-register" />
-        </div>
-        <div class="toggle-day-controls-right">
-            <Info />
-        </div>
-    </div>
-    <div class="toggle-day-content">
-        <CascadingValue Value="@TheDate">
-            @ChildContent
-        </CascadingValue>
-    </div>
-</div>
+            <div class="toggle-day-content">
 
+                @ChildContent
+
+            </div>
+        </div>
 @code {
     [Parameter]
     public RenderFragment ChildContent { get; set; } = default!;
 
-    [CascadingParameter]
-    public DateTime TheDate { get; set; } = DateTime.Now.Date;
+    [Inject]
+    public IAppState AppState { get; set; } = default!;
+
+    public DateTime CurrentDate { get; set; } = DateTime.Now.Date;
 
     void back()
     {
-        TheDate = TheDate.AddDays(-1);
+        CurrentDate = CurrentDate.AddDays(-1);
+        AppState.CurrentDayChanged(CurrentDate);
     }
 
     void next()
     {
-        TheDate = TheDate.AddDays(1);
+        CurrentDate = CurrentDate.AddDays(1);
+        AppState.CurrentDayChanged(CurrentDate);
     }
 }

@@ -45,6 +45,7 @@ namespace CoronaKurzArbeit.Extensions
             return 0;
         }
 
+        [Obsolete]
         public static decimal GetCoronaWorkhours(this DateTime current, KurzarbeitSettingsConfiguration config)
         {
             var props = config.GetType().GetProperties();

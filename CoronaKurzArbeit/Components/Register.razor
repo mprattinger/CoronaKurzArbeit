@@ -19,12 +19,10 @@
     [Parameter]
     public DateTime AtDate { get; set; } = DateTime.MinValue;
 
-    [CascadingParameter]
-    public DateTime TheDate { get; set; } = DateTime.MinValue;
-
     [Parameter]
     public string Class { get; set; } = "";
 
+    public DateTime CurrentDate { get; set; } = DateTime.Now.Date;
 
     private string fixedClass = "btn btn-primary btn-block";
     private string Classes
@@ -35,9 +33,19 @@
         }
     }
 
+    protected override void OnInitialized()
+    {
+        AppState.OnCurrentDayChanged += OnCurrentDayChanged_event;
+    }
+
+    private void OnCurrentDayChanged_event(DateTime theDay)
+    {
+
+    }
+
     async Task RegisterTime()
     {
-        var baseDate = AtDate == DateTime.MinValue ? TheDate : AtDate;
+        var baseDate = AtDate == DateTime.MinValue ? CurrentDate : AtDate;
         var param = new ModalParameters();
         var tb = new TimeBooking();
         tb.BookingTime = baseDate.Date.AddHours(DateTime.Now.Hour).AddMinutes(DateTime.Now.Minute);

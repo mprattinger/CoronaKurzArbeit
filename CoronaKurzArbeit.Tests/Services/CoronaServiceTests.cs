@@ -121,6 +121,14 @@ namespace CoronaKurzArbeit.Tests.Services
 
             res.Should().Be(5.7M);
         }
+        [Fact]
+        public void KAAusfall_NormalWeekFriday2()
+        {
+            var sut = new CoronaService(logger, config, fService);
+            var res = sut.KAAusfallPerDay(new DateTime(2020, 5, 15));
+
+            res.Should().Be(5.7M);
+        }
 
         [Fact]
         public void KAAusfall_FridayHolidayWeekDay()
