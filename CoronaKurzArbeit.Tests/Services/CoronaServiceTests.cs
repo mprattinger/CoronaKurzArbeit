@@ -1,5 +1,6 @@
 ﻿using CoronaKurzArbeit.Models;
 using CoronaKurzArbeit.Services;
+using CoronaKurzArbeit.Tests.Helpers;
 using FluentAssertions;
 using Microsoft.Extensions.Logging.Abstractions;
 using System;
@@ -33,7 +34,7 @@ namespace CoronaKurzArbeit.Tests.Services
                 Friday = 5.7M,
                 CoronaDays = new List<DayOfWeek> { DayOfWeek.Friday }
             };
-            fService = new FeiertagService();
+            fService = new FeiertagService(new FakeDateTimeProvider(new DateTime(2020,05,19)));
         }
 
         public void Dispose()

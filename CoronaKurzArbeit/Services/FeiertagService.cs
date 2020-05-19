@@ -19,9 +19,9 @@ namespace CoronaKurzArbeit.Services
     {
         private List<Feiertag> _feierTage = new List<Feiertag>();
 
-        public FeiertagService()
+        public FeiertagService(IDateTimeProvider dateTimeProvider)
         {
-            load(DateTime.Now.Year);
+            load(dateTimeProvider.GetCurrentTime().Year);
         }
 
         public bool IsFeiertag(DateTime value)

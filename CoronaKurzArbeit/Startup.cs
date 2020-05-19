@@ -38,6 +38,7 @@ namespace CoronaKurzArbeit
             services.AddBlazoredModal();
 
             services.AddScoped<IAppState, AppState>();
+            services.AddScoped<IDateTimeProvider, DateTimeProvider>();
             services.AddSingleton<IFeiertagService, FeiertagService>();
             services.AddScoped<ICoronaService, CoronaService>();
         }
