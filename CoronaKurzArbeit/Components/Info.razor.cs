@@ -9,10 +9,11 @@ using System.Threading.Tasks;
 
 namespace CoronaKurzArbeit.Components
 {
-    public partial class Info
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1063:Implement IDisposable Correctly", Justification = "<Pending>")]
+    public partial class Info : IDisposable
     {
-        [CascadingParameter]
-        public DateTime TheDate { get; set; } = DateTime.MinValue;
+        [Inject]
+        public IAppState AppState { get; set; } = default!;
 
         [Inject]
         public KurzarbeitSettingsConfiguration KAConfig { get; set; } = default!;
@@ -20,26 +21,47 @@ namespace CoronaKurzArbeit.Components
         [Inject]
         public ICoronaService CoronaService { get; set; } = default!;
 
+        [Inject]
+        public ITimeRegistrationService TimeRegistrationService { get; set; } = default!;
+
+        public DateTime TheDate { get; set; } = DateTime.MinValue;
+
         public decimal SollArbeitszeit { get; set; }
 
         public decimal KAAusfall { get; set; }
 
+        public decimal Tagesarbeitszeit { get; set; }
+
         protected override void OnInitialized()
         {
-            calculateInfo();
+            AppState.OnCurrentDayChanged += appState_OnCurrentDayChanged;
         }
 
-        private void calculateInfo()
+        private async Task appState_OnCurrentDayChanged(DateTime arg)
         {
-            SollArbeitszeit = TheDate.GetWorkhours(KAConfig);
-            KAAusfall = CoronaService.KAAusfallPerDay(TheDate);
+            await InvokeAsync(async () =>
+            {
+                TheDate = arg;
+                await calculateInfo();
+                StateHasChanged();
+            });
         }
 
-        protected override void OnAfterRender(bool firstRender)
+        private async Task calculateInfo()
         {
-            //SollArbeitszeit = TheDate.GetWorkhours(KAConfig);
-            //KAAusfall = CoronaService.KAAusfallPerDay(TheDate);
-            //StateHasChanged();
+            if (TheDate > DateTime.MinValue)
+            {
+                SollArbeitszeit = TheDate.GetWorkhours(KAConfig);
+                KAAusfall = CoronaService.KAAusfallPerDay(TheDate);
+                Tagesarbeitszeit = SollArbeitszeit - KAAusfall;
+
+                await TimeRegistrationService.GetRegistrationsOfDay(TheDate);
+            }
+        }
+
+        public void Dispose()
+        {
+            AppState.OnCurrentDayChanged -= appState_OnCurrentDayChanged;
         }
     }
 }

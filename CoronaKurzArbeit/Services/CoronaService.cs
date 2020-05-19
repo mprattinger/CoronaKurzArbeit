@@ -24,13 +24,11 @@ namespace CoronaKurzArbeit.Services
 
     public class CoronaService : ICoronaService
     {
-        private readonly ILogger<CoronaService> _logger;
         private readonly KurzarbeitSettingsConfiguration _config;
         private readonly IFeiertagService _feiertag;
 
         public CoronaService(ILogger<CoronaService> logger, KurzarbeitSettingsConfiguration config, IFeiertagService feiertagService)
         {
-            _logger = logger;
             _config = config;
             _feiertag = feiertagService;
         }

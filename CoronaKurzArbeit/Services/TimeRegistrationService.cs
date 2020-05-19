@@ -16,6 +16,7 @@ namespace CoronaKurzArbeit.Services
     public interface ITimeRegistrationService
     {
         Task AddRegistration(TimeRegistration registration);
+        Task<List<TimeRegistration>> GetRegistrationsOfDay(DateTime theDay);
     }
 
     public class TimeRegistrationService : ITimeRegistrationService
@@ -56,7 +57,7 @@ namespace CoronaKurzArbeit.Services
             }
         }
 
-        public async Task GetRegistrationsOfDay(DateTime theDay)
+        public async Task<List<TimeRegistration>> GetRegistrationsOfDay(DateTime theDay)
         {
             var ret = new List<TimeRegistration>();
 
@@ -73,6 +74,8 @@ namespace CoronaKurzArbeit.Services
             {
                 ret.Add(regs.First(x => x.Type == InOutType.OUT));
             }
+
+            return ret;
         }
     }
 }

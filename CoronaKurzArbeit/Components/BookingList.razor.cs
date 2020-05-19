@@ -37,7 +37,7 @@ namespace CoronaKurzArbeit.Components
         public string Class { get; set; } = "";
 
 
-        private string fixedClass = "table";
+        private readonly string fixedClass = "table";
         private string Classes
         {
             get

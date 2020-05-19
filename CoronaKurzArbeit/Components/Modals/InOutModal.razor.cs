@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace CoronaKurzArbeit.Components.Modals
 {
 
-
+    [Obsolete]
     public partial class InOutModal
     {
 
@@ -58,9 +58,11 @@ namespace CoronaKurzArbeit.Components.Modals
 
         public async Task SubmitForm()
         {
-            var trm = new TimeRegistration();
-            trm.RegistrationMoment = Time;
-            trm.Type = IOType;
+            var trm = new TimeRegistration
+            {
+                RegistrationMoment = Time,
+                Type = IOType
+            };
             await TimeRegistrationService.AddRegistration(trm);
             BlazoredModal?.Close();
         }

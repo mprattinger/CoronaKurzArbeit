@@ -28,15 +28,24 @@
 
     public DateTime CurrentDate { get; set; } = DateTime.Now.Date;
 
-    void back()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        CurrentDate = CurrentDate.AddDays(-1);
-        AppState.CurrentDayChanged(CurrentDate);
+        if (firstRender)
+        {
+            await AppState.CurrentDayChangedAsync(CurrentDate);
+        }
     }
 
-    void next()
+
+    async Task back()
+    {
+        CurrentDate = CurrentDate.AddDays(-1);
+        await AppState.CurrentDayChangedAsync(CurrentDate);
+    }
+
+    async Task next()
     {
         CurrentDate = CurrentDate.AddDays(1);
-        AppState.CurrentDayChanged(CurrentDate);
+        await AppState.CurrentDayChangedAsync(CurrentDate);
     }
 }
