@@ -7,6 +7,7 @@ namespace CoronaKurzArbeit.Models
     {
         public DateTime Started { get; set; }
         public decimal SollArbeitsZeit { get; set; }
+        public int PauseFree { get; set; }
         public decimal CoronaSoll { get; set; }
         public decimal Monday { get; set; }
         public decimal Tuesday { get; set; }

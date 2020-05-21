@@ -16,8 +16,9 @@ namespace CoronaKurzArbeit.Services
         Task<TimeBooking?> GetInBookingForDayAsync(DateTime theDate);
         Task<TimeBooking?> GetOutBookingForDayAsync(DateTime theDate);
         Task<List<TimeBooking>> GetPauseBookingsForDayAsync(DateTime theDate);
-        Task<(TimeBooking inBooking, TimeBooking outBooking, TimeSpan grossWorkTime)?> GetGrossWorkTimeForDayAsync(DateTime theDate);
-        Task<List<(TimeBooking pauseStart, TimeBooking pauseEnd, TimeSpan pauseDuration)>?> GetPausesForDayAsync(DateTime theDate);
+        Task<(TimeBooking? inBooking, TimeBooking? outBooking, TimeSpan grossWorkTime)> GetGrossWorkTimeForDayAsync(DateTime theDate);
+        Task<(TimeSpan grossPauseDuration, TimeSpan netPauseDuration, List<(TimeBooking pauseStart, TimeBooking pauseEnd, TimeSpan duration)> pauseList)> GetPauseForDayAsync(DateTime theDate);
+        Task<TimeSpan> GetNetWorkingTimeForDayAsync(DateTime theDate);
     }
 
     public class TimeBookingsService : ITimeBookingsService
@@ -25,12 +26,14 @@ namespace CoronaKurzArbeit.Services
         private readonly ILogger<TimeBookingsService> _logger;
         private readonly ApplicationDbContext _context;
         private readonly IDateTimeProvider _dateTimeProvider;
+        private readonly KurzarbeitSettingsConfiguration _config;
 
-        public TimeBookingsService(ILogger<TimeBookingsService> logger, ApplicationDbContext context, IDateTimeProvider dateTimeProvider)
+        public TimeBookingsService(ILogger<TimeBookingsService> logger, ApplicationDbContext context, IDateTimeProvider dateTimeProvider, KurzarbeitSettingsConfiguration config)
         {
             _logger = logger;
             _context = context;
             _dateTimeProvider = dateTimeProvider;
+            _config = config;
         }
 
         public async Task<List<TimeBooking>> GetBookingsForDayAsync(DateTime theDate)
@@ -49,12 +52,12 @@ namespace CoronaKurzArbeit.Services
             return ret;
         }
 
-        public async Task<(TimeBooking inBooking, TimeBooking outBooking, TimeSpan grossWorkTime)?> GetGrossWorkTimeForDayAsync(DateTime theDate)
+        public async Task<(TimeBooking? inBooking, TimeBooking? outBooking, TimeSpan grossWorkTime)> GetGrossWorkTimeForDayAsync(DateTime theDate)
         {
             try
             {
                 var inTime = await GetInBookingForDayAsync(theDate);
-                if (inTime == null) return null;
+                if (inTime == null) return (null, null, TimeSpan.Zero);
                 var outTime = await GetOutBookingForDayAsync(theDate);
                 if (outTime == null) outTime = new TimeBooking { BookingTime = _dateTimeProvider.GetCurrentTime() }; ;
                 return (inTime, outTime, outTime.BookingTime.Subtract(inTime.BookingTime));
@@ -62,6 +65,31 @@ namespace CoronaKurzArbeit.Services
             catch (Exception ex)
             {
                 var msg = $"Error reading in gross worktime for day {theDate.Date.ToShortDateString()}";
+                _logger.LogError(ex, msg);
+                throw new Exception(msg, ex);
+            }
+        }
+
+        public async Task<TimeSpan> GetNetWorkingTimeForDayAsync(DateTime theDate)
+        {
+            try
+            {
+                var (inBooking, outBooking, grossWorkTime) = await GetGrossWorkTimeForDayAsync(theDate);
+                if (grossWorkTime == TimeSpan.Zero) return TimeSpan.Zero;
+                var (grossPauseDuration, netPauseDuration, pauseList) = await GetPauseForDayAsync(theDate);
+
+                if(grossWorkTime.TotalHours >= 6 && (netPauseDuration == TimeSpan.Zero || netPauseDuration.TotalMinutes < 30))
+                {
+                    //Keine Pause oder pause kleiner 30 Minuten, aber mehr als 6 Stunden
+                    return grossWorkTime.Subtract(TimeSpan.FromMinutes(30));
+                } else 
+                {
+                    return grossWorkTime.Subtract(netPauseDuration);
+                }
+            }
+            catch (Exception ex)
+            {
+                var msg = $"Error reading net working time for day {theDate.Date.ToShortDateString()}";
                 _logger.LogError(ex, msg);
                 throw new Exception(msg, ex);
             }
@@ -128,21 +156,30 @@ namespace CoronaKurzArbeit.Services
             return ret;
         }
 
-        public async Task<List<(TimeBooking pauseStart, TimeBooking pauseEnd, TimeSpan pauseDuration)>?> GetPausesForDayAsync(DateTime theDate)
+        public async Task<(TimeSpan grossPauseDuration, TimeSpan netPauseDuration, List<(TimeBooking pauseStart, TimeBooking pauseEnd, TimeSpan duration)> pauseList)> GetPauseForDayAsync(DateTime theDate)
         {
             try
             {
-                var ret = new List<(TimeBooking pauseStart, TimeBooking pauseEnd, TimeSpan pauseDuration)>();
+                var pauseRaw = new List<(TimeBooking pauseStart, TimeBooking pauseEnd, TimeSpan pauseDuration)>();
                 var pauses = await GetPauseBookingsForDayAsync(theDate);
-                if (pauses.Count == 0) return null;
+                if (pauses.Count == 0) return (TimeSpan.Zero, TimeSpan.Zero, pauseRaw);
                 var c = 0;
                 while(c <= pauses.Count - 2)
                 {
                     var data = pauses.Skip(c).Take(2);
-                    ret.Add((data.First(), data.Last(), data.Last().BookingTime.Subtract(data.First().BookingTime)));
+                    pauseRaw.Add((data.First(), data.Last(), data.Last().BookingTime.Subtract(data.First().BookingTime)));
                     c += 2;
                 }
-                return ret;
+
+                var grossPause = new TimeSpan(pauseRaw.Sum(x => x.pauseDuration.Ticks));
+                var netPause = grossPause;
+
+                if (grossPause.TotalMinutes >= _config.PauseFree)
+                {
+                    netPause = netPause.Subtract(TimeSpan.FromMinutes(_config.PauseFree));
+                }
+
+                return (grossPause, netPause, pauseRaw);
             }
             catch (Exception ex)
             {

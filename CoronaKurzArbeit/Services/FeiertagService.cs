@@ -17,7 +17,7 @@ namespace CoronaKurzArbeit.Services
 
     public class FeiertagService : IFeiertagService
     {
-        private List<Feiertag> _feierTage = new List<Feiertag>();
+        private readonly List<Feiertag> _feierTage = new List<Feiertag>();
 
         public FeiertagService(IDateTimeProvider dateTimeProvider)
         {

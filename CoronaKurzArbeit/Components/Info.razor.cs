@@ -22,7 +22,7 @@ namespace CoronaKurzArbeit.Components
         public ICoronaService CoronaService { get; set; } = default!;
 
         [Inject]
-        public ITimeRegistrationService TimeRegistrationService { get; set; } = default!;
+        public ITimeBookingsService BookingsService { get; set; } = default!;
 
         public DateTime TheDate { get; set; } = DateTime.MinValue;
 
@@ -31,6 +31,10 @@ namespace CoronaKurzArbeit.Components
         public decimal KAAusfall { get; set; }
 
         public decimal Tagesarbeitszeit { get; set; }
+
+        public decimal IstArbeitszeitBrutto { get; set; }
+
+        public decimal IstArbeitszeit { get; set; }
 
         protected override void OnInitialized()
         {
@@ -54,8 +58,8 @@ namespace CoronaKurzArbeit.Components
                 SollArbeitszeit = TheDate.GetWorkhours(KAConfig);
                 KAAusfall = CoronaService.KAAusfallPerDay(TheDate);
                 Tagesarbeitszeit = SollArbeitszeit - KAAusfall;
-
-                await TimeRegistrationService.GetRegistrationsOfDay(TheDate);
+                var (_, _, grossWorkTime) = await BookingsService.GetGrossWorkTimeForDayAsync(TheDate);
+                IstArbeitszeitBrutto = Convert.ToDecimal(grossWorkTime.TotalHours);
             }
         }
 

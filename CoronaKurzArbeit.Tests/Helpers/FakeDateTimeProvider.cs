@@ -7,7 +7,7 @@ namespace CoronaKurzArbeit.Tests.Helpers
 {
     public class FakeDateTimeProvider : IDateTimeProvider
     {
-        private DateTime _fakeTime;
+        private readonly DateTime _fakeTime;
 
         public FakeDateTimeProvider(DateTime fakeTime)
         {

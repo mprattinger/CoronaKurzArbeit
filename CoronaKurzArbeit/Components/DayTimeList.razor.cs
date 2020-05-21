@@ -6,8 +6,6 @@ namespace CoronaKurzArbeit.Components
 {
     public partial class DayTimeList
     {
-        [Inject]
-        protected TimeRegistrationService TimeRegistrationService { get; set; } = default!;
 
         [Parameter]
         public DateTime TheDay { get; set; }

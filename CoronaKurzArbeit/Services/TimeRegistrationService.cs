@@ -13,12 +13,14 @@ using System.Threading.Tasks;
 
 namespace CoronaKurzArbeit.Services
 {
+    [Obsolete]
     public interface ITimeRegistrationService
     {
         Task AddRegistration(TimeRegistration registration);
         Task<List<TimeRegistration>> GetRegistrationsOfDay(DateTime theDay);
     }
 
+    [Obsolete]
     public class TimeRegistrationService : ITimeRegistrationService
     {
         private readonly ApplicationDbContext _context;

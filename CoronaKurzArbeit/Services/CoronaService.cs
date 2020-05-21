@@ -27,7 +27,7 @@ namespace CoronaKurzArbeit.Services
         private readonly KurzarbeitSettingsConfiguration _config;
         private readonly IFeiertagService _feiertag;
 
-        public CoronaService(ILogger<CoronaService> logger, KurzarbeitSettingsConfiguration config, IFeiertagService feiertagService)
+        public CoronaService(KurzarbeitSettingsConfiguration config, IFeiertagService feiertagService)
         {
             _config = config;
             _feiertag = feiertagService;
