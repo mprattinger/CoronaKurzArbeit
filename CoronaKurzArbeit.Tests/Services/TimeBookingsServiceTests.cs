@@ -6,6 +6,7 @@ using FluentAssertions;
 using Microsoft.Extensions.Logging.Abstractions;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Threading.Tasks;
@@ -80,7 +81,7 @@ namespace CoronaKurzArbeit.Tests.Services
         }
 
         [Fact]
-        public async Task GetInTimeEmptyWhenNoBookings()
+        public async Task GetInTimeNullWhenNoBookings()
         {
             //Prepare
             var theDay = new DateTime(2020, 05, 19);
@@ -89,7 +90,7 @@ namespace CoronaKurzArbeit.Tests.Services
 
             var sut = new TimeBookingsService(logger, ctx, timeProvider);
             var res = await sut.GetInBookingForDayAsync(theDay.Date);
-            res.BookingTime.Should().Be(DateTime.MinValue);
+            res.Should().BeNull();
         }
         #endregion
 
@@ -119,7 +120,7 @@ namespace CoronaKurzArbeit.Tests.Services
         }
 
         [Fact]
-        public async Task OutTimeEmptyWhenNoBookings()
+        public async Task OutTimeNullWhenNoBookings()
         {
             //Prepare
             var theDay = new DateTime(2020, 05, 19, 6, 3, 0);
@@ -128,11 +129,11 @@ namespace CoronaKurzArbeit.Tests.Services
 
             var sut = new TimeBookingsService(logger, ctx, timeProvider);
             var res = await sut.GetOutBookingForDayAsync(theDay.Date);
-            res.BookingTime.Should().Be(DateTime.MinValue);
+            res.Should().BeNull();
         }
 
         [Fact]
-        public async Task OutTimeEmptyWhenUneven()
+        public async Task OutTimeNullyWhenUneven()
         {
             //Prepare
             var theDay = new DateTime(2020, 05, 19, 6, 3, 0);
@@ -157,7 +158,7 @@ namespace CoronaKurzArbeit.Tests.Services
 
             var sut = new TimeBookingsService(logger, ctx, timeProvider);
             var res = await sut.GetOutBookingForDayAsync(theDay.Date);
-            res.BookingTime.Should().Be(DateTime.MinValue);
+            res.Should().BeNull();
         }
         #endregion
 
@@ -398,6 +399,115 @@ namespace CoronaKurzArbeit.Tests.Services
             res?.inBooking.BookingTime.Should().Be(theDay.AddHours(6).AddMinutes(3));
             res?.outBooking.BookingTime.Should().Be(theDay.AddHours(13).AddMinutes(3));
             res?.grossWorkTime.Should().Be(TimeSpan.FromHours(7));
+        }
+
+        [Fact]
+        public async Task GetPausesForDay()
+        {
+            //Prepare
+            var theDay = new DateTime(2020, 05, 19);
+            ctx.TimeBookings.RemoveRange();
+            await ctx.SaveChangesAsync();
+            ctx.TimeBookings.Add(new TimeBooking
+            {
+                BookingTime = theDay.AddHours(6).AddMinutes(3),
+                IsPause = false
+            });
+            ctx.TimeBookings.Add(new TimeBooking
+            {
+                BookingTime = theDay.AddHours(12).AddMinutes(3),
+                IsPause = false
+            });
+            ctx.TimeBookings.Add(new TimeBooking
+            {
+                BookingTime = theDay.AddHours(12).AddMinutes(33),
+                IsPause = false
+            });
+            ctx.TimeBookings.Add(new TimeBooking
+            {
+                BookingTime = theDay.AddHours(12).AddMinutes(35),
+                IsPause = false
+            });
+            await ctx.SaveChangesAsync();
+
+            var sut = new TimeBookingsService(logger, ctx, timeProvider);
+            var res = await sut.GetPausesForDayAsync(theDay);
+            res.Should().NotBeNull();
+            res.Count.Should().Be(1);
+            res.First().pauseDuration.TotalMinutes.Should().Be(30);
+        }
+        [Fact]
+        public async Task GetPausesForDayIsNullWhenNoPause()
+        {
+            //Prepare
+            var theDay = new DateTime(2020, 05, 19);
+            ctx.TimeBookings.RemoveRange();
+            await ctx.SaveChangesAsync();
+            ctx.TimeBookings.Add(new TimeBooking
+            {
+                BookingTime = theDay.AddHours(6).AddMinutes(3),
+                IsPause = false
+            });
+            ctx.TimeBookings.Add(new TimeBooking
+            {
+                BookingTime = theDay.AddHours(12).AddMinutes(35),
+                IsPause = false
+            });
+            await ctx.SaveChangesAsync();
+
+
+            var sut = new TimeBookingsService(logger, ctx, timeProvider);
+            var res = await sut.GetPausesForDayAsync(theDay);
+            res.Should().BeNull();
+        }
+        [Fact]
+        public async Task GetPausesForDayIsNullWhenOnlyIn()
+        {
+            //Prepare
+            var theDay = new DateTime(2020, 05, 19);
+            ctx.TimeBookings.RemoveRange();
+            await ctx.SaveChangesAsync();
+            ctx.TimeBookings.Add(new TimeBooking
+            {
+                BookingTime = theDay.AddHours(6).AddMinutes(3),
+                IsPause = false
+            });
+            await ctx.SaveChangesAsync();
+
+
+            var sut = new TimeBookingsService(logger, ctx, timeProvider);
+            var res = await sut.GetPausesForDayAsync(theDay);
+            res.Should().BeNull();
+        }
+        [Fact]
+        public async Task GetPausesForDayOpenEnd()
+        {
+            //Prepare
+            var theDay = new DateTime(2020, 05, 19);
+            ctx.TimeBookings.RemoveRange();
+            await ctx.SaveChangesAsync();
+            ctx.TimeBookings.Add(new TimeBooking
+            {
+                BookingTime = theDay.AddHours(6).AddMinutes(3),
+                IsPause = false
+            });
+            ctx.TimeBookings.Add(new TimeBooking
+            {
+                BookingTime = theDay.AddHours(12).AddMinutes(3),
+                IsPause = false
+            });
+            ctx.TimeBookings.Add(new TimeBooking
+            {
+                BookingTime = theDay.AddHours(12).AddMinutes(33),
+                IsPause = false
+            });
+            await ctx.SaveChangesAsync();
+
+            var sut = new TimeBookingsService(logger, ctx, timeProvider);
+            var res = await sut.GetPausesForDayAsync(theDay);
+            res.Should().NotBeNull();
+            res.Count.Should().Be(1);
+            res.First().pauseDuration.TotalMinutes.Should().Be(30);
         }
         #endregion
     }

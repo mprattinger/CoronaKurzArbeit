@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 
 namespace CoronaKurzArbeit.Services
@@ -12,11 +13,11 @@ namespace CoronaKurzArbeit.Services
     public interface ITimeBookingsService
     {
         Task<List<TimeBooking>> GetBookingsForDayAsync(DateTime theDate);
-        Task<TimeBooking> GetInBookingForDayAsync(DateTime theDate);
-        Task<TimeBooking> GetOutBookingForDayAsync(DateTime theDate);
+        Task<TimeBooking?> GetInBookingForDayAsync(DateTime theDate);
+        Task<TimeBooking?> GetOutBookingForDayAsync(DateTime theDate);
         Task<List<TimeBooking>> GetPauseBookingsForDayAsync(DateTime theDate);
         Task<(TimeBooking inBooking, TimeBooking outBooking, TimeSpan grossWorkTime)?> GetGrossWorkTimeForDayAsync(DateTime theDate);
-        Task<List<(TimeBooking pauseStart, TimeBooking pauseEnd, TimeSpan pauseDuration)>> GetPausesForDayAsync(DateTime theDate);
+        Task<List<(TimeBooking pauseStart, TimeBooking pauseEnd, TimeSpan pauseDuration)>?> GetPausesForDayAsync(DateTime theDate);
     }
 
     public class TimeBookingsService : ITimeBookingsService
@@ -66,13 +67,11 @@ namespace CoronaKurzArbeit.Services
             }
         }
 
-        public async Task<TimeBooking> GetInBookingForDayAsync(DateTime theDate)
-        {
-            var ret = new TimeBooking();
+        public async Task<TimeBooking?> GetInBookingForDayAsync(DateTime theDate)
+        { 
             try
             {
-                var booking = await _context.TimeBookings.Where(x => x.BookingTime >= theDate.Date && x.BookingTime < theDate.Date.AddDays(1)).FirstOrDefaultAsync();
-                ret = booking ?? ret;
+                return await _context.TimeBookings.Where(x => x.BookingTime >= theDate.Date && x.BookingTime < theDate.Date.AddDays(1)).FirstOrDefaultAsync();
             }
             catch (Exception ex)
             {
@@ -80,22 +79,20 @@ namespace CoronaKurzArbeit.Services
                 _logger.LogError(ex, msg);
                 throw new Exception(msg, ex);
             }
-            return ret;
         }
 
-        public async Task<TimeBooking> GetOutBookingForDayAsync(DateTime theDate)
+        public async Task<TimeBooking?> GetOutBookingForDayAsync(DateTime theDate)
         {
-            var ret = new TimeBooking();
             try
             {
                 var bookings = await GetBookingsForDayAsync(theDate);
                 if(bookings.Count == 0 || bookings.Count % 2 != 0)
                 {
                     //Es gibt kein out
-                    return ret;
+                    return null;
                 } else
                 {
-                    ret = bookings.Last();
+                    return bookings.LastOrDefault();
                 }
             }
             catch (Exception ex)
@@ -104,7 +101,6 @@ namespace CoronaKurzArbeit.Services
                 _logger.LogError(ex, msg);
                 throw new Exception(msg, ex);
             }
-            return ret;
         }
 
         public async Task<List<TimeBooking>> GetPauseBookingsForDayAsync(DateTime theDate)
@@ -132,12 +128,21 @@ namespace CoronaKurzArbeit.Services
             return ret;
         }
 
-        public async Task<List<(TimeBooking pauseStart, TimeBooking pauseEnd, TimeSpan pauseDuration)>> GetPausesForDayAsync(DateTime theDate)
+        public async Task<List<(TimeBooking pauseStart, TimeBooking pauseEnd, TimeSpan pauseDuration)>?> GetPausesForDayAsync(DateTime theDate)
         {
-            var ret = new List<(TimeBooking pauseStart, TimeBooking pauseEnd, TimeSpan pauseDuration)>();
             try
             {
-
+                var ret = new List<(TimeBooking pauseStart, TimeBooking pauseEnd, TimeSpan pauseDuration)>();
+                var pauses = await GetPauseBookingsForDayAsync(theDate);
+                if (pauses.Count == 0) return null;
+                var c = 0;
+                while(c <= pauses.Count - 2)
+                {
+                    var data = pauses.Skip(c).Take(2);
+                    ret.Add((data.First(), data.Last(), data.Last().BookingTime.Subtract(data.First().BookingTime)));
+                    c += 2;
+                }
+                return ret;
             }
             catch (Exception ex)
             {
@@ -145,7 +150,6 @@ namespace CoronaKurzArbeit.Services
                 _logger.LogError(ex, msg);
                 throw new Exception(msg, ex);
             }
-            return ret;
         }
     }
 }
