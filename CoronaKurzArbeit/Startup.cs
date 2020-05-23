@@ -39,8 +39,9 @@ namespace CoronaKurzArbeit
 
             services.AddScoped<IAppState, AppState>();
             services.AddScoped<IDateTimeProvider, DateTimeProvider>();
-            services.AddSingleton<IFeiertagService, FeiertagService>();
+            services.AddScoped<IFeiertagService, FeiertagService>();
             services.AddScoped<ICoronaService, CoronaService>();
+            services.AddScoped<ITimeBookingsService, TimeBookingsService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -19,8 +19,11 @@ namespace CoronaKurzArbeit.Components
         [Inject]
         public IAppState AppState { get; set; } = default!;
 
+        //[Inject]
+        //public ApplicationDbContext Context { get; set; } = default!;
+
         [Inject]
-        public ApplicationDbContext Context { get; set; } = default!;
+        public ITimeBookingsService BookingsService { get; set; } = default!;
 
         [Parameter]
         public DateTime AtDate { get; set; } = DateTime.MinValue;
@@ -67,8 +70,9 @@ namespace CoronaKurzArbeit.Components
             if (!result.Cancelled)
             {
                 var changed = (TimeBooking)result.Data;
-                Context.TimeBookings?.Add(changed);
-                await Context.SaveChangesAsync();
+                //Context.TimeBookings?.Add(changed);
+                //await Context.SaveChangesAsync();
+                await BookingsService.AddBookingAsync(changed);
                 await AppState.RegisteredAsync(changed);
                 StateHasChanged();
             }

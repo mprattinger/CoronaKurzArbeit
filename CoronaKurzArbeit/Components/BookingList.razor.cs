@@ -20,22 +20,20 @@ namespace CoronaKurzArbeit.Components
         [Inject]
         public IModalService Modal { get; set; } = default!;
 
-        [Inject]
-        public ApplicationDbContext Context { get; set; } = default!;
+        //[Inject]
+        //public ApplicationDbContext Context { get; set; } = default!;
 
         [Inject]
         public IAppState AppState { get; set; } = default!;
 
+        [Inject]
+        public ITimeBookingsService BookingsService { get; set; } = default!;
+
         [Parameter]
         public DateTime AtDate { get; set; } = DateTime.MinValue;
 
-        [CascadingParameter]
-        public DateTime TheDate { get; set; } = DateTime.MinValue;
-
-
         [Parameter]
         public string Class { get; set; } = "";
-
 
         private readonly string fixedClass = "table";
         private string Classes
@@ -46,17 +44,20 @@ namespace CoronaKurzArbeit.Components
             }
         }
 
+        public DateTime TheDate { get; set; } = DateTime.Now.Date;
+
         public List<TimeBooking> Bookings { get; set; } = new List<TimeBooking>();
 
         protected override void OnInitialized()
         {
-            AppState.OnRegistered += appState_OnInitialized;
+            
+            AppState.OnInfoLoadedFinished += appState_OnInfoLoadedFinished;
         }
 
-        protected override async Task OnInitializedAsync()
-        {
-            await loadData();
-        }
+        //protected override async Task OnInitializedAsync()
+        //{
+        //    await loadData();
+        //}
 
         public async Task Edit(TimeBooking bTime)
         {
@@ -67,10 +68,10 @@ namespace CoronaKurzArbeit.Components
             if (!result.Cancelled)
             {
                 var changed = (TimeBooking)result.Data;
-                Context.Update(changed);
-                await Context.SaveChangesAsync();
-                await loadData();
-                StateHasChanged();
+                //Context.Update(changed);
+                //await Context.SaveChangesAsync();
+                await BookingsService.UpdateBookingAsync(changed);
+                await AppState.RegisteredAsync(changed);
             }
         }
 
@@ -85,10 +86,8 @@ namespace CoronaKurzArbeit.Components
             {
                 if ((bool)result.Data == true)
                 {
-                    Context.TimeBookings?.Remove(bTime);
-                    await Context.SaveChangesAsync();
-                    await loadData();
-                    StateHasChanged();
+                    await BookingsService.DeleteBookingAsync(bTime);
+                    await AppState.RegisteredAsync(bTime);
                 }
             }
         }
@@ -96,16 +95,18 @@ namespace CoronaKurzArbeit.Components
         private async Task loadData()
         {
             var baseDate = AtDate == DateTime.MinValue ? TheDate : AtDate;
-            Bookings = await Context.TimeBookings
-                .Where(x => x.BookingTime > baseDate.Date && x.BookingTime <= baseDate.Date.AddDays(1))
-                .OrderBy(x => x.BookingTime)
-                .ToListAsync();
+            Bookings = await BookingsService.GetBookingsForDayAsync(baseDate);
+            //Bookings = await Context.TimeBookings
+            //    .Where(x => x.BookingTime > baseDate.Date && x.BookingTime <= baseDate.Date.AddDays(1))
+            //    .OrderBy(x => x.BookingTime)
+            //    .ToListAsync();
         }
 
-        private async Task appState_OnInitialized(TimeBooking timeBooking)
+        private async Task appState_OnInfoLoadedFinished(DateTime arg)
         {
             await InvokeAsync(async () =>
             {
+                TheDate = arg.Date;
                 await loadData();
                 StateHasChanged();
             });
@@ -113,7 +114,7 @@ namespace CoronaKurzArbeit.Components
 
         public void Dispose()
         {
-            AppState.OnRegistered -= appState_OnInitialized;
+            AppState.OnInfoLoadedFinished -= appState_OnInfoLoadedFinished;
         }
     }
 }

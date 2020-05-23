@@ -1,4 +1,5 @@
 ﻿using CoronaKurzArbeit.Data;
+using CoronaKurzArbeit.Extensions;
 using CoronaKurzArbeit.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -13,6 +14,9 @@ namespace CoronaKurzArbeit.Services
     public interface ITimeBookingsService
     {
         Task<List<TimeBooking>> GetBookingsForDayAsync(DateTime theDate);
+        Task AddBookingAsync(TimeBooking newBooking);
+        Task UpdateBookingAsync(TimeBooking changed);
+        Task DeleteBookingAsync(TimeBooking booking);
         Task<TimeBooking?> GetInBookingForDayAsync(DateTime theDate);
         Task<TimeBooking?> GetOutBookingForDayAsync(DateTime theDate);
         Task<List<TimeBooking>> GetPauseBookingsForDayAsync(DateTime theDate);
@@ -52,6 +56,52 @@ namespace CoronaKurzArbeit.Services
             return ret;
         }
 
+        public async Task AddBookingAsync(TimeBooking newBooking)
+        {
+            try
+            {
+                _context.TimeBookings?.Add(newBooking);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                var msg = $"Error adding new time booking for {newBooking.BookingTime.ToShortTimeString()}";
+                _logger.LogError(ex, msg);
+                throw new Exception(msg, ex);
+            }
+        }
+
+        public async Task UpdateBookingAsync(TimeBooking changed)
+        {
+            try
+            {
+                _context.Update(changed);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                var msg = $"Error updating booking with new time {changed.BookingTime.ToShortTimeString()}";
+                _logger.LogError(ex, msg);
+                throw new Exception(msg, ex);
+            }
+        }
+
+        public async Task DeleteBookingAsync(TimeBooking booking)
+        {
+            try
+            {
+                _context.TimeBookings?.Remove(booking);
+                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                var msg = $"Error deleting booking for time {booking.BookingTime.ToShortTimeString()}";
+                _logger.LogError(ex, msg);
+                throw new Exception(msg, ex);
+            }
+        }
+
         public async Task<(TimeBooking? inBooking, TimeBooking? outBooking, TimeSpan grossWorkTime)> GetGrossWorkTimeForDayAsync(DateTime theDate)
         {
             try
@@ -59,7 +109,16 @@ namespace CoronaKurzArbeit.Services
                 var inTime = await GetInBookingForDayAsync(theDate);
                 if (inTime == null) return (null, null, TimeSpan.Zero);
                 var outTime = await GetOutBookingForDayAsync(theDate);
-                if (outTime == null) outTime = new TimeBooking { BookingTime = _dateTimeProvider.GetCurrentTime() }; ;
+                if (outTime == null)
+                {
+                    var workHours = inTime.BookingTime.AddHours(Convert.ToDouble(theDate.GetWorkhours(_config)));
+                    if(workHours.Subtract(inTime.BookingTime) >= TimeSpan.FromHours(6))
+                    {
+                        workHours = workHours.AddMinutes(30);
+                    }
+                    var target = _dateTimeProvider.GetCurrentTime() > workHours ? workHours : _dateTimeProvider.GetCurrentTime();
+                    outTime = new TimeBooking { BookingTime = target };
+                }
                 return (inTime, outTime, outTime.BookingTime.Subtract(inTime.BookingTime));
             }
             catch (Exception ex)
