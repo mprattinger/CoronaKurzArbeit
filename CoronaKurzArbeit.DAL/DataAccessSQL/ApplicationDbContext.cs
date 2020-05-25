@@ -4,6 +4,8 @@ using System;
 
 namespace CoronaKurzArbeit.DAL.DataAccessSQL
 {
+    //dotnet ef --startup-project ..\CoronaKurzArbeit\ migrations add initial
+    //dotnet ef --startup-project ..\CoronaKurzArbeit database update
     public class ApplicationDbContext : DbContext
     {
 
