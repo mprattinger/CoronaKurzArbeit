@@ -1,8 +1,6 @@
-﻿using CoronaKurzArbeit.Data;
+﻿using CoronaKurzArbeit.DAL.DataAccessSQL;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace CoronaKurzArbeit.Tests.Helpers
 {

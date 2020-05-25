@@ -1,13 +1,11 @@
-﻿using CoronaKurzArbeit.Models;
+﻿using CoronaKurzArbeit.Shared.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 
-namespace CoronaKurzArbeit.Data
+namespace CoronaKurzArbeit.DAL.DataAccessSQL
 {
     public class ApplicationDbContext : DbContext
     {
-        [Obsolete]
-        public DbSet<TimeRegistration>? TimeRegistrations { get; set; }
 
         public DbSet<TimeBooking>? TimeBookings { get; set; }
 

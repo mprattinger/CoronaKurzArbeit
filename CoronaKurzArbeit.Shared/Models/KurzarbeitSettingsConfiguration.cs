@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace CoronaKurzArbeit.Models
+namespace CoronaKurzArbeit.Shared.Models
 {
     public class KurzarbeitSettingsConfiguration
     {

@@ -1,4 +1,4 @@
-﻿using CoronaKurzArbeit.Models;
+﻿using CoronaKurzArbeit.Shared.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,6 +1,6 @@
-﻿using CoronaKurzArbeit.Extensions;
-using CoronaKurzArbeit.Models;
-using CoronaKurzArbeit.Services;
+﻿using CoronaKurzArbeit.Services;
+using CoronaKurzArbeit.Shared.Extensions;
+using CoronaKurzArbeit.Shared.Models;
 using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections.Generic;

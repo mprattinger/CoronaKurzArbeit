@@ -1,10 +1,9 @@
-﻿using CoronaKurzArbeit.Extensions;
-using CoronaKurzArbeit.Models;
+﻿using CoronaKurzArbeit.Logic.Services;
 using CoronaKurzArbeit.Services;
+using CoronaKurzArbeit.Shared.Extensions;
+using CoronaKurzArbeit.Shared.Models;
 using Microsoft.AspNetCore.Components;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace CoronaKurzArbeit.Components
@@ -34,9 +33,9 @@ namespace CoronaKurzArbeit.Components
 
         public decimal IstArbeitszeitBrutto { get; set; } = 0m;
 
-        public decimal IstArbeitszeit { get; set; } = 0m;
+        public string IstArbeitszeit { get; set; } = string.Empty;
 
-        public decimal KuaZeit { get; set; } = 0m;
+        public string KuaZeit { get; set; } = string.Empty;
 
         public decimal VAZeit { get; set; } = 0m;
 
@@ -78,14 +77,16 @@ namespace CoronaKurzArbeit.Components
                 var (_, _, grossWorkTime) = await BookingsService.GetGrossWorkTimeForDayAsync(TheDate);
                 IstArbeitszeitBrutto = Convert.ToDecimal(grossWorkTime.TotalHours);
                 var istArbeitsZeit = await BookingsService.GetNetWorkingTimeForDayAsync(TheDate);
-                IstArbeitszeit = Convert.ToDecimal(istArbeitsZeit.TotalHours);
+                IstArbeitszeit = $"{istArbeitsZeit.Hours}:{istArbeitsZeit.Minutes} ({istArbeitsZeit.TotalHours.ToString("N2")})";
                 if (KAAusfall > 0)
                 {
-                    KuaZeit = SollArbeitszeit - IstArbeitszeit;
-                    if(KuaZeit < 0)
+                    var sa = TimeSpan.FromHours(Convert.ToDouble(SollArbeitszeit));
+                    var kua = sa.Subtract(istArbeitsZeit); // SollArbeitszeit - Convert.ToDecimal(istArbeitsZeit.TotalHours);
+                    KuaZeit = $"{kua.Hours}:{kua.Minutes} ({kua.TotalHours.ToString("N2")})";
+                    if (kua.TotalHours < 0)
                     {
-                        VAZeit = KuaZeit * -1;
-                        KuaZeit = 0;
+                        VAZeit = Convert.ToDecimal(kua.TotalHours * -1);
+                        KuaZeit = string.Empty;
                     }
                 }
             }

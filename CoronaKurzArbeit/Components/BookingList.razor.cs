@@ -1,15 +1,12 @@
 ﻿using Blazored.Modal;
 using Blazored.Modal.Services;
 using CoronaKurzArbeit.Components.Modals;
-using CoronaKurzArbeit.Data;
-using CoronaKurzArbeit.Extensions;
-using CoronaKurzArbeit.Models;
+using CoronaKurzArbeit.Logic.Services;
 using CoronaKurzArbeit.Services;
+using CoronaKurzArbeit.Shared.Models;
 using Microsoft.AspNetCore.Components;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace CoronaKurzArbeit.Components

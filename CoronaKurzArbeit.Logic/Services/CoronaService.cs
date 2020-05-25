@@ -1,13 +1,10 @@
-﻿using CoronaKurzArbeit.Extensions;
-using CoronaKurzArbeit.Models;
-using Microsoft.Extensions.Logging;
+﻿using CoronaKurzArbeit.Shared.Extensions;
+using CoronaKurzArbeit.Shared.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security;
-using System.Threading.Tasks;
 
-namespace CoronaKurzArbeit.Services
+namespace CoronaKurzArbeit.Logic.Services
 {
     public enum WorkDayType {
         Workday,

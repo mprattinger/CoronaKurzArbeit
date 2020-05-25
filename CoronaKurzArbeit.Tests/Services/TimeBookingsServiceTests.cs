@@ -1,14 +1,12 @@
-﻿using CoronaKurzArbeit.Data;
-using CoronaKurzArbeit.Models;
-using CoronaKurzArbeit.Services;
+﻿using CoronaKurzArbeit.DAL.DataAccessSQL;
+using CoronaKurzArbeit.Logic.Services;
+using CoronaKurzArbeit.Shared.Models;
 using CoronaKurzArbeit.Tests.Helpers;
 using FluentAssertions;
 using Microsoft.Extensions.Logging.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices.ComTypes;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 

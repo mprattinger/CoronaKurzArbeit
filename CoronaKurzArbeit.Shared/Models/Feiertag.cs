@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace CoronaKurzArbeit.Models
+namespace CoronaKurzArbeit.DAL.Models
 {
     public class Feiertag
     {

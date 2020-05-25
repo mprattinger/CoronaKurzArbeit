@@ -1,11 +1,10 @@
-﻿using CoronaKurzArbeit.Data;
-using CoronaKurzArbeit.Models;
+﻿using CoronaKurzArbeit.DAL.DataAccessSQL;
 using CoronaKurzArbeit.Services;
+using CoronaKurzArbeit.Shared.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace CoronaKurzArbeit.Pages

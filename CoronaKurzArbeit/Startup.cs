@@ -1,7 +1,8 @@
 using Blazored.Modal;
-using CoronaKurzArbeit.Data;
-using CoronaKurzArbeit.Models;
+using CoronaKurzArbeit.DAL.DataAccessSQL;
+using CoronaKurzArbeit.Logic.Services;
 using CoronaKurzArbeit.Services;
+using CoronaKurzArbeit.Shared.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;

@@ -1,15 +1,14 @@
-﻿using CoronaKurzArbeit.Data;
-using CoronaKurzArbeit.Extensions;
-using CoronaKurzArbeit.Models;
+﻿using CoronaKurzArbeit.DAL.DataAccessSQL;
+using CoronaKurzArbeit.Shared.Extensions;
+using CoronaKurzArbeit.Shared.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 
-namespace CoronaKurzArbeit.Services
+namespace CoronaKurzArbeit.Logic.Services
 {
     public interface ITimeBookingsService
     {
@@ -137,10 +136,12 @@ namespace CoronaKurzArbeit.Services
                 if (grossWorkTime == TimeSpan.Zero) return TimeSpan.Zero;
                 var (grossPauseDuration, netPauseDuration, pauseList) = await GetPauseForDayAsync(theDate);
 
-                if(grossWorkTime.TotalHours >= 6 && (netPauseDuration == TimeSpan.Zero || netPauseDuration.TotalMinutes < 30))
+                if(grossWorkTime.TotalHours >= 6 && (grossPauseDuration == TimeSpan.Zero || grossPauseDuration.TotalMinutes < 30))
                 {
                     //Keine Pause oder pause kleiner 30 Minuten, aber mehr als 6 Stunden
-                    return grossWorkTime.Subtract(TimeSpan.FromMinutes(30));
+                    var diff = TimeSpan.FromMinutes(30).Subtract(grossPauseDuration);
+                    var p = netPauseDuration.Add(diff);
+                    return grossWorkTime.Subtract(p);
                 } else 
                 {
                     return grossWorkTime.Subtract(netPauseDuration);

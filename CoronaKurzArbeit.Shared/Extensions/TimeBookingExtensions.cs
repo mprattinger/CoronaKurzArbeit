@@ -1,11 +1,9 @@
-﻿using CoronaKurzArbeit.Models;
+﻿using CoronaKurzArbeit.Shared.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 
-namespace CoronaKurzArbeit.Extensions
+namespace CoronaKurzArbeit.Shared.Extensions
 {
     public static class TimeBookingExtensions
     {

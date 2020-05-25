@@ -1,7 +1,5 @@
-﻿using CoronaKurzArbeit.Services;
+﻿using CoronaKurzArbeit.Logic.Services;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace CoronaKurzArbeit.Tests.Helpers
 {

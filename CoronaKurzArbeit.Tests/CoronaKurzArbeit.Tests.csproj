@@ -23,6 +23,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CoronaKurzArbeit.DAL\CoronaKurzArbeit.DAL.csproj" />
+    <ProjectReference Include="..\CoronaKurzArbeit.Logic\CoronaKurzArbeit.Logic.csproj" />
+    <ProjectReference Include="..\CoronaKurzArbeit.Shared\CoronaKurzArbeit.Shared.csproj" />
     <ProjectReference Include="..\CoronaKurzArbeit\CoronaKurzArbeit.csproj" />
   </ItemGroup>
 
