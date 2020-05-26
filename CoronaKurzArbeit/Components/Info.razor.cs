@@ -77,12 +77,12 @@ namespace CoronaKurzArbeit.Components
                 var (_, _, grossWorkTime) = await BookingsService.GetGrossWorkTimeForDayAsync(TheDate);
                 IstArbeitszeitBrutto = Convert.ToDecimal(grossWorkTime.TotalHours);
                 var istArbeitsZeit = await BookingsService.GetNetWorkingTimeForDayAsync(TheDate);
-                IstArbeitszeit = $"{istArbeitsZeit.Hours}:{istArbeitsZeit.Minutes} ({istArbeitsZeit.TotalHours.ToString("N2")})";
+                IstArbeitszeit = $"{istArbeitsZeit.Hours}:{istArbeitsZeit.Minutes} ({istArbeitsZeit.TotalHours:N2})";
                 if (KAAusfall > 0)
                 {
                     var sa = TimeSpan.FromHours(Convert.ToDouble(SollArbeitszeit));
                     var kua = sa.Subtract(istArbeitsZeit); // SollArbeitszeit - Convert.ToDecimal(istArbeitsZeit.TotalHours);
-                    KuaZeit = $"{kua.Hours}:{kua.Minutes} ({kua.TotalHours.ToString("N2")})";
+                    KuaZeit = $"{kua.Hours}:{kua.Minutes} ({kua.TotalHours:N2})";
                     if (kua.TotalHours < 0)
                     {
                         VAZeit = Convert.ToDecimal(kua.TotalHours * -1);

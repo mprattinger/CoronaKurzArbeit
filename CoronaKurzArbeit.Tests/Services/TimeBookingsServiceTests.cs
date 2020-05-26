@@ -792,7 +792,7 @@ namespace CoronaKurzArbeit.Tests.Services
             var sut = new TimeBookingsService(logger, ctx, timeProvider, config);
             var res = await sut.GetNetWorkingTimeForDayAsync(theDay);
             res.Hours.Should().Be(5);
-            res.Minutes.Should().Be(37);
+            res.Minutes.Should().Be(47); //10 Minuten Pause gemacht -> 10 Minuten geschenkt -> auf die 30 Fehlen aber trotzdem 20
         }
         #endregion
     }
