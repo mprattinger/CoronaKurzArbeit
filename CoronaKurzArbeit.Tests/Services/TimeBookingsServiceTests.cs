@@ -59,8 +59,7 @@ namespace CoronaKurzArbeit.Tests.Services
             await ctx.SaveChangesAsync();
             ctx.TimeBookings.Add(new TimeBooking
             {
-                BookingTime = theDay.AddHours(6).AddMinutes(3),
-                IsPause = false
+                BookingTime = theDay.AddHours(6).AddMinutes(3)
             });
             await ctx.SaveChangesAsync();
 
@@ -79,13 +78,11 @@ namespace CoronaKurzArbeit.Tests.Services
             await ctx.SaveChangesAsync();
             ctx.TimeBookings.Add(new TimeBooking
             {
-                BookingTime = theDay.AddHours(6).AddMinutes(3),
-                IsPause = false
+                BookingTime = theDay.AddHours(6).AddMinutes(3)
             });
             ctx.TimeBookings.Add(new TimeBooking
             {
-                BookingTime = theDay.AddHours(14).AddMinutes(3),
-                IsPause = false
+                BookingTime = theDay.AddHours(14).AddMinutes(3)
             });
             await ctx.SaveChangesAsync();
 
@@ -118,13 +115,11 @@ namespace CoronaKurzArbeit.Tests.Services
             await ctx.SaveChangesAsync();
             ctx.TimeBookings.Add(new TimeBooking
             {
-                BookingTime = theDay.AddHours(6).AddMinutes(3),
-                IsPause = false
+                BookingTime = theDay.AddHours(6).AddMinutes(3)
             });
             ctx.TimeBookings.Add(new TimeBooking
             {
-                BookingTime = theDay.AddHours(14).AddMinutes(3),
-                IsPause = false
+                BookingTime = theDay.AddHours(14).AddMinutes(3)
             });
             await ctx.SaveChangesAsync();
 
@@ -155,18 +150,15 @@ namespace CoronaKurzArbeit.Tests.Services
             await ctx.SaveChangesAsync();
             ctx.TimeBookings.Add(new TimeBooking
             {
-                BookingTime = theDay.AddHours(6).AddMinutes(3),
-                IsPause = false
+                BookingTime = theDay.AddHours(6).AddMinutes(3)
             });
             ctx.TimeBookings.Add(new TimeBooking
             {
-                BookingTime = theDay.AddHours(12).AddMinutes(3),
-                IsPause = false
+                BookingTime = theDay.AddHours(12).AddMinutes(3)
             });
             ctx.TimeBookings.Add(new TimeBooking
             {
-                BookingTime = theDay.AddHours(14).AddMinutes(3),
-                IsPause = false
+                BookingTime = theDay.AddHours(14).AddMinutes(3)
             });
             await ctx.SaveChangesAsync();
 
@@ -186,23 +178,19 @@ namespace CoronaKurzArbeit.Tests.Services
             await ctx.SaveChangesAsync();
             ctx.TimeBookings.Add(new TimeBooking
             {
-                BookingTime = theDay.AddHours(6).AddMinutes(3),
-                IsPause = false
+                BookingTime = theDay.AddHours(6).AddMinutes(3)
             });
             ctx.TimeBookings.Add(new TimeBooking
             {
-                BookingTime = theDay.AddHours(12).AddMinutes(3),
-                IsPause = false
+                BookingTime = theDay.AddHours(12).AddMinutes(3)
             });
             ctx.TimeBookings.Add(new TimeBooking
             {
-                BookingTime = theDay.AddHours(12).AddMinutes(35),
-                IsPause = false
+                BookingTime = theDay.AddHours(12).AddMinutes(35)
             });
             ctx.TimeBookings.Add(new TimeBooking
             {
-                BookingTime = theDay.AddHours(14).AddMinutes(3),
-                IsPause = false
+                BookingTime = theDay.AddHours(14).AddMinutes(3)
             });
             await ctx.SaveChangesAsync();
 
@@ -220,8 +208,7 @@ namespace CoronaKurzArbeit.Tests.Services
             await ctx.SaveChangesAsync();
             ctx.TimeBookings.Add(new TimeBooking
             {
-                BookingTime = theDay.AddHours(6).AddMinutes(3),
-                IsPause = false
+                BookingTime = theDay.AddHours(6).AddMinutes(3)
             });
             await ctx.SaveChangesAsync();
 
@@ -252,18 +239,15 @@ namespace CoronaKurzArbeit.Tests.Services
             await ctx.SaveChangesAsync();
             ctx.TimeBookings.Add(new TimeBooking
             {
-                BookingTime = theDay.AddHours(6).AddMinutes(3),
-                IsPause = false
+                BookingTime = theDay.AddHours(6).AddMinutes(3)
             });
             ctx.TimeBookings.Add(new TimeBooking
             {
-                BookingTime = theDay.AddHours(12).AddMinutes(3),
-                IsPause = false
+                BookingTime = theDay.AddHours(12).AddMinutes(3)
             });
             ctx.TimeBookings.Add(new TimeBooking
             {
-                BookingTime = theDay.AddHours(12).AddMinutes(35),
-                IsPause = false
+                BookingTime = theDay.AddHours(12).AddMinutes(35)
             });
             await ctx.SaveChangesAsync();
 
@@ -281,13 +265,11 @@ namespace CoronaKurzArbeit.Tests.Services
             await ctx.SaveChangesAsync();
             ctx.TimeBookings.Add(new TimeBooking
             {
-                BookingTime = theDay.AddHours(6).AddMinutes(3),
-                IsPause = false
+                BookingTime = theDay.AddHours(6).AddMinutes(3)
             });
             ctx.TimeBookings.Add(new TimeBooking
             {
-                BookingTime = theDay.AddHours(12).AddMinutes(3),
-                IsPause = false
+                BookingTime = theDay.AddHours(12).AddMinutes(3)
             });
             await ctx.SaveChangesAsync();
 
@@ -305,33 +287,27 @@ namespace CoronaKurzArbeit.Tests.Services
             await ctx.SaveChangesAsync();
             ctx.TimeBookings.Add(new TimeBooking
             {
-                BookingTime = theDay.AddHours(6).AddMinutes(3),
-                IsPause = false
+                BookingTime = theDay.AddHours(6).AddMinutes(3)
             });
             ctx.TimeBookings.Add(new TimeBooking
             {
-                BookingTime = theDay.AddHours(12).AddMinutes(3),
-                IsPause = false
+                BookingTime = theDay.AddHours(12).AddMinutes(3)
             });
             ctx.TimeBookings.Add(new TimeBooking
             {
-                BookingTime = theDay.AddHours(12).AddMinutes(35),
-                IsPause = false
+                BookingTime = theDay.AddHours(12).AddMinutes(35)
             });
             ctx.TimeBookings.Add(new TimeBooking
             {
-                BookingTime = theDay.AddHours(13).AddMinutes(3),
-                IsPause = false
+                BookingTime = theDay.AddHours(13).AddMinutes(3)
             });
             ctx.TimeBookings.Add(new TimeBooking
             {
-                BookingTime = theDay.AddHours(13).AddMinutes(35),
-                IsPause = false
+                BookingTime = theDay.AddHours(13).AddMinutes(35)
             });
             ctx.TimeBookings.Add(new TimeBooking
             {
-                BookingTime = theDay.AddHours(16).AddMinutes(35),
-                IsPause = false
+                BookingTime = theDay.AddHours(16).AddMinutes(35)
             });
             await ctx.SaveChangesAsync();
 
@@ -351,13 +327,11 @@ namespace CoronaKurzArbeit.Tests.Services
             await ctx.SaveChangesAsync();
             ctx.TimeBookings.Add(new TimeBooking
             {
-                BookingTime = theDay.AddHours(6).AddMinutes(3),
-                IsPause = false
+                BookingTime = theDay.AddHours(6).AddMinutes(3)
             });
             ctx.TimeBookings.Add(new TimeBooking
             {
-                BookingTime = theDay.AddHours(14).AddMinutes(3),
-                IsPause = false
+                BookingTime = theDay.AddHours(14).AddMinutes(3)
             });
             await ctx.SaveChangesAsync();
 
@@ -390,18 +364,15 @@ namespace CoronaKurzArbeit.Tests.Services
             await ctx.SaveChangesAsync();
             ctx.TimeBookings.Add(new TimeBooking
             {
-                BookingTime = theDay.AddHours(6).AddMinutes(3),
-                IsPause = false
+                BookingTime = theDay.AddHours(6).AddMinutes(3)
             });
             ctx.TimeBookings.Add(new TimeBooking
             {
-                BookingTime = theDay.AddHours(12).AddMinutes(3),
-                IsPause = false
+                BookingTime = theDay.AddHours(12).AddMinutes(3)
             });
             ctx.TimeBookings.Add(new TimeBooking
             {
-                BookingTime = theDay.AddHours(12).AddMinutes(35),
-                IsPause = false
+                BookingTime = theDay.AddHours(12).AddMinutes(35)
             });
             await ctx.SaveChangesAsync();
 
@@ -426,23 +397,19 @@ namespace CoronaKurzArbeit.Tests.Services
             await ctx.SaveChangesAsync();
             ctx.TimeBookings.Add(new TimeBooking
             {
-                BookingTime = theDay.AddHours(6).AddMinutes(3),
-                IsPause = false
+                BookingTime = theDay.AddHours(6).AddMinutes(3)
             });
             ctx.TimeBookings.Add(new TimeBooking
             {
-                BookingTime = theDay.AddHours(12).AddMinutes(3),
-                IsPause = false
+                BookingTime = theDay.AddHours(12).AddMinutes(3)
             });
             ctx.TimeBookings.Add(new TimeBooking
             {
-                BookingTime = theDay.AddHours(12).AddMinutes(33),
-                IsPause = false
+                BookingTime = theDay.AddHours(12).AddMinutes(33)
             });
             ctx.TimeBookings.Add(new TimeBooking
             {
-                BookingTime = theDay.AddHours(12).AddMinutes(35),
-                IsPause = false
+                BookingTime = theDay.AddHours(12).AddMinutes(35)
             });
             await ctx.SaveChangesAsync();
 
@@ -462,13 +429,11 @@ namespace CoronaKurzArbeit.Tests.Services
             await ctx.SaveChangesAsync();
             ctx.TimeBookings.Add(new TimeBooking
             {
-                BookingTime = theDay.AddHours(6).AddMinutes(3),
-                IsPause = false
+                BookingTime = theDay.AddHours(6).AddMinutes(3)
             });
             ctx.TimeBookings.Add(new TimeBooking
             {
-                BookingTime = theDay.AddHours(12).AddMinutes(35),
-                IsPause = false
+                BookingTime = theDay.AddHours(12).AddMinutes(35)
             });
             await ctx.SaveChangesAsync();
 
@@ -488,8 +453,7 @@ namespace CoronaKurzArbeit.Tests.Services
             await ctx.SaveChangesAsync();
             ctx.TimeBookings.Add(new TimeBooking
             {
-                BookingTime = theDay.AddHours(6).AddMinutes(3),
-                IsPause = false
+                BookingTime = theDay.AddHours(6).AddMinutes(3)
             });
             await ctx.SaveChangesAsync();
 
@@ -509,18 +473,15 @@ namespace CoronaKurzArbeit.Tests.Services
             await ctx.SaveChangesAsync();
             ctx.TimeBookings.Add(new TimeBooking
             {
-                BookingTime = theDay.AddHours(6).AddMinutes(3),
-                IsPause = false
+                BookingTime = theDay.AddHours(6).AddMinutes(3)
             });
             ctx.TimeBookings.Add(new TimeBooking
             {
-                BookingTime = theDay.AddHours(12).AddMinutes(3),
-                IsPause = false
+                BookingTime = theDay.AddHours(12).AddMinutes(3)
             });
             ctx.TimeBookings.Add(new TimeBooking
             {
-                BookingTime = theDay.AddHours(12).AddMinutes(33),
-                IsPause = false
+                BookingTime = theDay.AddHours(12).AddMinutes(33)
             });
             await ctx.SaveChangesAsync();
 
@@ -541,18 +502,15 @@ namespace CoronaKurzArbeit.Tests.Services
             await ctx.SaveChangesAsync();
             ctx.TimeBookings.Add(new TimeBooking
             {
-                BookingTime = theDay.AddHours(6).AddMinutes(3),
-                IsPause = false
+                BookingTime = theDay.AddHours(6).AddMinutes(3)
             });
             ctx.TimeBookings.Add(new TimeBooking
             {
-                BookingTime = theDay.AddHours(12).AddMinutes(3),
-                IsPause = false
+                BookingTime = theDay.AddHours(12).AddMinutes(3)
             });
             ctx.TimeBookings.Add(new TimeBooking
             {
-                BookingTime = theDay.AddHours(12).AddMinutes(8),
-                IsPause = false
+                BookingTime = theDay.AddHours(12).AddMinutes(8)
             });
             await ctx.SaveChangesAsync();
 
@@ -572,33 +530,27 @@ namespace CoronaKurzArbeit.Tests.Services
             await ctx.SaveChangesAsync();
             ctx.TimeBookings.Add(new TimeBooking
             {
-                BookingTime = theDay.AddHours(6).AddMinutes(3),
-                IsPause = false
+                BookingTime = theDay.AddHours(6).AddMinutes(3)
             });
             ctx.TimeBookings.Add(new TimeBooking
             {
-                BookingTime = theDay.AddHours(12).AddMinutes(3),
-                IsPause = false
+                BookingTime = theDay.AddHours(12).AddMinutes(3)
             });
             ctx.TimeBookings.Add(new TimeBooking
             {
-                BookingTime = theDay.AddHours(12).AddMinutes(8),
-                IsPause = false
+                BookingTime = theDay.AddHours(12).AddMinutes(8)
             });
             ctx.TimeBookings.Add(new TimeBooking
             {
-                BookingTime = theDay.AddHours(12).AddMinutes(20),
-                IsPause = false
+                BookingTime = theDay.AddHours(12).AddMinutes(20)
             });
             ctx.TimeBookings.Add(new TimeBooking
             {
-                BookingTime = theDay.AddHours(12).AddMinutes(25),
-                IsPause = false
+                BookingTime = theDay.AddHours(12).AddMinutes(25)
             });
             ctx.TimeBookings.Add(new TimeBooking
             {
-                BookingTime = theDay.AddHours(14),
-                IsPause = false
+                BookingTime = theDay.AddHours(14)
             });
             await ctx.SaveChangesAsync();
 
@@ -618,33 +570,27 @@ namespace CoronaKurzArbeit.Tests.Services
             await ctx.SaveChangesAsync();
             ctx.TimeBookings.Add(new TimeBooking
             {
-                BookingTime = theDay.AddHours(6).AddMinutes(3),
-                IsPause = false
+                BookingTime = theDay.AddHours(6).AddMinutes(3)
             });
             ctx.TimeBookings.Add(new TimeBooking
             {
-                BookingTime = theDay.AddHours(12).AddMinutes(3),
-                IsPause = false
+                BookingTime = theDay.AddHours(12).AddMinutes(3)
             });
             ctx.TimeBookings.Add(new TimeBooking
             {
-                BookingTime = theDay.AddHours(12).AddMinutes(8),
-                IsPause = false
+                BookingTime = theDay.AddHours(12).AddMinutes(8)
             });
             ctx.TimeBookings.Add(new TimeBooking
             {
-                BookingTime = theDay.AddHours(12).AddMinutes(20),
-                IsPause = false
+                BookingTime = theDay.AddHours(12).AddMinutes(20)
             });
             ctx.TimeBookings.Add(new TimeBooking
             {
-                BookingTime = theDay.AddHours(12).AddMinutes(55),
-                IsPause = false
+                BookingTime = theDay.AddHours(12).AddMinutes(55)
             });
             ctx.TimeBookings.Add(new TimeBooking
             {
-                BookingTime = theDay.AddHours(14),
-                IsPause = false
+                BookingTime = theDay.AddHours(14)
             });
             await ctx.SaveChangesAsync();
 
@@ -667,23 +613,19 @@ namespace CoronaKurzArbeit.Tests.Services
             await ctx.SaveChangesAsync();
             ctx.TimeBookings.Add(new TimeBooking
             {
-                BookingTime = theDay.AddHours(6).AddMinutes(3),
-                IsPause = false
+                BookingTime = theDay.AddHours(6).AddMinutes(3)
             });
             ctx.TimeBookings.Add(new TimeBooking
             {
-                BookingTime = theDay.AddHours(12).AddMinutes(3),
-                IsPause = false
+                BookingTime = theDay.AddHours(12).AddMinutes(3)
             });
             ctx.TimeBookings.Add(new TimeBooking
             {
-                BookingTime = theDay.AddHours(12).AddMinutes(43),
-                IsPause = false
+                BookingTime = theDay.AddHours(12).AddMinutes(43)
             });
             ctx.TimeBookings.Add(new TimeBooking
             {
-                BookingTime = theDay.AddHours(14).AddMinutes(33),
-                IsPause = false
+                BookingTime = theDay.AddHours(14).AddMinutes(33)
             });
             await ctx.SaveChangesAsync();
 
@@ -701,13 +643,11 @@ namespace CoronaKurzArbeit.Tests.Services
             await ctx.SaveChangesAsync();
             ctx.TimeBookings.Add(new TimeBooking
             {
-                BookingTime = theDay.AddHours(6).AddMinutes(3),
-                IsPause = false
+                BookingTime = theDay.AddHours(6).AddMinutes(3)
             });
             ctx.TimeBookings.Add(new TimeBooking
             {
-                BookingTime = theDay.AddHours(12).AddMinutes(0),
-                IsPause = false
+                BookingTime = theDay.AddHours(12).AddMinutes(0)
             });
             await ctx.SaveChangesAsync();
 
@@ -724,13 +664,11 @@ namespace CoronaKurzArbeit.Tests.Services
             await ctx.SaveChangesAsync();
             ctx.TimeBookings.Add(new TimeBooking
             {
-                BookingTime = theDay.AddHours(6).AddMinutes(3),
-                IsPause = false
+                BookingTime = theDay.AddHours(6).AddMinutes(3)
             });
             ctx.TimeBookings.Add(new TimeBooking
             {
-                BookingTime = theDay.AddHours(12).AddMinutes(3),
-                IsPause = false
+                BookingTime = theDay.AddHours(12).AddMinutes(3)
             });
             await ctx.SaveChangesAsync();
 
@@ -747,13 +685,11 @@ namespace CoronaKurzArbeit.Tests.Services
             await ctx.SaveChangesAsync();
             ctx.TimeBookings.Add(new TimeBooking
             {
-                BookingTime = theDay.AddHours(6).AddMinutes(3),
-                IsPause = false
+                BookingTime = theDay.AddHours(6).AddMinutes(3)
             });
             ctx.TimeBookings.Add(new TimeBooking
             {
-                BookingTime = theDay.AddHours(12).AddMinutes(10),
-                IsPause = false
+                BookingTime = theDay.AddHours(12).AddMinutes(10)
             });
             await ctx.SaveChangesAsync();
 
@@ -771,23 +707,19 @@ namespace CoronaKurzArbeit.Tests.Services
             await ctx.SaveChangesAsync();
             ctx.TimeBookings.Add(new TimeBooking
             {
-                BookingTime = theDay.AddHours(6).AddMinutes(3),
-                IsPause = false
+                BookingTime = theDay.AddHours(6).AddMinutes(3)
             });
             ctx.TimeBookings.Add(new TimeBooking
             {
-                BookingTime = theDay.AddHours(9).AddMinutes(3),
-                IsPause = false
+                BookingTime = theDay.AddHours(9).AddMinutes(3)
             });
             ctx.TimeBookings.Add(new TimeBooking
             {
-                BookingTime = theDay.AddHours(9).AddMinutes(13),
-                IsPause = false
+                BookingTime = theDay.AddHours(9).AddMinutes(13)
             });
             ctx.TimeBookings.Add(new TimeBooking
             {
-                BookingTime = theDay.AddHours(12).AddMinutes(10),
-                IsPause = false
+                BookingTime = theDay.AddHours(12).AddMinutes(10)
             });
             await ctx.SaveChangesAsync();
 

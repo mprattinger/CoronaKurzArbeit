@@ -11,7 +11,7 @@
         {
             <tr>
                 <td>@booking.BookingTime.ToShortTimeString()</td>
-                <td>@(booking.IsPause ? "Pause" : "")</td>
+                @*<td>@(booking.IsPause ? "Pause" : "")</td>*@
                 <td>
                     <button @onclick="async () => { await Edit(booking); }" class="btn btn-primary">Zeit ändern</button>
                     <button @onclick="async () => { await Delete(booking); }" class="btn btn-warning">Zeit löschen</button>

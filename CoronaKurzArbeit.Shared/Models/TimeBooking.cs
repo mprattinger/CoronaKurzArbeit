@@ -10,7 +10,5 @@ namespace CoronaKurzArbeit.Shared.Models
         public int Id { get; set; }
 
         public DateTime BookingTime { get; set; }
-
-        public bool IsPause { get; set; }
     }
 }
