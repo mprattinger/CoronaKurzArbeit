@@ -39,13 +39,20 @@ namespace CoronaKurzArbeit.Logic.Services
         private readonly ApplicationDbContext _context;
         private readonly IDateTimeProvider _dateTimeProvider;
         private readonly KurzarbeitSettingsConfiguration _config;
+        private readonly ICoronaService _coronaService;
 
-        public TimeBookingsService(ILogger<TimeBookingsService> logger, ApplicationDbContext context, IDateTimeProvider dateTimeProvider, KurzarbeitSettingsConfiguration config)
+        public TimeBookingsService(
+            ILogger<TimeBookingsService> logger, 
+            ApplicationDbContext context, 
+            IDateTimeProvider dateTimeProvider, 
+            KurzarbeitSettingsConfiguration config,
+            ICoronaService coronaService)
         {
             _logger = logger;
             _context = context;
             _dateTimeProvider = dateTimeProvider;
             _config = config;
+            _coronaService = coronaService;
         }
 
         public async Task<List<TimeBooking>> GetBookingsForDayAsync(DateTime theDate)
@@ -114,9 +121,6 @@ namespace CoronaKurzArbeit.Logic.Services
         {
             try
             {
-                //var inTime = await GetInBookingForDayAsync(theDate);
-                //if (inTime == null) return (null, null, TimeSpan.Zero);
-                //var outTime = await GetOutBookingForDayAsync(theDate);
                 var inout = await GetInOutBookingForDayAsync(theDate);
                 return GetGrossWorkTimeForDay(theDate, inout);
             }
@@ -133,19 +137,20 @@ namespace CoronaKurzArbeit.Logic.Services
         {
             try
             {
-                //var inTime = await GetInBookingForDayAsync(theDate);
-                //if (inTime == null) return (null, null, TimeSpan.Zero);
-                //var outTime = await GetOutBookingForDayAsync(theDate);
                 if (inout.inBooking == null) return (null, null, TimeSpan.Zero);
                 if (inout.outBooking == null)
                 {
-                    var workHours = inout.inBooking.BookingTime.AddHours(Convert.ToDouble(theDate.GetWorkhours(_config)));
+                    var grossWorkHours = theDate.GetWorkhours(_config);
+                    var corona = _coronaService.KAAusfallPerDay(theDate);
+                    var netWorkHours = grossWorkHours - corona;
+                    var netWorkTS = TimeSpan.FromHours(Convert.ToDouble(netWorkHours));
+                    var workHours = inout.inBooking.BookingTime.Add(netWorkTS);
                     if (workHours.Subtract(inout.inBooking.BookingTime) >= TimeSpan.FromHours(6))
                     {
                         workHours = workHours.AddMinutes(30);
                     }
-                    var target = _dateTimeProvider.GetCurrentTime() > workHours ? workHours : _dateTimeProvider.GetCurrentTime();
-                    inout.outBooking = new TimeBooking { BookingTime = target };
+                    //var target = _dateTimeProvider.GetCurrentTime() > workHours ? workHours : _dateTimeProvider.GetCurrentTime();
+                    inout.outBooking = new TimeBooking { BookingTime = workHours };
                 }
                 return (inout.inBooking, inout.outBooking, inout.outBooking.BookingTime.Subtract(inout.inBooking.BookingTime));
             }

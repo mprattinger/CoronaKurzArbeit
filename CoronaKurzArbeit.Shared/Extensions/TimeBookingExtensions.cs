@@ -24,40 +24,23 @@ namespace CoronaKurzArbeit.Shared.Extensions
                 var p = pause.Skip(s).Take(2);
                 var couple = new Tuple<TimeBooking, TimeBooking>(p.First(), p.Last());
                 ret.Add(couple);
-                s = s + 2;
+                s += 2;
             }
 
             return ret;
         }
 
-        public static decimal GetWorkhours(this DateTime current, KurzarbeitSettingsConfiguration config)
+        public static double GetWorkhours(this DateTime current, KurzarbeitSettingsConfiguration config)
         {
             var props = config.GetType().GetProperties();
             foreach (var p in props)
             {
                 if (p.Name == current.DayOfWeek.ToString())
                 {
-                    return Convert.ToDecimal(p.GetValue(config) ?? default(decimal));
+                    return Convert.ToDouble(p.GetValue(config) ?? default(double));
                 }
             }
             return 0;
-        }
-
-        [Obsolete]
-        public static decimal GetCoronaWorkhours(this DateTime current, KurzarbeitSettingsConfiguration config)
-        {
-            var props = config.GetType().GetProperties();
-            var wh = decimal.MinValue;
-            foreach (var p in props)
-            {
-                if (p.Name == current.DayOfWeek.ToString())
-                {
-                    wh = Convert.ToDecimal(p.GetValue(config) ?? default(decimal));
-                }
-            }
-            if (wh == decimal.MinValue) return 0;
-
-            return wh * config.CoronaSoll;
         }
     }
 }

@@ -19,6 +19,7 @@ namespace CoronaKurzArbeit.Tests.Services
         private readonly ApplicationDbContext ctx;
         private readonly IDateTimeProvider timeProvider;
         private readonly KurzarbeitSettingsConfiguration config;
+        private readonly ICoronaService coronaService;
 
         #region Arrange
         public TimeBookingsServiceTests()
@@ -29,16 +30,17 @@ namespace CoronaKurzArbeit.Tests.Services
             config = new KurzarbeitSettingsConfiguration
             {
                 Started = new DateTime(2020, 4, 20),
-                SollArbeitsZeit = 38.5M,
-                CoronaSoll = 0.8M,
+                SollArbeitsZeit = 38.5,
+                CoronaSoll = 0.8,
                 PauseFree = 10,
-                Monday = 8.2M,
-                Tuesday = 8.2M,
-                Wednesday = 8.2M,
-                Thursday = 8.2M,
-                Friday = 5.7M,
+                Monday = 8.2,
+                Tuesday = 8.2,
+                Wednesday = 8.2,
+                Thursday = 8.2,
+                Friday = 5.7,
                 CoronaDays = new List<DayOfWeek> { DayOfWeek.Friday }
             };
+            coronaService = new CoronaService(config, new FeiertagService(timeProvider));
         }
 
         public void Dispose()
@@ -62,7 +64,7 @@ namespace CoronaKurzArbeit.Tests.Services
             });
             await ctx.SaveChangesAsync();
 
-            var sut = new TimeBookingsService(logger, ctx, timeProvider, config);
+            var sut = new TimeBookingsService(logger, ctx, timeProvider, config, coronaService);
             (await sut.GetBookingsForDayAsync(theDay.Date)).Count.Should().Be(1);
         }
         #endregion
@@ -87,7 +89,7 @@ namespace CoronaKurzArbeit.Tests.Services
             });
             await ctx.SaveChangesAsync();
 
-            var sut = new TimeBookingsService(logger, ctx, timeProvider, config);
+            var sut = new TimeBookingsService(logger, ctx, timeProvider, config, coronaService);
             var res = await sut.GetInBookingForDayAsync(theDay.Date);
             res.BookingTime.Should().Be(theDay.AddHours(6).AddMinutes(3));
         }
@@ -100,7 +102,7 @@ namespace CoronaKurzArbeit.Tests.Services
             ctx.TimeBookings.RemoveRange();
             await ctx.SaveChangesAsync();
 
-            var sut = new TimeBookingsService(logger, ctx, timeProvider, config);
+            var sut = new TimeBookingsService(logger, ctx, timeProvider, config, coronaService);
             var res = await sut.GetInBookingForDayAsync(theDay.Date);
             res.Should().BeNull();
         }
@@ -126,7 +128,7 @@ namespace CoronaKurzArbeit.Tests.Services
             });
             await ctx.SaveChangesAsync();
 
-            var sut = new TimeBookingsService(logger, ctx, timeProvider, config);
+            var sut = new TimeBookingsService(logger, ctx, timeProvider, config, coronaService);
             var res = await sut.GetOutBookingForDayAsync(theDay.Date);
             res.BookingTime.Should().Be(theDay.AddHours(14).AddMinutes(3));
         }
@@ -139,7 +141,7 @@ namespace CoronaKurzArbeit.Tests.Services
             ctx.TimeBookings.RemoveRange();
             await ctx.SaveChangesAsync();
 
-            var sut = new TimeBookingsService(logger, ctx, timeProvider, config);
+            var sut = new TimeBookingsService(logger, ctx, timeProvider, config, coronaService);
             var res = await sut.GetOutBookingForDayAsync(theDay.Date);
             res.Should().BeNull();
         }
@@ -168,7 +170,7 @@ namespace CoronaKurzArbeit.Tests.Services
             });
             await ctx.SaveChangesAsync();
 
-            var sut = new TimeBookingsService(logger, ctx, timeProvider, config);
+            var sut = new TimeBookingsService(logger, ctx, timeProvider, config, coronaService);
             var res = await sut.GetOutBookingForDayAsync(theDay.Date);
             res.Should().BeNull();
         }
@@ -204,7 +206,7 @@ namespace CoronaKurzArbeit.Tests.Services
             });
             await ctx.SaveChangesAsync();
 
-            var sut = new TimeBookingsService(logger, ctx, timeProvider, config);
+            var sut = new TimeBookingsService(logger, ctx, timeProvider, config, coronaService);
             var res = await sut.GetPauseBookingsForDayAsync(theDay.Date);
             res.Count.Should().Be(2);
         }
@@ -223,7 +225,7 @@ namespace CoronaKurzArbeit.Tests.Services
             });
             await ctx.SaveChangesAsync();
 
-            var sut = new TimeBookingsService(logger, ctx, timeProvider, config);
+            var sut = new TimeBookingsService(logger, ctx, timeProvider, config, coronaService);
             var res = await sut.GetPauseBookingsForDayAsync(theDay.Date);
             res.Count.Should().Be(0);
         }
@@ -236,7 +238,7 @@ namespace CoronaKurzArbeit.Tests.Services
             ctx.TimeBookings.RemoveRange();
             await ctx.SaveChangesAsync();
 
-            var sut = new TimeBookingsService(logger, ctx, timeProvider, config);
+            var sut = new TimeBookingsService(logger, ctx, timeProvider, config, coronaService);
             var res = await sut.GetPauseBookingsForDayAsync(theDay.Date);
             res.Count.Should().Be(0);
         }
@@ -265,7 +267,7 @@ namespace CoronaKurzArbeit.Tests.Services
             });
             await ctx.SaveChangesAsync();
 
-            var sut = new TimeBookingsService(logger, ctx, timeProvider, config);
+            var sut = new TimeBookingsService(logger, ctx, timeProvider, config, coronaService);
             var res = await sut.GetPauseBookingsForDayAsync(theDay.Date);
             res.Count.Should().Be(2);
         }
@@ -289,7 +291,7 @@ namespace CoronaKurzArbeit.Tests.Services
             });
             await ctx.SaveChangesAsync();
 
-            var sut = new TimeBookingsService(logger, ctx, timeProvider, config);
+            var sut = new TimeBookingsService(logger, ctx, timeProvider, config, coronaService);
             var res = await sut.GetPauseBookingsForDayAsync(theDay.Date);
             res.Count.Should().Be(0);
         }
@@ -333,7 +335,7 @@ namespace CoronaKurzArbeit.Tests.Services
             });
             await ctx.SaveChangesAsync();
 
-            var sut = new TimeBookingsService(logger, ctx, timeProvider, config);
+            var sut = new TimeBookingsService(logger, ctx, timeProvider, config, coronaService);
             var res = await sut.GetPauseBookingsForDayAsync(theDay.Date);
             res.Count.Should().Be(4);
         }
@@ -359,7 +361,7 @@ namespace CoronaKurzArbeit.Tests.Services
             });
             await ctx.SaveChangesAsync();
 
-            var sut = new TimeBookingsService(logger, ctx, timeProvider, config);
+            var sut = new TimeBookingsService(logger, ctx, timeProvider, config, coronaService);
             var (inBooking, outBooking, grossWorkTime) = await sut.GetGrossWorkTimeForDayAsync(theDay);
             inBooking.BookingTime.Should().Be(theDay.AddHours(6).AddMinutes(3));
             outBooking.BookingTime.Should().Be(theDay.AddHours(14).AddMinutes(3));
@@ -373,7 +375,7 @@ namespace CoronaKurzArbeit.Tests.Services
             ctx.TimeBookings.RemoveRange();
             await ctx.SaveChangesAsync();
 
-            var sut = new TimeBookingsService(logger, ctx, timeProvider, config);
+            var sut = new TimeBookingsService(logger, ctx, timeProvider, config, coronaService);
             var (inBooking, outBooking, grossWorkTime) = await sut.GetGrossWorkTimeForDayAsync(theDay);
             inBooking.Should().BeNull();
             outBooking.Should().BeNull();
@@ -406,7 +408,7 @@ namespace CoronaKurzArbeit.Tests.Services
             //Fake TimeProvider 
             var tProvider = new FakeDateTimeProvider(theDay.AddHours(13).AddMinutes(3));
 
-            var sut = new TimeBookingsService(logger, ctx, tProvider, config);
+            var sut = new TimeBookingsService(logger, ctx, tProvider, config, coronaService);
             var (inBooking, outBooking, grossWorkTime) = await sut.GetGrossWorkTimeForDayAsync(theDay);
             inBooking.BookingTime.Should().Be(theDay.AddHours(6).AddMinutes(3));
             outBooking.BookingTime.Should().Be(theDay.AddHours(13).AddMinutes(3));
@@ -444,7 +446,7 @@ namespace CoronaKurzArbeit.Tests.Services
             });
             await ctx.SaveChangesAsync();
 
-            var sut = new TimeBookingsService(logger, ctx, timeProvider, config);
+            var sut = new TimeBookingsService(logger, ctx, timeProvider, config, coronaService);
             var (grossPauseDuration, netPauseDuration, pauseList) = await sut.GetPauseForDayAsync(theDay);
             pauseList.Count.Should().Be(1);
             pauseList.First().duration.TotalMinutes.Should().Be(30);
@@ -471,7 +473,7 @@ namespace CoronaKurzArbeit.Tests.Services
             await ctx.SaveChangesAsync();
 
 
-            var sut = new TimeBookingsService(logger, ctx, timeProvider, config);
+            var sut = new TimeBookingsService(logger, ctx, timeProvider, config, coronaService);
             var (grossPauseDuration, netPauseDuration, pauseList) = await sut.GetPauseForDayAsync(theDay);
             grossPauseDuration.Should().Be(TimeSpan.Zero);
             netPauseDuration.Should().Be(TimeSpan.Zero);
@@ -492,7 +494,7 @@ namespace CoronaKurzArbeit.Tests.Services
             await ctx.SaveChangesAsync();
 
 
-            var sut = new TimeBookingsService(logger, ctx, timeProvider, config);
+            var sut = new TimeBookingsService(logger, ctx, timeProvider, config, coronaService);
             var (grossPauseDuration, netPauseDuration, _) = await sut.GetPauseForDayAsync(theDay);
             grossPauseDuration.Should().Be(TimeSpan.Zero);
             netPauseDuration.Should().Be(TimeSpan.Zero);
@@ -522,7 +524,7 @@ namespace CoronaKurzArbeit.Tests.Services
             });
             await ctx.SaveChangesAsync();
 
-            var sut = new TimeBookingsService(logger, ctx, timeProvider, config);
+            var sut = new TimeBookingsService(logger, ctx, timeProvider, config, coronaService);
             var (grossPauseDuration, netPauseDuration, pauseList) = await sut.GetPauseForDayAsync(theDay);
             pauseList.Count.Should().Be(1);
             pauseList.First().duration.TotalMinutes.Should().Be(30);
@@ -554,7 +556,7 @@ namespace CoronaKurzArbeit.Tests.Services
             });
             await ctx.SaveChangesAsync();
 
-            var sut = new TimeBookingsService(logger, ctx, timeProvider, config);
+            var sut = new TimeBookingsService(logger, ctx, timeProvider, config, coronaService);
             var (grossPauseDuration, netPauseDuration, pauseList) = await sut.GetPauseForDayAsync(theDay);
             pauseList.Count.Should().Be(1);
             pauseList.First().duration.TotalMinutes.Should().Be(5);
@@ -600,7 +602,7 @@ namespace CoronaKurzArbeit.Tests.Services
             });
             await ctx.SaveChangesAsync();
 
-            var sut = new TimeBookingsService(logger, ctx, timeProvider, config);
+            var sut = new TimeBookingsService(logger, ctx, timeProvider, config, coronaService);
             var (grossPauseDuration, netPauseDuration, pauseList) = await sut.GetPauseForDayAsync(theDay);
             pauseList.Count.Should().Be(2);
             pauseList.First().duration.TotalMinutes.Should().Be(5);
@@ -646,7 +648,7 @@ namespace CoronaKurzArbeit.Tests.Services
             });
             await ctx.SaveChangesAsync();
 
-            var sut = new TimeBookingsService(logger, ctx, timeProvider, config);
+            var sut = new TimeBookingsService(logger, ctx, timeProvider, config, coronaService);
             var (grossPauseDuration, netPauseDuration, pauseList) = await sut.GetPauseForDayAsync(theDay);
             pauseList.Count.Should().Be(2);
             pauseList.First().duration.TotalMinutes.Should().Be(5);
@@ -685,7 +687,7 @@ namespace CoronaKurzArbeit.Tests.Services
             });
             await ctx.SaveChangesAsync();
 
-            var sut = new TimeBookingsService(logger, ctx, timeProvider, config);
+            var sut = new TimeBookingsService(logger, ctx, timeProvider, config, coronaService);
             var res = await sut.GetNetWorkingTimeForDayAsync(theDay);
             res.TotalHours.Should().Be(8);
         }
@@ -709,7 +711,7 @@ namespace CoronaKurzArbeit.Tests.Services
             });
             await ctx.SaveChangesAsync();
 
-            var sut = new TimeBookingsService(logger, ctx, timeProvider, config);
+            var sut = new TimeBookingsService(logger, ctx, timeProvider, config, coronaService);
             var res = await sut.GetNetWorkingTimeForDayAsync(theDay);
             res.TotalHours.Should().Be(5.95);
         }
@@ -732,7 +734,7 @@ namespace CoronaKurzArbeit.Tests.Services
             });
             await ctx.SaveChangesAsync();
 
-            var sut = new TimeBookingsService(logger, ctx, timeProvider, config);
+            var sut = new TimeBookingsService(logger, ctx, timeProvider, config, coronaService);
             var res = await sut.GetNetWorkingTimeForDayAsync(theDay);
             res.TotalHours.Should().Be(5.5);
         }
@@ -755,7 +757,7 @@ namespace CoronaKurzArbeit.Tests.Services
             });
             await ctx.SaveChangesAsync();
 
-            var sut = new TimeBookingsService(logger, ctx, timeProvider, config);
+            var sut = new TimeBookingsService(logger, ctx, timeProvider, config, coronaService);
             var res = await sut.GetNetWorkingTimeForDayAsync(theDay);
             res.Hours.Should().Be(5);
             res.Minutes.Should().Be(37);
@@ -789,7 +791,7 @@ namespace CoronaKurzArbeit.Tests.Services
             });
             await ctx.SaveChangesAsync();
 
-            var sut = new TimeBookingsService(logger, ctx, timeProvider, config);
+            var sut = new TimeBookingsService(logger, ctx, timeProvider, config, coronaService);
             var res = await sut.GetNetWorkingTimeForDayAsync(theDay);
             res.Hours.Should().Be(5);
             res.Minutes.Should().Be(47); //10 Minuten Pause gemacht -> 10 Minuten geschenkt -> auf die 30 Fehlen aber trotzdem 20

@@ -6,14 +6,14 @@ namespace CoronaKurzArbeit.Shared.Models
     public class KurzarbeitSettingsConfiguration
     {
         public DateTime Started { get; set; }
-        public decimal SollArbeitsZeit { get; set; }
+        public double SollArbeitsZeit { get; set; }
         public int PauseFree { get; set; }
-        public decimal CoronaSoll { get; set; }
-        public decimal Monday { get; set; }
-        public decimal Tuesday { get; set; }
-        public decimal Wednesday { get; set; }
-        public decimal Thursday { get; set; }
-        public decimal Friday { get; set; }
+        public double CoronaSoll { get; set; }
+        public double Monday { get; set; }
+        public double Tuesday { get; set; }
+        public double Wednesday { get; set; }
+        public double Thursday { get; set; }
+        public double Friday { get; set; }
         public List<DayOfWeek> CoronaDays { get; set; } = new List<DayOfWeek>();
     }
 }

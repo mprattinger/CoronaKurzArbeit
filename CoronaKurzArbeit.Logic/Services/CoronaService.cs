@@ -14,9 +14,9 @@ namespace CoronaKurzArbeit.Logic.Services
 
     public interface ICoronaService
     {
-        decimal GetKATime();
-        List<(DateTime day, decimal arbeitsZeit, WorkDayType type)> GetWorkDaysForWeek(DateTime dayInWeek);
-        decimal KAAusfallPerDay(DateTime value);
+        double GetKATime();
+        List<(DateTime day, double arbeitsZeit, WorkDayType type)> GetWorkDaysForWeek(DateTime dayInWeek);
+        double KAAusfallPerDay(DateTime value);
     }
 
     public class CoronaService : ICoronaService
@@ -30,7 +30,7 @@ namespace CoronaKurzArbeit.Logic.Services
             _feiertag = feiertagService;
         }
 
-        public decimal KAAusfallPerDay(DateTime value)
+        public double KAAusfallPerDay(DateTime value)
         {
             var wd = GetWorkDaysForWeek(value);
             var coronaSoll = GetKATime();
@@ -46,9 +46,9 @@ namespace CoronaKurzArbeit.Logic.Services
 
         }
 
-        public List<(DateTime day, decimal arbeitsZeit, WorkDayType type)> GetWorkDaysForWeek(DateTime dayInWeek)
+        public List<(DateTime day, double arbeitsZeit, WorkDayType type)> GetWorkDaysForWeek(DateTime dayInWeek)
         {
-            var workDays = new List<(DateTime day, decimal arbeitsZeit, WorkDayType type)>();
+            var workDays = new List<(DateTime day, double arbeitsZeit, WorkDayType type)>();
 
             //Arbeitstage ermitteln
             var f = dayInWeek.FirstDayOfWeek(DayOfWeek.Monday);
@@ -92,7 +92,7 @@ namespace CoronaKurzArbeit.Logic.Services
             return workDays;
         }
 
-        public decimal GetKATime()
+        public double GetKATime()
         {
             return _config.SollArbeitsZeit * (1 - _config.CoronaSoll);
         }
