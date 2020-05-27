@@ -73,8 +73,8 @@ namespace CoronaKurzArbeit.Components
         {
             if (TheDate > DateTime.MinValue)
             {
-                SollArbeitszeit = TheDate.GetWorkhours(KAConfig);
-                KAAusfall = CoronaService.KAAusfallPerDay(TheDate);
+                SollArbeitszeit = TheDate.GetWorkhours(KAConfig).ToDouble();
+                //KAAusfall = CoronaService.KAAusfallPerDay(TheDate);
                 Tagesarbeitszeit = SollArbeitszeit - KAAusfall;
                 
                 var grossWTime = await BookingsService.GetGrossWorkTimeForDayAsync(TheDate);

@@ -30,14 +30,14 @@ namespace CoronaKurzArbeit.Shared.Extensions
             return ret;
         }
 
-        public static double GetWorkhours(this DateTime current, KurzarbeitSettingsConfiguration config)
+        public static decimal GetWorkhours(this DateTime current, KurzarbeitSettingsConfiguration config)
         {
             var props = config.GetType().GetProperties();
             foreach (var p in props)
             {
                 if (p.Name == current.DayOfWeek.ToString())
                 {
-                    return Convert.ToDouble(p.GetValue(config) ?? default(double));
+                    return Convert.ToDecimal(p.GetValue(config) ?? default(decimal));
                 }
             }
             return 0;

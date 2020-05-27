@@ -21,13 +21,14 @@ namespace CoronaKurzArbeit.Tests.Services
             config = new KurzarbeitSettingsConfiguration
             {
                 Started = new DateTime(2020, 4, 20),
-                SollArbeitsZeit = 38.5,
-                CoronaSoll = 0.8,
-                Monday = 8.2,
-                Tuesday = 8.2,
-                Wednesday = 8.2,
-                Thursday = 8.2,
-                Friday = 5.7,
+                SollArbeitsZeit = 38.5m,
+                CoronaSoll = 0.8m,
+                PauseFree = 10,
+                Monday = 8.2m,
+                Tuesday = 8.2m,
+                Wednesday = 8.2m,
+                Thursday = 8.2m,
+                Friday = 5.7m,
                 CoronaDays = new List<DayOfWeek> { DayOfWeek.Friday }
             };
             fService = new FeiertagService(new FakeDateTimeProvider(new DateTime(2020,05,19)));
@@ -46,7 +47,7 @@ namespace CoronaKurzArbeit.Tests.Services
             var res = sut.GetWorkDaysForWeek(new DateTime(2020, 4, 20));
 
             res.Count(x => x.type == WorkDayType.Workday).Should().Be(4);
-            res.Where(x => x.type == WorkDayType.Workday).Sum(x => x.arbeitsZeit).Should().Be(32.8);
+            res.Where(x => x.type == WorkDayType.Workday).Sum(x => x.arbeitsZeit).Should().Be(32.8m);
         }
 
         [Fact]
@@ -56,7 +57,7 @@ namespace CoronaKurzArbeit.Tests.Services
             var res = sut.GetWorkDaysForWeek(new DateTime(2020, 4, 22));
 
             res.Count(x => x.type == WorkDayType.Workday).Should().Be(4);
-            res.Where(x => x.type == WorkDayType.Workday).Sum(x => x.arbeitsZeit).Should().Be(32.8);
+            res.Where(x => x.type == WorkDayType.Workday).Sum(x => x.arbeitsZeit).Should().Be(32.8m);
         }
 
         [Fact]
@@ -66,7 +67,7 @@ namespace CoronaKurzArbeit.Tests.Services
             var res = sut.GetWorkDaysForWeek(new DateTime(2020, 4, 24));
 
             res.Count(x => x.type == WorkDayType.Workday).Should().Be(4);
-            res.Where(x => x.type == WorkDayType.Workday).Sum(x => x.arbeitsZeit).Should().Be(32.8);
+            res.Where(x => x.type == WorkDayType.Workday).Sum(x => x.arbeitsZeit).Should().Be(32.8m);
         }
 
         [Fact]
@@ -76,7 +77,7 @@ namespace CoronaKurzArbeit.Tests.Services
             var res = sut.GetWorkDaysForWeek(new DateTime(2020, 4, 27));
 
             res.Count(x => x.type == WorkDayType.Workday).Should().Be(4);
-            res.Where(x => x.type == WorkDayType.Workday).Sum(x => x.arbeitsZeit).Should().Be(32.8);
+            res.Where(x => x.type == WorkDayType.Workday).Sum(x => x.arbeitsZeit).Should().Be(32.8m);
         }
 
         [Fact]
@@ -87,7 +88,7 @@ namespace CoronaKurzArbeit.Tests.Services
 
             res.Count(x => x.type == WorkDayType.Workday).Should().Be(3);
             var sum = res.Where(x => x.type == WorkDayType.Workday).Sum(x => x.arbeitsZeit);
-            sum.Should().Be(24.6);
+            sum.Should().Be(24.6m);
         }
         #endregion
 
@@ -97,7 +98,7 @@ namespace CoronaKurzArbeit.Tests.Services
         {
             var sut = new CoronaService(config, fService);
             var res = sut.GetKATime();
-            res.Should().Be(7.7);
+            res.Should().Be(7.7m);
         }
         #endregion
 
@@ -108,7 +109,7 @@ namespace CoronaKurzArbeit.Tests.Services
             var sut = new CoronaService(config, fService);
             var res = sut.KAAusfallPerDay(new DateTime(2020, 4, 22));
 
-            res.Should().Be(0.5);
+            res.Should().Be(0.5m);
         }
         [Fact]
         public void KAAusfall_NormalWeekFriday()
@@ -116,7 +117,7 @@ namespace CoronaKurzArbeit.Tests.Services
             var sut = new CoronaService(config, fService);
             var res = sut.KAAusfallPerDay(new DateTime(2020, 4, 24));
 
-            res.Should().Be(5.7);
+            res.Should().Be(5.7m);
         }
         [Fact]
         public void KAAusfall_NormalWeekFriday2()
@@ -124,7 +125,7 @@ namespace CoronaKurzArbeit.Tests.Services
             var sut = new CoronaService(config, fService);
             var res = sut.KAAusfallPerDay(new DateTime(2020, 5, 15));
 
-            res.Should().Be(5.7);
+            res.Should().Be(5.7m);
         }
 
         [Fact]
@@ -133,7 +134,7 @@ namespace CoronaKurzArbeit.Tests.Services
             var sut = new CoronaService(config, fService);
             var res = sut.KAAusfallPerDay(new DateTime(2020, 4, 27));
 
-            res.Should().Be(1.925);
+            res.Should().Be(1.925m);
         }
         [Fact]
         public void KAAusfall_FridayHolidayFriday()
@@ -150,7 +151,7 @@ namespace CoronaKurzArbeit.Tests.Services
             var sut = new CoronaService(config, fService);
             var res = sut.KAAusfallPerDay(new DateTime(2020, 5, 20));
 
-            res.Should().Be(2.567);
+            res.Should().Be(2.567m);
         }
         [Fact]
         public void KAAusfall_ThursdayHolidayThursday()

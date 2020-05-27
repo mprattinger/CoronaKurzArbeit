@@ -31,14 +31,14 @@ namespace CoronaKurzArbeit.Tests.Services
             config = new KurzarbeitSettingsConfiguration
             {
                 Started = new DateTime(2020, 4, 20),
-                SollArbeitsZeit = 38.5,
-                CoronaSoll = 0.8,
+                SollArbeitsZeit = 38.5m,
+                CoronaSoll = 0.8m,
                 PauseFree = 10,
-                Monday = 8.2,
-                Tuesday = 8.2,
-                Wednesday = 8.2,
-                Thursday = 8.2,
-                Friday = 5.7,
+                Monday = 8.2m,
+                Tuesday = 8.2m,
+                Wednesday = 8.2m,
+                Thursday = 8.2m,
+                Friday = 5.7m,
                 CoronaDays = new List<DayOfWeek> { DayOfWeek.Friday }
             };
             coronaService = new CoronaService(config, new FeiertagService(timeProvider));
@@ -66,9 +66,74 @@ namespace CoronaKurzArbeit.Tests.Services
             await ctx.SaveChangesAsync();
 
             var sut = new InfoService(logger, config, coronaService, timeBookingsService);
-            var res = sut.CalculateGoHome(inBooking.BookingTime, TimeSpan.FromHours(7.7), TimeSpan.Zero, TimeSpan.Zero);
+
+            var grossWTime = await timeBookingsService.GetGrossWorkTimeForDayAsync(theDay);
+            var pauses = await timeBookingsService.GetPauseForDayAsync(theDay);
+            var netWTime = timeBookingsService.GetNetWorkingTimeForDay(theDay, grossWTime, pauses);
+
+            var res = sut.CalculateGoHome(grossWTime.inBooking.BookingTime, TimeSpan.FromHours(7.7), pauses.grossPauseDuration, pauses.netPauseDuration);
             res.Hour.Should().Be(14);
             res.Minute.Should().Be(15);
+        }
+
+        [Fact]
+        public async Task GoHomeOnlyInOut()
+        {
+            var theDay = new DateTime(2020, 05, 19);
+            ctx.TimeBookings.RemoveRange();
+            await ctx.SaveChangesAsync();
+            var inBooking = new TimeBooking
+            {
+                BookingTime = theDay.AddHours(6).AddMinutes(3)
+            };
+            ctx.TimeBookings.Add(inBooking);
+            ctx.TimeBookings.Add(new TimeBooking
+            {
+                BookingTime = theDay.AddHours(10).AddMinutes(3)
+            });
+            await ctx.SaveChangesAsync();
+
+            var sut = new InfoService(logger, config, coronaService, timeBookingsService);
+
+            var grossWTime = await timeBookingsService.GetGrossWorkTimeForDayAsync(theDay);
+            var pauses = await timeBookingsService.GetPauseForDayAsync(theDay);
+            var netWTime = timeBookingsService.GetNetWorkingTimeForDay(theDay, grossWTime, pauses);
+
+            var res = sut.CalculateGoHome(grossWTime.inBooking.BookingTime, TimeSpan.FromHours(7.7), pauses.grossPauseDuration, pauses.netPauseDuration);
+            res.Hour.Should().Be(14);
+            res.Minute.Should().Be(15);
+        }
+
+        [Fact]
+        public async Task GoHomePauseLess10()
+        {
+            var theDay = new DateTime(2020, 05, 19);
+            ctx.TimeBookings.RemoveRange();
+            await ctx.SaveChangesAsync();
+            var inBooking = new TimeBooking
+            {
+                BookingTime = theDay.AddHours(6).AddMinutes(3)
+            };
+            ctx.TimeBookings.Add(inBooking);
+            ctx.TimeBookings.Add(new TimeBooking
+            {
+                BookingTime = theDay.AddHours(10).AddMinutes(3)
+            });
+            ctx.TimeBookings.Add(new TimeBooking
+            {
+                BookingTime = theDay.AddHours(10).AddMinutes(10)
+            });
+            await ctx.SaveChangesAsync();
+
+            var sut = new InfoService(logger, config, coronaService, timeBookingsService);
+
+            var grossWTime = await timeBookingsService.GetGrossWorkTimeForDayAsync(theDay);
+            var pauses = await timeBookingsService.GetPauseForDayAsync(theDay);
+            var netWTime = timeBookingsService.GetNetWorkingTimeForDay(theDay, grossWTime, pauses);
+
+            var res = sut.CalculateGoHome(grossWTime.inBooking.BookingTime, TimeSpan.FromHours(7.7), pauses.grossPauseDuration, pauses.netPauseDuration);
+            res.Hour.Should().Be(14);
+            res.Minute.Should().Be(23);
         }
         #endregion
     }

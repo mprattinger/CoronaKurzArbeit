@@ -35,8 +35,8 @@ namespace CoronaKurzArbeit.Logic.Services
             var ret = new InfoViewModel();
             try
             {
-                ret.GrossTargetWorkTime = TimeSpan.FromHours(theDate.GetWorkhours(_config));
-                ret.CoronaDelta = TimeSpan.FromHours(_coronaService.KAAusfallPerDay(theDate));
+                ret.GrossTargetWorkTime = TimeSpan.FromHours(theDate.GetWorkhours(_config).ToDouble());
+                ret.CoronaDelta = TimeSpan.FromHours(_coronaService.KAAusfallPerDay(theDate).ToDouble());
 
                 var grossWTime = await _bookingsService.GetGrossWorkTimeForDayAsync(theDate);
                 ret.GrossActualWorkTime = grossWTime.grossWorkTime;

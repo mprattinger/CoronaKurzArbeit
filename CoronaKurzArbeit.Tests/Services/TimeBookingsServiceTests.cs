@@ -30,14 +30,14 @@ namespace CoronaKurzArbeit.Tests.Services
             config = new KurzarbeitSettingsConfiguration
             {
                 Started = new DateTime(2020, 4, 20),
-                SollArbeitsZeit = 38.5,
-                CoronaSoll = 0.8,
+                SollArbeitsZeit = 38.5m,
+                CoronaSoll = 0.8m,
                 PauseFree = 10,
-                Monday = 8.2,
-                Tuesday = 8.2,
-                Wednesday = 8.2,
-                Thursday = 8.2,
-                Friday = 5.7,
+                Monday = 8.2m,
+                Tuesday = 8.2m,
+                Wednesday = 8.2m,
+                Thursday = 8.2m,
+                Friday = 5.7m,
                 CoronaDays = new List<DayOfWeek> { DayOfWeek.Friday }
             };
             coronaService = new CoronaService(config, new FeiertagService(timeProvider));
@@ -382,7 +382,7 @@ namespace CoronaKurzArbeit.Tests.Services
             var sut = new TimeBookingsService(logger, ctx, tProvider, config, coronaService);
             var (inBooking, outBooking, grossWorkTime) = await sut.GetGrossWorkTimeForDayAsync(theDay);
             inBooking.BookingTime.Should().Be(theDay.AddHours(6).AddMinutes(3));
-            outBooking.BookingTime.Should().Be(theDay.AddHours(13).AddMinutes(3));
+            outBooking.BookingTime.Should().Be(theDay.AddHours(12).AddMinutes(03));
             grossWorkTime.Should().Be(TimeSpan.FromHours(7));
         }
         #endregion

@@ -2,6 +2,7 @@
 using CoronaKurzArbeit.Shared.Extensions;
 using CoronaKurzArbeit.Shared.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -18,13 +19,13 @@ namespace CoronaKurzArbeit.Logic.Services
         Task DeleteBookingAsync(TimeBooking booking);
         Task<TimeBooking?> GetInBookingForDayAsync(DateTime theDate);
         Task<TimeBooking?> GetOutBookingForDayAsync(DateTime theDate);
-        (TimeBooking? inBooking, TimeBooking? outBooking) GetInOutBookingForDay(DateTime theDate, List<TimeBooking> bookings);
-        Task<(TimeBooking? inBooking, TimeBooking? outBooking)> GetInOutBookingForDayAsync(DateTime theDate);
+        (TimeBooking? inBooking, TimeBooking? outBooking, List<TimeBooking>? bookings) GetInOutBookingForDay(DateTime theDate, List<TimeBooking> bookings);
+        Task<(TimeBooking? inBooking, TimeBooking? outBooking, List<TimeBooking>? bookings)> GetInOutBookingForDayAsync(DateTime theDate);
         List<TimeBooking> GetPauseBookingsForDay(DateTime theDate, List<TimeBooking> timeBookings);
         Task<List<TimeBooking>> GetPauseBookingsForDayAsync(DateTime theDate);
         Task<(TimeBooking? inBooking, TimeBooking? outBooking, TimeSpan grossWorkTime)> GetGrossWorkTimeForDayAsync(DateTime theDate);
         (TimeBooking? inBooking, TimeBooking? outBooking, TimeSpan grossWorkTime) GetGrossWorkTimeForDay(DateTime theDate,
-            (TimeBooking? inBooking, TimeBooking? outBooking) inout);
+            (TimeBooking? inBooking, TimeBooking? outBooking, List<TimeBooking>? bookings) inout);
         Task<(TimeSpan grossPauseDuration, TimeSpan netPauseDuration, List<(TimeBooking pauseStart, TimeBooking pauseEnd, TimeSpan duration)> pauseList)> GetPauseForDayAsync(DateTime theDate);
         Task<TimeSpan> GetNetWorkingTimeForDayAsync(DateTime theDate);
         TimeSpan GetNetWorkingTimeForDay(
@@ -133,7 +134,7 @@ namespace CoronaKurzArbeit.Logic.Services
         }
 
         public (TimeBooking? inBooking, TimeBooking? outBooking, TimeSpan grossWorkTime) GetGrossWorkTimeForDay(DateTime theDate,
-            (TimeBooking? inBooking, TimeBooking? outBooking) inout)
+            (TimeBooking? inBooking, TimeBooking? outBooking, List<TimeBooking>? bookings) inout)
         {
             try
             {
@@ -143,11 +144,19 @@ namespace CoronaKurzArbeit.Logic.Services
                     var grossWorkHours = theDate.GetWorkhours(_config);
                     var corona = _coronaService.KAAusfallPerDay(theDate);
                     var netWorkHours = grossWorkHours - corona;
-                    var netWorkTS = TimeSpan.FromHours(Convert.ToDouble(netWorkHours));
+                    var netWorkTS = TimeSpan.FromHours(netWorkHours.ToDouble());
                     var workHours = inout.inBooking.BookingTime.Add(netWorkTS);
+                    //Gibt es pausen die wir hinzurechnen müssen
+                    var pauses = GetPauseBookingsForDay(theDate, inout.bookings ?? new List<TimeBooking>());
+                    var ps = GetPauseForDay(theDate, pauses);
+                    workHours = workHours.Add(ps.netPauseDuration);
                     if (workHours.Subtract(inout.inBooking.BookingTime) >= TimeSpan.FromHours(6))
                     {
-                        workHours = workHours.AddMinutes(30);
+                        if(ps.grossPauseDuration.TotalMinutes < 30)
+                        {
+                            var remain = TimeSpan.FromMinutes(30).Subtract(ps.grossPauseDuration);
+                            workHours = workHours.Add(remain);
+                        }
                     }
                     //var target = _dateTimeProvider.GetCurrentTime() > workHours ? workHours : _dateTimeProvider.GetCurrentTime();
                     inout.outBooking = new TimeBooking { BookingTime = workHours };
@@ -245,7 +254,7 @@ namespace CoronaKurzArbeit.Logic.Services
             }
         }
 
-        public (TimeBooking? inBooking, TimeBooking? outBooking) GetInOutBookingForDay(DateTime theDate, List<TimeBooking> bookings)
+        public (TimeBooking? inBooking, TimeBooking? outBooking, List<TimeBooking>? bookings) GetInOutBookingForDay(DateTime theDate, List<TimeBooking> bookings)
         {
             var inb = bookings.Where(x => x.BookingTime >= theDate.Date && x.BookingTime < theDate.Date.AddDays(1)).FirstOrDefault();
             TimeBooking? outb = null;
@@ -258,10 +267,10 @@ namespace CoronaKurzArbeit.Logic.Services
             {
                 outb = bookings.LastOrDefault();
             }
-            return (inb, outb);
+            return (inb, outb, bookings);
         }
 
-        public async Task<(TimeBooking? inBooking, TimeBooking? outBooking)> GetInOutBookingForDayAsync(DateTime theDate)
+        public async Task<(TimeBooking? inBooking, TimeBooking? outBooking, List<TimeBooking>? bookings)> GetInOutBookingForDayAsync(DateTime theDate)
         {
             try
             {
@@ -320,8 +329,23 @@ namespace CoronaKurzArbeit.Logic.Services
         {
             try
             {
+                var bookings = await GetBookingsForDayAsync(theDate);
+                var pauses = GetPauseBookingsForDay(theDate, bookings);
+                return GetPauseForDay(theDate, pauses);
+            }
+            catch (Exception ex)
+            {
+                var msg = $"Error reading pause data for day {theDate.Date.ToShortDateString()}";
+                _logger.LogError(ex, msg);
+                throw new Exception(msg, ex);
+            }
+        }
+
+        public (TimeSpan grossPauseDuration, TimeSpan netPauseDuration, List<(TimeBooking pauseStart, TimeBooking pauseEnd, TimeSpan duration)> pauseList) GetPauseForDay(DateTime theDate, List<TimeBooking> pauses)
+        {
+            try
+            {
                 var pauseRaw = new List<(TimeBooking pauseStart, TimeBooking pauseEnd, TimeSpan pauseDuration)>();
-                var pauses = await GetPauseBookingsForDayAsync(theDate);
                 if (pauses.Count == 0) return (TimeSpan.Zero, TimeSpan.Zero, pauseRaw);
                 var c = 0;
                 while (c <= pauses.Count - 2)
