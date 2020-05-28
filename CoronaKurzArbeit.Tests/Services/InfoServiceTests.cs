@@ -71,9 +71,9 @@ namespace CoronaKurzArbeit.Tests.Services
             var pauses = await timeBookingsService.GetPauseForDayAsync(theDay);
             var netWTime = timeBookingsService.GetNetWorkingTimeForDay(theDay, grossWTime, pauses);
 
-            var res = sut.CalculateGoHome(grossWTime.inBooking.BookingTime, TimeSpan.FromHours(7.7), pauses.grossPauseDuration, pauses.netPauseDuration);
-            res.Hour.Should().Be(14);
-            res.Minute.Should().Be(15);
+            var res = sut.CalculateGoHome(grossWTime.inBooking.BookingTime, netWTime, pauses.grossPauseDuration, pauses.netPauseDuration);
+            res.Hour.Should().Be(11);
+            res.Minute.Should().Be(40);
         }
 
         [Fact]
@@ -99,9 +99,9 @@ namespace CoronaKurzArbeit.Tests.Services
             var pauses = await timeBookingsService.GetPauseForDayAsync(theDay);
             var netWTime = timeBookingsService.GetNetWorkingTimeForDay(theDay, grossWTime, pauses);
 
-            var res = sut.CalculateGoHome(grossWTime.inBooking.BookingTime, TimeSpan.FromHours(7.7), pauses.grossPauseDuration, pauses.netPauseDuration);
-            res.Hour.Should().Be(14);
-            res.Minute.Should().Be(15);
+            var res = sut.CalculateGoHome(grossWTime.inBooking.BookingTime, netWTime, pauses.grossPauseDuration, pauses.netPauseDuration);
+            res.Hour.Should().Be(11);
+            res.Minute.Should().Be(40);
         }
 
         [Fact]
@@ -131,9 +131,9 @@ namespace CoronaKurzArbeit.Tests.Services
             var pauses = await timeBookingsService.GetPauseForDayAsync(theDay);
             var netWTime = timeBookingsService.GetNetWorkingTimeForDay(theDay, grossWTime, pauses);
 
-            var res = sut.CalculateGoHome(grossWTime.inBooking.BookingTime, TimeSpan.FromHours(7.7), pauses.grossPauseDuration, pauses.netPauseDuration);
-            res.Hour.Should().Be(14);
-            res.Minute.Should().Be(23);
+            var res = sut.CalculateGoHome(grossWTime.inBooking.BookingTime, netWTime, pauses.grossPauseDuration, pauses.netPauseDuration);
+            res.Hour.Should().Be(11);
+            res.Minute.Should().Be(47);
         }
         #endregion
     }

@@ -56,7 +56,7 @@ namespace CoronaKurzArbeit.Logic.Services
 
         public DateTime CalculateGoHome(DateTime inBooking, TimeSpan netTargetWorkTime, TimeSpan grossPause, TimeSpan netPause)
         {
-            var pause = TimeSpan.Zero;
+            var pause = netPause;
             if (netTargetWorkTime.TotalHours > 6)
             {
                 //Wir brauchen eine Pause!

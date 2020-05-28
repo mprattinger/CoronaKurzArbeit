@@ -382,8 +382,8 @@ namespace CoronaKurzArbeit.Tests.Services
             var sut = new TimeBookingsService(logger, ctx, tProvider, config, coronaService);
             var (inBooking, outBooking, grossWorkTime) = await sut.GetGrossWorkTimeForDayAsync(theDay);
             inBooking.BookingTime.Should().Be(theDay.AddHours(6).AddMinutes(3));
-            outBooking.BookingTime.Should().Be(theDay.AddHours(12).AddMinutes(03));
-            grossWorkTime.Should().Be(TimeSpan.FromHours(7));
+            outBooking.BookingTime.Should().Be(theDay.AddHours(12).AddMinutes(02).AddSeconds(58).AddMilliseconds(800));
+            grossWorkTime.Should().Be(TimeSpan.FromHours(6).Subtract(TimeSpan.FromMilliseconds(1200)));
         }
         #endregion
 
