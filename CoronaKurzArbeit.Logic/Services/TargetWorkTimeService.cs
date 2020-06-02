@@ -1,15 +1,12 @@
 ﻿using CoronaKurzArbeit.Shared.Extensions;
 using CoronaKurzArbeit.Shared.Models;
-using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace CoronaKurzArbeit.Logic.Services
 {
     public class TargetWorkTimeService
     {
-        private readonly ILogger<TargetWorkTimeService> _logger;
+        //private readonly ILogger<TargetWorkTimeService> _logger;
         private readonly KurzarbeitSettingsConfiguration _config;
         private readonly ICoronaService _coronaService;
 
@@ -19,16 +16,16 @@ namespace CoronaKurzArbeit.Logic.Services
         public TimeSpan TargetPause { get; set; } = TimeSpan.Zero;
 
         public TargetWorkTimeService(
-            ILogger<TargetWorkTimeService> logger,
+            //ILogger<TargetWorkTimeService> logger,
             KurzarbeitSettingsConfiguration config,
             ICoronaService coronaService)
         {
-            _logger = logger;
+            //_logger = logger;
             _config = config;
             _coronaService = coronaService;
         }
 
-        public void LoadData(DateTime theDate)
+        public (TimeSpan plannedWorkTime, TimeSpan coronaDelta, TimeSpan targetWorkTime, TimeSpan targetPause) LoadData(DateTime theDate)
         {
             PlannedWorkTime = TimeSpan.FromHours(theDate.GetWorkhours(_config).ToDouble());
             CoronaDelta = TimeSpan.FromHours(_coronaService.KAAusfallPerDay(theDate).ToDouble());
@@ -37,6 +34,7 @@ namespace CoronaKurzArbeit.Logic.Services
             {
                 TargetPause = TimeSpan.FromMinutes(30);
             }
+            return (PlannedWorkTime, CoronaDelta, TargetWorkTime, TargetPause);
         }
     }
 }

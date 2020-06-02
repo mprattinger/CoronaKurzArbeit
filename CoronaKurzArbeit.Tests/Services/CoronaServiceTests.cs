@@ -22,7 +22,11 @@ namespace CoronaKurzArbeit.Tests.Services
             {
                 Started = new DateTime(2020, 4, 20),
                 SollArbeitsZeit = 38.5m,
-                CoronaSoll = 0.8m,
+                CoronaSoll = new List<CoronaAusfall>
+            {
+                new CoronaAusfall { Ausfall = 0.2m, Bis = new DateTime(2020, 6, 1) },
+                new CoronaAusfall { Ausfall = 0.3m, Bis = new DateTime(2099, 1, 1) }
+            },
                 PauseFree = 10,
                 Monday = 8.2m,
                 Tuesday = 8.2m,
@@ -31,7 +35,7 @@ namespace CoronaKurzArbeit.Tests.Services
                 Friday = 5.7m,
                 CoronaDays = new List<DayOfWeek> { DayOfWeek.Friday }
             };
-            fService = new FeiertagService(new FakeDateTimeProvider(new DateTime(2020,05,19)));
+            fService = new FeiertagService(new FakeDateTimeProvider(new DateTime(2020, 05, 19)));
         }
 
         public void Dispose()
@@ -97,7 +101,7 @@ namespace CoronaKurzArbeit.Tests.Services
         public void Calculate_KATime()
         {
             var sut = new CoronaService(config, fService);
-            var res = sut.GetKATime();
+            var res = sut.GetKATime(new DateTime(2020, 5, 18));
             res.Should().Be(7.7m);
         }
         #endregion

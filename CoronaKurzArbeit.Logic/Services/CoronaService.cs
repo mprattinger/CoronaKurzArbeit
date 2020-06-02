@@ -14,7 +14,7 @@ namespace CoronaKurzArbeit.Logic.Services
 
     public interface ICoronaService
     {
-        decimal GetKATime();
+        decimal GetKATime(DateTime value);
         List<(DateTime day, decimal arbeitsZeit, WorkDayType type)> GetWorkDaysForWeek(DateTime dayInWeek);
         decimal KAAusfallPerDay(DateTime value);
     }
@@ -33,14 +33,14 @@ namespace CoronaKurzArbeit.Logic.Services
         public decimal KAAusfallPerDay(DateTime value)
         {
             var wd = GetWorkDaysForWeek(value);
-            var coronaSoll = GetKATime();
+            var coronaSoll = GetKATime(value);
             var kaTageSum = wd.Where(x => x.type == WorkDayType.KAday).Sum(x => x.arbeitsZeit);
             var workDayKa = (coronaSoll - kaTageSum) / wd.Count(x => x.type == WorkDayType.Workday);
             var day = wd.Where(x => x.day.Date == value.Date).FirstOrDefault();
             if (day == default) return default; //Den Tag gibt es nicht!
 
-            if (day.type == WorkDayType.Workday) return Math.Round(workDayKa, 3); //Normaler Arbeitstag
-            if (day.type == WorkDayType.KAday) return Math.Round(day.arbeitsZeit, 3); //Kurzarbeitstag
+            if (day.type == WorkDayType.Workday) return workDayKa; //Math.Round(workDayKa, 3); //Normaler Arbeitstag
+            if (day.type == WorkDayType.KAday) return day.arbeitsZeit; //Math.Round(day.arbeitsZeit, 3); //Kurzarbeitstag
 
             return default;
 
@@ -92,9 +92,10 @@ namespace CoronaKurzArbeit.Logic.Services
             return workDays;
         }
 
-        public decimal GetKATime()
+        public decimal GetKATime(DateTime value)
         {
-            return _config.SollArbeitsZeit * (1 - _config.CoronaSoll);
+            var soll = _config.CoronaSoll.Where(x => x.Bis >= value).FirstOrDefault();
+            return _config.SollArbeitsZeit * soll.Ausfall;
         }
     }
 }

@@ -31,7 +31,11 @@ namespace CoronaKurzArbeit.Tests.Services
             {
                 Started = new DateTime(2020, 4, 20),
                 SollArbeitsZeit = 38.5m,
-                CoronaSoll = 0.8m,
+                CoronaSoll = new List<CoronaAusfall>
+            {
+                new CoronaAusfall { Ausfall = 0.2m, Bis = new DateTime(2020, 6, 1) },
+                new CoronaAusfall { Ausfall = 0.3m, Bis = new DateTime(2099, 1, 1) }
+            },
                 PauseFree = 10,
                 Monday = 8.2m,
                 Tuesday = 8.2m,
