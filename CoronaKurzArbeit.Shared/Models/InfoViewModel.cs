@@ -16,6 +16,8 @@ namespace CoronaKurzArbeit.Shared.Models
             }
         }
 
+        public TimeSpan TargetPause { get; set; }
+
         public TimeSpan GrossActualWorkTime { get; set; }
 
         public TimeSpan NetActualWorktime { get; set; }

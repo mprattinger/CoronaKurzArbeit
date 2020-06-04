@@ -4,7 +4,12 @@ using System;
 
 namespace CoronaKurzArbeit.Logic.Services
 {
-    public class TargetWorkTimeService
+    public interface ITargetWorkTimeService
+    {
+        (TimeSpan plannedWorkTime, TimeSpan coronaDelta, TimeSpan targetWorkTime, TimeSpan targetPause) LoadData(DateTime theDate);
+    }
+
+    public class TargetWorkTimeService : ITargetWorkTimeService
     {
         //private readonly ILogger<TargetWorkTimeService> _logger;
         private readonly KurzarbeitSettingsConfiguration _config;

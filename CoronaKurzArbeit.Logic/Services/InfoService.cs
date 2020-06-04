@@ -1,5 +1,6 @@
 ﻿using CoronaKurzArbeit.Shared.Extensions;
 using CoronaKurzArbeit.Shared.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
@@ -16,16 +17,19 @@ namespace CoronaKurzArbeit.Logic.Services
     {
         private readonly ILogger<InfoService> _logger;
         private readonly KurzarbeitSettingsConfiguration _config;
+        private readonly ITargetWorkTimeService _targetWorkTime;
         private readonly ICoronaService _coronaService;
         private readonly ITimeBookingsService _bookingsService;
 
         public InfoService(ILogger<InfoService> logger, 
             KurzarbeitSettingsConfiguration config,
+            ITargetWorkTimeService targetWorkTimeService,
             ICoronaService coronaService,
             ITimeBookingsService bookingsService)
         {
             _logger = logger;
             _config = config;
+            _targetWorkTime = targetWorkTimeService;
             _coronaService = coronaService;
             _bookingsService = bookingsService;
         }
@@ -35,14 +39,11 @@ namespace CoronaKurzArbeit.Logic.Services
             var ret = new InfoViewModel();
             try
             {
-                ret.GrossTargetWorkTime = TimeSpan.FromHours(theDate.GetWorkhours(_config).ToDouble());
-                ret.CoronaDelta = TimeSpan.FromHours(_coronaService.KAAusfallPerDay(theDate).ToDouble());
+                var targetData = _targetWorkTime.LoadData(theDate);
+                ret.GrossTargetWorkTime = targetData.plannedWorkTime;
+                ret.CoronaDelta = targetData.coronaDelta;
+                ret.TargetPause = targetData.targetPause;
 
-                var grossWTime = await _bookingsService.GetGrossWorkTimeForDayAsync(theDate);
-                ret.GrossActualWorkTime = grossWTime.grossWorkTime;
-
-                var pauses = await _bookingsService.GetPauseForDayAsync(theDate);
-                ret.NetActualWorktime = _bookingsService.GetNetWorkingTimeForDay(theDate, grossWTime, pauses);
 
             }
             catch (Exception ex)

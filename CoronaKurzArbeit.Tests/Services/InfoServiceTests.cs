@@ -69,7 +69,7 @@ namespace CoronaKurzArbeit.Tests.Services
             ctx.TimeBookings.Add(inBooking);
             await ctx.SaveChangesAsync();
 
-            var sut = new InfoService(logger, config, coronaService, timeBookingsService);
+            var sut = new InfoService(logger, config, null, coronaService, timeBookingsService);
 
             var grossWTime = await timeBookingsService.GetGrossWorkTimeForDayAsync(theDay);
             var pauses = await timeBookingsService.GetPauseForDayAsync(theDay);
@@ -97,7 +97,7 @@ namespace CoronaKurzArbeit.Tests.Services
             });
             await ctx.SaveChangesAsync();
 
-            var sut = new InfoService(logger, config, coronaService, timeBookingsService);
+            var sut = new InfoService(logger, config, null, coronaService, timeBookingsService);
 
             var grossWTime = await timeBookingsService.GetGrossWorkTimeForDayAsync(theDay);
             var pauses = await timeBookingsService.GetPauseForDayAsync(theDay);
@@ -129,7 +129,7 @@ namespace CoronaKurzArbeit.Tests.Services
             });
             await ctx.SaveChangesAsync();
 
-            var sut = new InfoService(logger, config, coronaService, timeBookingsService);
+            var sut = new InfoService(logger, config, null, coronaService, timeBookingsService);
 
             var grossWTime = await timeBookingsService.GetGrossWorkTimeForDayAsync(theDay);
             var pauses = await timeBookingsService.GetPauseForDayAsync(theDay);
