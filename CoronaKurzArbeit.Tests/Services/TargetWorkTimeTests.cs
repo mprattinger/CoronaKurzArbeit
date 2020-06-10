@@ -35,9 +35,60 @@ namespace CoronaKurzArbeit.Tests.Services
         }
 
         [Fact]
+        public void NormalDayNoCorona()
+        {
+            var theDate = new DateTime(2020, 04, 15);
+            var fService = new FeiertagService(new FakeDateTimeProvider(theDate));
+            var corona = new CoronaService(config, fService);
+
+            var sut = new TargetWorkTimeService(config, corona);
+
+            var (plannedWorkTime, coronaDelta, targetWorkTime, targetPause) = sut.LoadData(theDate);
+
+            plannedWorkTime.TotalHours.Should().Be(8.2);
+            coronaDelta.TotalHours.Should().Be(0);
+            targetWorkTime.TotalHours.Should().Be(8.2);
+            targetPause.TotalMinutes.Should().Be(30);
+        }
+
+        [Fact]
+        public void FridayDayNoCorona()
+        {
+            var theDate = new DateTime(2020, 04, 17);
+            var fService = new FeiertagService(new FakeDateTimeProvider(theDate));
+            var corona = new CoronaService(config, fService);
+
+            var sut = new TargetWorkTimeService(config, corona);
+
+            var (plannedWorkTime, coronaDelta, targetWorkTime, targetPause) = sut.LoadData(theDate);
+
+            plannedWorkTime.TotalHours.Should().Be(5.7);
+            coronaDelta.TotalHours.Should().Be(0);
+            targetWorkTime.TotalHours.Should().Be(5.7);
+            targetPause.TotalMinutes.Should().Be(0);
+        }
+
+        [Fact]
         public void NormalDay20()
         {
             var theDate = new DateTime(2020, 04, 21);
+            var fService = new FeiertagService(new FakeDateTimeProvider(theDate));
+            var corona = new CoronaService(config, fService);
+
+            var sut = new TargetWorkTimeService(config, corona);
+
+            var (plannedWorkTime, coronaDelta, targetWorkTime, targetPause) = sut.LoadData(theDate);
+
+            plannedWorkTime.TotalHours.Should().Be(8.2);
+            coronaDelta.TotalHours.Should().Be(0.5);
+            targetWorkTime.TotalHours.Should().Be(7.7);
+            targetPause.TotalMinutes.Should().Be(30);
+        }
+
+        [Fact]
+        public void NormalDay202()
+        {
+            var theDate = new DateTime(2020, 04, 20);
             var fService = new FeiertagService(new FakeDateTimeProvider(theDate));
             var corona = new CoronaService(config, fService);
 

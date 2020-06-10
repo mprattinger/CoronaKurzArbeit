@@ -39,10 +39,10 @@ namespace CoronaKurzArbeit.Logic.Services
             var ret = new InfoViewModel();
             try
             {
-                var targetData = _targetWorkTime.LoadData(theDate);
-                ret.GrossTargetWorkTime = targetData.plannedWorkTime;
-                ret.CoronaDelta = targetData.coronaDelta;
-                ret.TargetPause = targetData.targetPause;
+                var (plannedWorkTime, coronaDelta, targetWorkTime, targetPause) = _targetWorkTime.LoadData(theDate);
+                ret.GrossTargetWorkTime = plannedWorkTime;
+                ret.CoronaDelta = coronaDelta;
+                ret.TargetPause = targetPause;
 
 
             }

@@ -9,7 +9,7 @@ namespace CoronaKurzArbeit.Logic.Services
 {
     public interface IActualWorkTimeService
     {
-        Task<(DateTime inTime, DateTime outTime, TimeSpan workTime, TimeSpan pauseTime)> LoadData(DateTime theDate);
+        Task<(DateTime inTime, DateTime outTime, TimeSpan workTime, TimeSpan pauseTime)> LoadDataAsync(DateTime theDate);
     }
     public class ActualWorkTimeService : IActualWorkTimeService
     {
@@ -25,20 +25,24 @@ namespace CoronaKurzArbeit.Logic.Services
             _timeBookings = timeBookingsService;
         }
 
-        public async Task<(DateTime inTime, DateTime outTime, TimeSpan workTime, TimeSpan pauseTime)> LoadData(DateTime theDate)
+        public async Task<(DateTime inTime, DateTime outTime, TimeSpan workTime, TimeSpan pauseTime)> LoadDataAsync(DateTime theDate)
         {
             var bookings = await _timeBookings.GetBookingsForDayAsync(theDate);
-
-            var inT = DateTime.MinValue;
             var work = TimeSpan.Zero;
             var pause = TimeSpan.Zero;
             var outT = DateTime.MinValue;
 
-            if(bookings.Count == 1)
+            DateTime inT;
+            if(bookings.Count == 0)
+            {
+                inT = DateTime.MinValue;
+            }
+            else if (bookings.Count == 1)
             {
                 //Nur In
                 inT = bookings.First().BookingTime;
-            } else
+            }
+            else
             {
                 //In/Out
                 inT = bookings.First().BookingTime;
@@ -47,19 +51,19 @@ namespace CoronaKurzArbeit.Logic.Services
                     outT = bookings.Last().BookingTime;
                 }
                 var c = 0;
-                TimeBooking last = null;
-                foreach(var b in bookings)
+                TimeBooking? last = null;
+                foreach (var b in bookings)
                 {
-                    if(c == 0)
+                    if (c == 0)
                     {
-                        if(last != null)
+                        if (last != null)
                         {
                             pause = pause.Add(b.BookingTime.Subtract(last.BookingTime));
                         }
                         last = b;
                         c++;
                     }
-                    else 
+                    else
                     {
                         if (last != null)
                         {

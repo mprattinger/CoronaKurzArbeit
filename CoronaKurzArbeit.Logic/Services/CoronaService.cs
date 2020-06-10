@@ -73,7 +73,7 @@ namespace CoronaKurzArbeit.Logic.Services
                     {
                         //Nein
                         //Ist der Tag ein KA Tag?
-                        if (_config.CoronaDays.Contains(f.DayOfWeek))
+                        if (_config.CoronaDays.Contains(f.DayOfWeek) && f.Date >= _config.Started.Date)
                         {
                             //Ja
                             workDays.Add((f, f.GetWorkhours(_config), WorkDayType.KAday));
@@ -94,6 +94,11 @@ namespace CoronaKurzArbeit.Logic.Services
 
         public decimal GetKATime(DateTime value)
         {
+            if (value.Date < _config.Started.Date)
+            {
+                //Noch kein Corona
+                return 0m;
+            }
             var soll = _config.CoronaSoll.Where(x => x.Bis >= value).FirstOrDefault();
             return _config.SollArbeitsZeit * soll.Ausfall;
         }

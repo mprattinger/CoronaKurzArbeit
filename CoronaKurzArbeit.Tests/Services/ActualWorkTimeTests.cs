@@ -58,12 +58,12 @@ namespace CoronaKurzArbeit.Tests.Services
             var tbs = new TimeBookingsService(tbsLogger, ctx, timeProvider, config, coronaService);
 
             var sut = new ActualWorkTimeService(tbs);
-            var res = await sut.LoadData(theDay);
+            var (inTime, _, workTime, pauseTime) = await sut.LoadDataAsync(theDay);
 
-            res.inTime.Hour.Should().Be(6);
-            res.inTime.Minute.Should().Be(3);
-            res.workTime.Should().Be(TimeSpan.Zero);
-            res.pauseTime.Should().Be(TimeSpan.Zero);
+            inTime.Hour.Should().Be(6);
+            inTime.Minute.Should().Be(3);
+            workTime.Should().Be(TimeSpan.Zero);
+            pauseTime.Should().Be(TimeSpan.Zero);
         }
 
         [Fact]
@@ -88,14 +88,46 @@ namespace CoronaKurzArbeit.Tests.Services
             var tbs = new TimeBookingsService(tbsLogger, ctx, timeProvider, config, coronaService);
 
             var sut = new ActualWorkTimeService(tbs);
-            var res = await sut.LoadData(theDay);
+            var (inTime, outTime, workTime, pauseTime) = await sut.LoadDataAsync(theDay);
 
-            res.inTime.Hour.Should().Be(6);
-            res.inTime.Minute.Should().Be(3);
-            res.workTime.Should().Be(TimeSpan.FromHours(4));
-            res.pauseTime.Should().Be(TimeSpan.Zero);
-            res.outTime.Hour.Should().Be(10);
-            res.outTime.Minute.Should().Be(3);
+            inTime.Hour.Should().Be(6);
+            inTime.Minute.Should().Be(3);
+            workTime.Should().Be(TimeSpan.FromHours(4));
+            pauseTime.Should().Be(TimeSpan.Zero);
+            outTime.Hour.Should().Be(10);
+            outTime.Minute.Should().Be(3);
+        }
+
+        [Fact]
+        public async Task InAndOut9()
+        {
+            var theDay = new DateTime(2020, 04, 21);
+            ctx.TimeBookings.RemoveRange();
+            await ctx.SaveChangesAsync();
+
+            ctx.TimeBookings.Add(new TimeBooking
+            {
+                BookingTime = theDay.AddHours(6).AddMinutes(3),
+            });
+            ctx.TimeBookings.Add(new TimeBooking
+            {
+                BookingTime = theDay.AddHours(15).AddMinutes(3)
+            });
+            await ctx.SaveChangesAsync();
+
+            var timeProvider = new FakeDateTimeProvider(theDay);
+            var coronaService = new CoronaService(config, new FeiertagService(timeProvider));
+            var tbs = new TimeBookingsService(tbsLogger, ctx, timeProvider, config, coronaService);
+
+            var sut = new ActualWorkTimeService(tbs);
+            var (inTime, outTime, workTime, pauseTime) = await sut.LoadDataAsync(theDay);
+
+            inTime.Hour.Should().Be(6);
+            inTime.Minute.Should().Be(3);
+            workTime.Should().Be(TimeSpan.FromMinutes(540));
+            pauseTime.Should().Be(TimeSpan.Zero);
+            outTime.Hour.Should().Be(15);
+            outTime.Minute.Should().Be(3);
         }
 
         [Fact]
@@ -124,13 +156,13 @@ namespace CoronaKurzArbeit.Tests.Services
             var tbs = new TimeBookingsService(tbsLogger, ctx, timeProvider, config, coronaService);
 
             var sut = new ActualWorkTimeService(tbs);
-            var res = await sut.LoadData(theDay);
+            var (inTime, outTime, workTime, pauseTime) = await sut.LoadDataAsync(theDay);
 
-            res.inTime.Hour.Should().Be(6);
-            res.inTime.Minute.Should().Be(3);
-            res.workTime.Should().Be(TimeSpan.FromHours(4));
-            res.pauseTime.Should().Be(TimeSpan.FromMinutes(30));
-            res.outTime.Should().Be(DateTime.MinValue);
+            inTime.Hour.Should().Be(6);
+            inTime.Minute.Should().Be(3);
+            workTime.Should().Be(TimeSpan.FromHours(4));
+            pauseTime.Should().Be(TimeSpan.FromMinutes(30));
+            outTime.Should().Be(DateTime.MinValue);
         }
 
         [Fact]
@@ -163,14 +195,14 @@ namespace CoronaKurzArbeit.Tests.Services
             var tbs = new TimeBookingsService(tbsLogger, ctx, timeProvider, config, coronaService);
 
             var sut = new ActualWorkTimeService(tbs);
-            var res = await sut.LoadData(theDay);
+            var (inTime, outTime, workTime, pauseTime) = await sut.LoadDataAsync(theDay);
 
-            res.inTime.Hour.Should().Be(6);
-            res.inTime.Minute.Should().Be(3);
-            res.workTime.Should().Be(TimeSpan.FromHours(6));
-            res.pauseTime.Should().Be(TimeSpan.FromMinutes(30));
-            res.outTime.Hour.Should().Be(12);
-            res.outTime.Minute.Should().Be(33);
+            inTime.Hour.Should().Be(6);
+            inTime.Minute.Should().Be(3);
+            workTime.Should().Be(TimeSpan.FromHours(6));
+            pauseTime.Should().Be(TimeSpan.FromMinutes(30));
+            outTime.Hour.Should().Be(12);
+            outTime.Minute.Should().Be(33);
         }
 
         [Fact]
@@ -207,13 +239,13 @@ namespace CoronaKurzArbeit.Tests.Services
             var tbs = new TimeBookingsService(tbsLogger, ctx, timeProvider, config, coronaService);
 
             var sut = new ActualWorkTimeService(tbs);
-            var res = await sut.LoadData(theDay);
+            var (inTime, outTime, workTime, pauseTime) = await sut.LoadDataAsync(theDay);
 
-            res.inTime.Hour.Should().Be(6);
-            res.inTime.Minute.Should().Be(3);
-            res.workTime.Should().Be(TimeSpan.FromHours(6));
-            res.pauseTime.Should().Be(TimeSpan.FromMinutes(50));
-            res.outTime.Should().Be(DateTime.MinValue);
+            inTime.Hour.Should().Be(6);
+            inTime.Minute.Should().Be(3);
+            workTime.Should().Be(TimeSpan.FromHours(6));
+            pauseTime.Should().Be(TimeSpan.FromMinutes(50));
+            outTime.Should().Be(DateTime.MinValue);
         }
 
         [Fact]
@@ -254,14 +286,14 @@ namespace CoronaKurzArbeit.Tests.Services
             var tbs = new TimeBookingsService(tbsLogger, ctx, timeProvider, config, coronaService);
 
             var sut = new ActualWorkTimeService(tbs);
-            var res = await sut.LoadData(theDay);
+            var (inTime, outTime, workTime, pauseTime) = await sut.LoadDataAsync(theDay);
 
-            res.inTime.Hour.Should().Be(6);
-            res.inTime.Minute.Should().Be(3);
-            res.workTime.Should().Be(TimeSpan.FromHours(8));
-            res.pauseTime.Should().Be(TimeSpan.FromMinutes(50));
-            res.outTime.Hour.Should().Be(14);
-            res.outTime.Minute.Should().Be(53);
+            inTime.Hour.Should().Be(6);
+            inTime.Minute.Should().Be(3);
+            workTime.Should().Be(TimeSpan.FromHours(8));
+            pauseTime.Should().Be(TimeSpan.FromMinutes(50));
+            outTime.Hour.Should().Be(14);
+            outTime.Minute.Should().Be(53);
         }
     }
 }
