@@ -42,7 +42,7 @@ namespace CoronaKurzArbeit.Tests.Services
             };
 
             tbslogger = new NullLogger<TimeBookingsService>();
-            
+
         }
 
         #region AlreadyHome Normal
@@ -82,13 +82,13 @@ namespace CoronaKurzArbeit.Tests.Services
             var (awt, twt) = prepare(theDay);
 
             var sut = new InfoService2(awt, twt, config);
-            
+
             var res = await sut.LoadInfo(theDay);
 
             res.Worked.Should().Be(TimeSpan.FromHours(8).Add(TimeSpan.FromMinutes(12)));
             res.Pause.Should().Be(TimeSpan.FromMinutes(30));
             res.PauseTargetDiff.Should().Be(TimeSpan.FromMinutes(10));
-            res.KuaDiff.Should().Be(TimeSpan.Zero);
+            res.KuaActual.Should().Be(TimeSpan.Zero);
             res.VAZ.Should().Be(TimeSpan.Zero);
         }
 
@@ -134,7 +134,7 @@ namespace CoronaKurzArbeit.Tests.Services
             res.Worked.Should().Be(TimeSpan.FromHours(8).Add(TimeSpan.FromMinutes(22)));
             res.Pause.Should().Be(TimeSpan.FromMinutes(30));
             res.PauseTargetDiff.Should().Be(TimeSpan.FromMinutes(10));
-            res.KuaDiff.Should().Be(TimeSpan.Zero);
+            res.KuaActual.Should().Be(TimeSpan.Zero);
             res.VAZ.Should().Be(TimeSpan.FromMinutes(10));
         }
 
@@ -180,7 +180,7 @@ namespace CoronaKurzArbeit.Tests.Services
             res.Worked.Should().Be(TimeSpan.FromHours(8).Add(TimeSpan.FromMinutes(2)));
             res.Pause.Should().Be(TimeSpan.FromMinutes(30));
             res.PauseTargetDiff.Should().Be(TimeSpan.FromMinutes(10));
-            res.KuaDiff.Should().Be(TimeSpan.Zero);
+            res.KuaActual.Should().Be(TimeSpan.Zero);
             res.VAZ.Should().Be(TimeSpan.FromMinutes(-10));
         }
 
@@ -218,7 +218,7 @@ namespace CoronaKurzArbeit.Tests.Services
             res.Worked.Should().Be(TimeSpan.FromHours(8).Add(TimeSpan.FromMinutes(2)));
             res.Pause.Should().Be(TimeSpan.FromMinutes(10));
             res.PauseTargetDiff.Should().Be(TimeSpan.FromMinutes(-10));
-            res.KuaDiff.Should().Be(TimeSpan.Zero);
+            res.KuaActual.Should().Be(TimeSpan.Zero);
             res.VAZ.Should().Be(TimeSpan.FromMinutes(-10));
         }
         #endregion
@@ -266,7 +266,8 @@ namespace CoronaKurzArbeit.Tests.Services
             res.Worked.Should().Be(TimeSpan.FromHours(7).Add(TimeSpan.FromMinutes(42)));
             res.Pause.Should().Be(TimeSpan.FromMinutes(30));
             res.PauseTargetDiff.Should().Be(TimeSpan.FromMinutes(10));
-            res.KuaDiff.Should().Be(TimeSpan.FromMinutes(30));
+            res.KuaActual.Should().Be(TimeSpan.FromMinutes(30));
+            res.KuaDiff.Should().Be(TimeSpan.Zero);
             res.VAZ.Should().Be(TimeSpan.Zero);
         }
 
@@ -312,7 +313,8 @@ namespace CoronaKurzArbeit.Tests.Services
             res.Worked.Should().Be(TimeSpan.FromHours(8).Add(TimeSpan.FromMinutes(22)));
             res.Pause.Should().Be(TimeSpan.FromMinutes(30));
             res.PauseTargetDiff.Should().Be(TimeSpan.FromMinutes(10));
-            res.KuaDiff.Should().Be(TimeSpan.Zero);
+            res.KuaActual.Should().Be(TimeSpan.Zero);
+            res.KuaDiff.Should().Be(TimeSpan.FromMinutes(-30));
             res.VAZ.Should().Be(TimeSpan.FromMinutes(10));
         }
 
@@ -358,8 +360,9 @@ namespace CoronaKurzArbeit.Tests.Services
             res.Worked.Should().Be(TimeSpan.FromHours(8).Add(TimeSpan.FromMinutes(2)));
             res.Pause.Should().Be(TimeSpan.FromMinutes(30));
             res.PauseTargetDiff.Should().Be(TimeSpan.FromMinutes(10));
-            res.KuaDiff.Should().Be(TimeSpan.Zero);
-            res.VAZ.Should().Be(TimeSpan.FromMinutes(-10));
+            res.KuaActual.Should().Be(TimeSpan.FromMinutes(10));
+            res.KuaDiff.Should().Be(TimeSpan.FromMinutes(-20));
+            res.VAZ.Should().Be(TimeSpan.Zero);
         }
 
         [Fact]
@@ -396,11 +399,404 @@ namespace CoronaKurzArbeit.Tests.Services
             res.Worked.Should().Be(TimeSpan.FromHours(8).Add(TimeSpan.FromMinutes(2)));
             res.Pause.Should().Be(TimeSpan.FromMinutes(10));
             res.PauseTargetDiff.Should().Be(TimeSpan.FromMinutes(-10));
-            res.KuaDiff.Should().Be(TimeSpan.Zero);
-            res.VAZ.Should().Be(TimeSpan.FromMinutes(-10));
+            res.KuaActual.Should().Be(TimeSpan.FromMinutes(10));
+            res.KuaDiff.Should().Be(TimeSpan.FromMinutes(-20));
+            res.VAZ.Should().Be(TimeSpan.Zero);
         }
         #endregion
 
+        #region AlreadyHome Kua30
+        [Fact]
+        public async Task Kua30AlreadyHomeOptimalWork()
+        {
+            var theDay = new DateTime(2020, 6, 22);
+
+            ctx.TimeBookings.RemoveRange();
+            await ctx.SaveChangesAsync();
+            ctx.TimeBookings.Add(new TimeBooking
+            {
+                BookingTime = theDay.AddHours(6).AddMinutes(3)
+            });
+            ctx.TimeBookings.Add(new TimeBooking
+            {
+                BookingTime = theDay.AddHours(9).AddMinutes(0)
+            });
+            ctx.TimeBookings.Add(new TimeBooking
+            {
+                BookingTime = theDay.AddHours(9).AddMinutes(10)
+            });
+            ctx.TimeBookings.Add(new TimeBooking
+            {
+                BookingTime = theDay.AddHours(11).AddMinutes(0)
+            });
+            ctx.TimeBookings.Add(new TimeBooking
+            {
+                BookingTime = theDay.AddHours(11).AddMinutes(30)
+            });
+            ctx.TimeBookings.Add(new TimeBooking
+            {
+                BookingTime = theDay.AddHours(13).AddMinutes(27)
+            });
+            await ctx.SaveChangesAsync();
+
+            var (awt, twt) = prepare(theDay);
+
+            var sut = new InfoService2(awt, twt, config);
+
+            var res = await sut.LoadInfo(theDay);
+
+            res.Worked.Should().Be(TimeSpan.FromHours(6).Add(TimeSpan.FromMinutes(44)));
+            res.Pause.Should().Be(TimeSpan.FromMinutes(30));
+            res.PauseTargetDiff.Should().Be(TimeSpan.FromMinutes(10));
+            res.KuaActual.Should().Be(TimeSpan.FromMinutes(88));
+            res.KuaDiff.Should().Be(TimeSpan.FromMinutes(0.25));
+            res.VAZ.Should().Be(TimeSpan.Zero);
+        }
+
+        [Fact]
+        public async Task Kua30AlreadyHomeVAZ()
+        {
+            var theDay = new DateTime(2020, 6, 22);
+
+            ctx.TimeBookings.RemoveRange();
+            await ctx.SaveChangesAsync();
+            ctx.TimeBookings.Add(new TimeBooking
+            {
+                BookingTime = theDay.AddHours(6).AddMinutes(3)
+            });
+            ctx.TimeBookings.Add(new TimeBooking
+            {
+                BookingTime = theDay.AddHours(9).AddMinutes(0)
+            });
+            ctx.TimeBookings.Add(new TimeBooking
+            {
+                BookingTime = theDay.AddHours(9).AddMinutes(10)
+            });
+            ctx.TimeBookings.Add(new TimeBooking
+            {
+                BookingTime = theDay.AddHours(11).AddMinutes(0)
+            });
+            ctx.TimeBookings.Add(new TimeBooking
+            {
+                BookingTime = theDay.AddHours(11).AddMinutes(30)
+            });
+            ctx.TimeBookings.Add(new TimeBooking
+            {
+                BookingTime = theDay.AddHours(15).AddMinutes(5)
+            });
+            await ctx.SaveChangesAsync();
+
+            var (awt, twt) = prepare(theDay);
+
+            var sut = new InfoService2(awt, twt, config);
+
+            var res = await sut.LoadInfo(theDay);
+
+            res.Worked.Should().Be(TimeSpan.FromHours(8).Add(TimeSpan.FromMinutes(22)));
+            res.Pause.Should().Be(TimeSpan.FromMinutes(30));
+            res.PauseTargetDiff.Should().Be(TimeSpan.FromMinutes(10));
+            res.KuaActual.Should().Be(TimeSpan.Zero);
+            res.KuaDiff.Should().Be(TimeSpan.FromMinutes(-87.75));
+            res.VAZ.Should().Be(TimeSpan.FromMinutes(10));
+        }
+
+        [Fact]
+        public async Task Kua30AlreadyHomeLessKua()
+        {
+            var theDay = new DateTime(2020, 6, 22);
+
+            ctx.TimeBookings.RemoveRange();
+            await ctx.SaveChangesAsync();
+            ctx.TimeBookings.Add(new TimeBooking
+            {
+                BookingTime = theDay.AddHours(6).AddMinutes(3)
+            });
+            ctx.TimeBookings.Add(new TimeBooking
+            {
+                BookingTime = theDay.AddHours(9).AddMinutes(0)
+            });
+            ctx.TimeBookings.Add(new TimeBooking
+            {
+                BookingTime = theDay.AddHours(9).AddMinutes(10)
+            });
+            ctx.TimeBookings.Add(new TimeBooking
+            {
+                BookingTime = theDay.AddHours(11).AddMinutes(0)
+            });
+            ctx.TimeBookings.Add(new TimeBooking
+            {
+                BookingTime = theDay.AddHours(11).AddMinutes(30)
+            });
+            ctx.TimeBookings.Add(new TimeBooking
+            {
+                BookingTime = theDay.AddHours(14).AddMinutes(45)
+            });
+            await ctx.SaveChangesAsync();
+
+            var (awt, twt) = prepare(theDay);
+
+            var sut = new InfoService2(awt, twt, config);
+
+            var res = await sut.LoadInfo(theDay);
+
+            res.Worked.Should().Be(TimeSpan.FromHours(8).Add(TimeSpan.FromMinutes(2)));
+            res.Pause.Should().Be(TimeSpan.FromMinutes(30));
+            res.PauseTargetDiff.Should().Be(TimeSpan.FromMinutes(10));
+            res.KuaActual.Should().Be(TimeSpan.FromMinutes(10));
+            res.KuaDiff.Should().Be(TimeSpan.FromMinutes(-77.75));
+            res.VAZ.Should().Be(TimeSpan.Zero);
+        }
+
+        [Fact]
+        public async Task Kua30AlreadyHomePauseLess30()
+        {
+            var theDay = new DateTime(2020, 6, 22);
+
+            ctx.TimeBookings.RemoveRange();
+            await ctx.SaveChangesAsync();
+            ctx.TimeBookings.Add(new TimeBooking
+            {
+                BookingTime = theDay.AddHours(6).AddMinutes(3)
+            });
+            ctx.TimeBookings.Add(new TimeBooking
+            {
+                BookingTime = theDay.AddHours(11).AddMinutes(0)
+            });
+            ctx.TimeBookings.Add(new TimeBooking
+            {
+                BookingTime = theDay.AddHours(11).AddMinutes(20)
+            });
+            ctx.TimeBookings.Add(new TimeBooking
+            {
+                BookingTime = theDay.AddHours(14).AddMinutes(25)
+            });
+            await ctx.SaveChangesAsync();
+
+            var (awt, twt) = prepare(theDay);
+
+            var sut = new InfoService2(awt, twt, config);
+
+            var res = await sut.LoadInfo(theDay);
+
+            res.Worked.Should().Be(TimeSpan.FromHours(8).Add(TimeSpan.FromMinutes(2)));
+            res.Pause.Should().Be(TimeSpan.FromMinutes(10));
+            res.PauseTargetDiff.Should().Be(TimeSpan.FromMinutes(-10));
+            res.KuaActual.Should().Be(TimeSpan.FromMinutes(10));
+            res.KuaDiff.Should().Be(TimeSpan.FromMinutes(-77.75));
+            res.VAZ.Should().Be(TimeSpan.Zero);
+        }
+        #endregion
+
+        #region StillWorking Normal
+        [Fact]
+        public async Task WorkingForNoon_Normal()
+        {
+            var theDay = new DateTime(2020, 4, 15);
+
+            ctx.TimeBookings.RemoveRange();
+            await ctx.SaveChangesAsync();
+            ctx.TimeBookings.Add(new TimeBooking
+            {
+                BookingTime = theDay.AddHours(6).AddMinutes(3)
+            });
+            ctx.TimeBookings.Add(new TimeBooking
+            {
+                BookingTime = theDay.AddHours(9).AddMinutes(0)
+            });
+            ctx.TimeBookings.Add(new TimeBooking
+            {
+                BookingTime = theDay.AddHours(9).AddMinutes(10)
+            });
+            await ctx.SaveChangesAsync();
+
+            theDay = theDay.AddHours(10);
+            var (awt, twt) = prepare(theDay);
+
+            var sut = new InfoService2(awt, twt, config);
+
+            var res = await sut.LoadInfo(theDay);
+
+            res.Worked.Should().Be(TimeSpan.FromHours(3).Add(TimeSpan.FromMinutes(47)));
+            res.Pause.Should().Be(TimeSpan.FromMinutes(0));
+            res.PauseTargetDiff.Should().Be(TimeSpan.FromMinutes(-20));
+            res.KuaActual.Should().Be(TimeSpan.Zero);
+            res.VAZ.Should().Be(TimeSpan.FromMinutes(-265));
+        }
+
+        [Fact]
+        public async Task WorkingForNoon_Normal_InPause()
+        {
+            var theDay = new DateTime(2020, 4, 15);
+
+            ctx.TimeBookings.RemoveRange();
+            await ctx.SaveChangesAsync();
+            ctx.TimeBookings.Add(new TimeBooking
+            {
+                BookingTime = theDay.AddHours(6).AddMinutes(3)
+            });
+            ctx.TimeBookings.Add(new TimeBooking
+            {
+                BookingTime = theDay.AddHours(9).AddMinutes(0)
+            });
+            await ctx.SaveChangesAsync();
+
+            theDay = theDay.AddHours(10);
+            var (awt, twt) = prepare(theDay);
+
+            var sut = new InfoService2(awt, twt, config);
+
+            var res = await sut.LoadInfo(theDay);
+
+            res.Worked.Should().Be(TimeSpan.FromHours(2).Add(TimeSpan.FromMinutes(57)));
+            res.Pause.Should().Be(TimeSpan.Zero);
+            res.PauseTargetDiff.Should().Be(TimeSpan.FromMinutes(-30));
+            res.KuaActual.Should().Be(TimeSpan.Zero);
+            res.VAZ.Should().Be(TimeSpan.FromMinutes(-315));
+
+        }
+        #endregion
+
+        #region StillWorking Kua20
+        [Fact]
+        public async Task WorkingForNoon_Kua20()
+        {
+            var theDay = new DateTime(2020, 4, 21);
+
+            ctx.TimeBookings.RemoveRange();
+            await ctx.SaveChangesAsync();
+            ctx.TimeBookings.Add(new TimeBooking
+            {
+                BookingTime = theDay.AddHours(6).AddMinutes(3)
+            });
+            ctx.TimeBookings.Add(new TimeBooking
+            {
+                BookingTime = theDay.AddHours(9).AddMinutes(0)
+            });
+            ctx.TimeBookings.Add(new TimeBooking
+            {
+                BookingTime = theDay.AddHours(9).AddMinutes(10)
+            });
+            await ctx.SaveChangesAsync();
+
+            theDay = theDay.AddHours(10);
+            var (awt, twt) = prepare(theDay);
+
+            var sut = new InfoService2(awt, twt, config);
+
+            var res = await sut.LoadInfo(theDay);
+
+            res.Worked.Should().Be(TimeSpan.FromHours(3).Add(TimeSpan.FromMinutes(47)));
+            res.Pause.Should().Be(TimeSpan.FromMinutes(0));
+            res.PauseTargetDiff.Should().Be(TimeSpan.FromMinutes(-20));
+            res.KuaActual.Should().Be(TimeSpan.FromMinutes(265));
+            res.KuaDiff.Should().Be(TimeSpan.FromMinutes(235));
+            res.VAZ.Should().Be(TimeSpan.Zero);
+        }
+
+        [Fact]
+        public async Task WorkingForNoon_Kua20_InPause()
+        {
+            var theDay = new DateTime(2020, 4, 21);
+
+            ctx.TimeBookings.RemoveRange();
+            await ctx.SaveChangesAsync();
+            ctx.TimeBookings.Add(new TimeBooking
+            {
+                BookingTime = theDay.AddHours(6).AddMinutes(3)
+            });
+            ctx.TimeBookings.Add(new TimeBooking
+            {
+                BookingTime = theDay.AddHours(9).AddMinutes(0)
+            });
+            await ctx.SaveChangesAsync();
+
+            theDay = theDay.AddHours(10);
+            var (awt, twt) = prepare(theDay);
+
+            var sut = new InfoService2(awt, twt, config);
+
+            var res = await sut.LoadInfo(theDay);
+
+            res.Worked.Should().Be(TimeSpan.FromHours(2).Add(TimeSpan.FromMinutes(57)));
+            res.Pause.Should().Be(TimeSpan.Zero);
+            res.PauseTargetDiff.Should().Be(TimeSpan.FromMinutes(-30));
+            res.KuaActual.Should().Be(TimeSpan.FromMinutes(315));
+            res.KuaDiff.Should().Be(TimeSpan.FromMinutes(285));
+            res.VAZ.Should().Be(TimeSpan.Zero);
+
+        }
+        #endregion
+
+        #region StillWorking Kua30
+        [Fact]
+        public async Task WorkingForNoon_Kua30()
+        {
+            var theDay = new DateTime(2020, 6, 22);
+
+            ctx.TimeBookings.RemoveRange();
+            await ctx.SaveChangesAsync();
+            ctx.TimeBookings.Add(new TimeBooking
+            {
+                BookingTime = theDay.AddHours(6).AddMinutes(3)
+            });
+            ctx.TimeBookings.Add(new TimeBooking
+            {
+                BookingTime = theDay.AddHours(9).AddMinutes(0)
+            });
+            ctx.TimeBookings.Add(new TimeBooking
+            {
+                BookingTime = theDay.AddHours(9).AddMinutes(10)
+            });
+            await ctx.SaveChangesAsync();
+
+            theDay = theDay.AddHours(10);
+            var (awt, twt) = prepare(theDay);
+
+            var sut = new InfoService2(awt, twt, config);
+
+            var res = await sut.LoadInfo(theDay);
+
+            res.Worked.Should().Be(TimeSpan.FromHours(3).Add(TimeSpan.FromMinutes(47)));
+            res.Pause.Should().Be(TimeSpan.FromMinutes(0));
+            res.PauseTargetDiff.Should().Be(TimeSpan.FromMinutes(-20));
+            res.KuaActual.Should().Be(TimeSpan.FromMinutes(265));
+            res.KuaDiff.Should().Be(TimeSpan.FromMinutes(177.25));
+            res.VAZ.Should().Be(TimeSpan.Zero);
+        }
+
+        [Fact]
+        public async Task WorkingForNoon_Kua30_InPause()
+        {
+            var theDay = new DateTime(2020, 6, 22);
+
+            ctx.TimeBookings.RemoveRange();
+            await ctx.SaveChangesAsync();
+            ctx.TimeBookings.Add(new TimeBooking
+            {
+                BookingTime = theDay.AddHours(6).AddMinutes(3)
+            });
+            ctx.TimeBookings.Add(new TimeBooking
+            {
+                BookingTime = theDay.AddHours(9).AddMinutes(0)
+            });
+            await ctx.SaveChangesAsync();
+
+            theDay = theDay.AddHours(10);
+            var (awt, twt) = prepare(theDay);
+
+            var sut = new InfoService2(awt, twt, config);
+
+            var res = await sut.LoadInfo(theDay);
+
+            res.Worked.Should().Be(TimeSpan.FromHours(2).Add(TimeSpan.FromMinutes(57)));
+            res.Pause.Should().Be(TimeSpan.Zero);
+            res.PauseTargetDiff.Should().Be(TimeSpan.FromMinutes(-30));
+            res.KuaActual.Should().Be(TimeSpan.FromMinutes(315));
+            res.KuaDiff.Should().Be(TimeSpan.FromMinutes(227.25));
+            res.VAZ.Should().Be(TimeSpan.Zero);
+
+        }
+        #endregion
 
         private (ActualWorkTimeService awt, TargetWorkTimeService twt) prepare(DateTime theDay)
         {
@@ -408,12 +804,12 @@ namespace CoronaKurzArbeit.Tests.Services
 
             var fs = new FeiertagService(timeProvider);
             var cs = new CoronaService(config, fs);
-            var tbs = new TimeBookingsService(tbslogger, ctx, timeProvider, config, cs);
-            var awt = new ActualWorkTimeService(tbs);
+            var tbs = new TimeBookingsService(tbslogger, ctx);
+            var awt = new ActualWorkTimeService(tbs, timeProvider);
 
             var twt = new TargetWorkTimeService(config, cs);
 
             return (awt, twt);
-        } 
+        }
     }
 }

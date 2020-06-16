@@ -9,23 +9,26 @@ namespace CoronaKurzArbeit.Logic.Services
 {
     public interface IActualWorkTimeService
     {
-        Task<(DateTime inTime, DateTime outTime, TimeSpan workTime, TimeSpan pauseTime)> LoadDataAsync(DateTime theDate);
+        Task<(DateTime inTime, DateTime outTime, TimeSpan workTime, TimeSpan pauseTime)> LoadDataAsync(DateTime theDate, bool forInfo = false);
     }
     public class ActualWorkTimeService : IActualWorkTimeService
     {
         //private readonly ILogger<ActualWorkTimeService> _logger;
         private readonly ITimeBookingsService _timeBookings;
+        private readonly IDateTimeProvider _dateTimeProvider;
 
         public ActualWorkTimeService(
             //ILogger<ActualWorkTimeService> logger,
-            ITimeBookingsService timeBookingsService
+            ITimeBookingsService timeBookingsService,
+            IDateTimeProvider dateTimeProvider
             )
         {
             //_logger = logger;
             _timeBookings = timeBookingsService;
+            _dateTimeProvider = dateTimeProvider;
         }
 
-        public async Task<(DateTime inTime, DateTime outTime, TimeSpan workTime, TimeSpan pauseTime)> LoadDataAsync(DateTime theDate)
+        public async Task<(DateTime inTime, DateTime outTime, TimeSpan workTime, TimeSpan pauseTime)> LoadDataAsync(DateTime theDate, bool forInfo = false)
         {
             var bookings = await _timeBookings.GetBookingsForDayAsync(theDate);
             var work = TimeSpan.Zero;
@@ -41,6 +44,11 @@ namespace CoronaKurzArbeit.Logic.Services
             {
                 //Nur In
                 inT = bookings.First().BookingTime;
+                if(forInfo)
+                {
+                    //outTime should be now
+                    outT = _dateTimeProvider.GetCurrentTime();
+                }
             }
             else
             {
@@ -49,6 +57,14 @@ namespace CoronaKurzArbeit.Logic.Services
                 if (bookings.Count % 2 == 0)
                 {
                     outT = bookings.Last().BookingTime;
+                } else
+                {
+                    if(forInfo)
+                    {
+                        //Es gibt kein out booking aber für die info berechnung die aktuelle zeit nehmen
+                        bookings.Add(new TimeBooking { BookingTime = _dateTimeProvider.GetCurrentTime() });
+                        outT = bookings.Last().BookingTime;
+                    }
                 }
                 var c = 0;
                 TimeBooking? last = null;

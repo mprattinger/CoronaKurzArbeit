@@ -17,12 +17,6 @@ namespace CoronaKurzArbeit.Components
         [Inject]
         public KurzarbeitSettingsConfiguration KAConfig { get; set; } = default!;
 
-        [Inject]
-        public ICoronaService CoronaService { get; set; } = default!;
-
-        [Inject]
-        public ITimeBookingsService BookingsService { get; set; } = default!;
-
         public DateTime TheDate { get; set; } = DateTime.MinValue;
 
         public double SollArbeitszeit { get; set; } = 0;
@@ -74,40 +68,7 @@ namespace CoronaKurzArbeit.Components
             if (TheDate > DateTime.MinValue)
             {
                 SollArbeitszeit = TheDate.GetWorkhours(KAConfig).ToDouble();
-                //KAAusfall = CoronaService.KAAusfallPerDay(TheDate);
                 Tagesarbeitszeit = SollArbeitszeit - KAAusfall;
-                
-                var grossWTime = await BookingsService.GetGrossWorkTimeForDayAsync(TheDate);
-                var pauses = await BookingsService.GetPauseForDayAsync(TheDate);
-                var istArbeitsZeit = BookingsService.GetNetWorkingTimeForDay(TheDate, grossWTime, pauses);
-
-                IstArbeitszeitBrutto = grossWTime.grossWorkTime.TotalHours;
-                IstArbeitszeit = $"{istArbeitsZeit.Hours}:{istArbeitsZeit.Minutes} ({istArbeitsZeit.TotalHours:N2})";
-                if (KAAusfall > 0)
-                {
-                    var sa = TimeSpan.FromHours(Convert.ToDouble(SollArbeitszeit));
-                    var kua = sa.Subtract(istArbeitsZeit);
-                    KuaZeit = $"{kua.Hours}:{kua.Minutes} ({kua.TotalHours:N2})";
-                    if (kua.TotalHours < 0)
-                    {
-                        VAZeit = kua.TotalHours * -1;
-                        KuaZeit = string.Empty;
-                    }
-                }
-
-                if(TheDate.Date == DateTime.Now.Date 
-                    && grossWTime.inBooking != null
-                    && grossWTime.outBooking != null )
-                {
-                    if (grossWTime.grossWorkTime.TotalHours >= 6 && (pauses.grossPauseDuration == TimeSpan.Zero || pauses.grossPauseDuration.TotalMinutes < 30))
-                    {
-                        //Keine Pause oder pause kleiner 30 Minuten, aber mehr als 6 Stunden
-                        var diff = TimeSpan.FromMinutes(30).Subtract(pauses.grossPauseDuration);
-                        var p = pauses.netPauseDuration.Add(diff);
-                        var target = grossWTime.inBooking?.BookingTime.Add(istArbeitsZeit).Add(p);
-                        GoHome = $"{target?.Hour}:{target?.Minute}";
-                    }
-                }
             }
         }
 

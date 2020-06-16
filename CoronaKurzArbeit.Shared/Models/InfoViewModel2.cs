@@ -15,6 +15,7 @@ namespace CoronaKurzArbeit.Shared.Models
         public TimeSpan PauseTargetDiff { get; set; } = TimeSpan.Zero;
 
         public TimeSpan KuaTarget { get; set; } = TimeSpan.Zero;
+        public TimeSpan KuaActual { get; set; } = TimeSpan.Zero;
         public TimeSpan KuaDiff { get; set; } = TimeSpan.Zero;
 
         public TimeSpan VAZ { get; set; } = TimeSpan.Zero;

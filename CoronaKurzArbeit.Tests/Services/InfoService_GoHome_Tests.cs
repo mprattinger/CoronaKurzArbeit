@@ -518,8 +518,8 @@ namespace CoronaKurzArbeit.Tests.Services
 
             var fs = new FeiertagService(timeProvider);
             var cs = new CoronaService(config, fs);
-            var tbs = new TimeBookingsService(tbslogger, ctx, timeProvider, config, cs);
-            var awt = new ActualWorkTimeService(tbs);
+            var tbs = new TimeBookingsService(tbslogger, ctx);
+            var awt = new ActualWorkTimeService(tbs, timeProvider);
 
             var twt = new TargetWorkTimeService(config, cs);
 
