@@ -83,7 +83,7 @@ namespace CoronaKurzArbeit.Tests.Services
 
             var sut = new InfoService2(awt, twt, config);
 
-            var res = await sut.LoadInfo(theDay);
+            var res = await sut.LoadInfoAsync(theDay);
 
             res.Worked.Should().Be(TimeSpan.FromHours(8).Add(TimeSpan.FromMinutes(12)));
             res.Pause.Should().Be(TimeSpan.FromMinutes(30));
@@ -129,7 +129,7 @@ namespace CoronaKurzArbeit.Tests.Services
 
             var sut = new InfoService2(awt, twt, config);
 
-            var res = await sut.LoadInfo(theDay);
+            var res = await sut.LoadInfoAsync(theDay);
 
             res.Worked.Should().Be(TimeSpan.FromHours(8).Add(TimeSpan.FromMinutes(22)));
             res.Pause.Should().Be(TimeSpan.FromMinutes(30));
@@ -175,7 +175,7 @@ namespace CoronaKurzArbeit.Tests.Services
 
             var sut = new InfoService2(awt, twt, config);
 
-            var res = await sut.LoadInfo(theDay);
+            var res = await sut.LoadInfoAsync(theDay);
 
             res.Worked.Should().Be(TimeSpan.FromHours(8).Add(TimeSpan.FromMinutes(2)));
             res.Pause.Should().Be(TimeSpan.FromMinutes(30));
@@ -213,7 +213,7 @@ namespace CoronaKurzArbeit.Tests.Services
 
             var sut = new InfoService2(awt, twt, config);
 
-            var res = await sut.LoadInfo(theDay);
+            var res = await sut.LoadInfoAsync(theDay);
 
             res.Worked.Should().Be(TimeSpan.FromHours(8).Add(TimeSpan.FromMinutes(2)));
             res.Pause.Should().Be(TimeSpan.FromMinutes(10));
@@ -261,7 +261,7 @@ namespace CoronaKurzArbeit.Tests.Services
 
             var sut = new InfoService2(awt, twt, config);
 
-            var res = await sut.LoadInfo(theDay);
+            var res = await sut.LoadInfoAsync(theDay);
 
             res.Worked.Should().Be(TimeSpan.FromHours(7).Add(TimeSpan.FromMinutes(42)));
             res.Pause.Should().Be(TimeSpan.FromMinutes(30));
@@ -308,7 +308,7 @@ namespace CoronaKurzArbeit.Tests.Services
 
             var sut = new InfoService2(awt, twt, config);
 
-            var res = await sut.LoadInfo(theDay);
+            var res = await sut.LoadInfoAsync(theDay);
 
             res.Worked.Should().Be(TimeSpan.FromHours(8).Add(TimeSpan.FromMinutes(22)));
             res.Pause.Should().Be(TimeSpan.FromMinutes(30));
@@ -355,7 +355,7 @@ namespace CoronaKurzArbeit.Tests.Services
 
             var sut = new InfoService2(awt, twt, config);
 
-            var res = await sut.LoadInfo(theDay);
+            var res = await sut.LoadInfoAsync(theDay);
 
             res.Worked.Should().Be(TimeSpan.FromHours(8).Add(TimeSpan.FromMinutes(2)));
             res.Pause.Should().Be(TimeSpan.FromMinutes(30));
@@ -394,7 +394,7 @@ namespace CoronaKurzArbeit.Tests.Services
 
             var sut = new InfoService2(awt, twt, config);
 
-            var res = await sut.LoadInfo(theDay);
+            var res = await sut.LoadInfoAsync(theDay);
 
             res.Worked.Should().Be(TimeSpan.FromHours(8).Add(TimeSpan.FromMinutes(2)));
             res.Pause.Should().Be(TimeSpan.FromMinutes(10));
@@ -443,7 +443,7 @@ namespace CoronaKurzArbeit.Tests.Services
 
             var sut = new InfoService2(awt, twt, config);
 
-            var res = await sut.LoadInfo(theDay);
+            var res = await sut.LoadInfoAsync(theDay);
 
             res.Worked.Should().Be(TimeSpan.FromHours(6).Add(TimeSpan.FromMinutes(44)));
             res.Pause.Should().Be(TimeSpan.FromMinutes(30));
@@ -490,7 +490,7 @@ namespace CoronaKurzArbeit.Tests.Services
 
             var sut = new InfoService2(awt, twt, config);
 
-            var res = await sut.LoadInfo(theDay);
+            var res = await sut.LoadInfoAsync(theDay);
 
             res.Worked.Should().Be(TimeSpan.FromHours(8).Add(TimeSpan.FromMinutes(22)));
             res.Pause.Should().Be(TimeSpan.FromMinutes(30));
@@ -537,7 +537,7 @@ namespace CoronaKurzArbeit.Tests.Services
 
             var sut = new InfoService2(awt, twt, config);
 
-            var res = await sut.LoadInfo(theDay);
+            var res = await sut.LoadInfoAsync(theDay);
 
             res.Worked.Should().Be(TimeSpan.FromHours(8).Add(TimeSpan.FromMinutes(2)));
             res.Pause.Should().Be(TimeSpan.FromMinutes(30));
@@ -576,7 +576,7 @@ namespace CoronaKurzArbeit.Tests.Services
 
             var sut = new InfoService2(awt, twt, config);
 
-            var res = await sut.LoadInfo(theDay);
+            var res = await sut.LoadInfoAsync(theDay);
 
             res.Worked.Should().Be(TimeSpan.FromHours(8).Add(TimeSpan.FromMinutes(2)));
             res.Pause.Should().Be(TimeSpan.FromMinutes(10));
@@ -614,7 +614,7 @@ namespace CoronaKurzArbeit.Tests.Services
 
             var sut = new InfoService2(awt, twt, config);
 
-            var res = await sut.LoadInfo(theDay);
+            var res = await sut.LoadInfoAsync(theDay);
 
             res.Worked.Should().Be(TimeSpan.FromHours(3).Add(TimeSpan.FromMinutes(47)));
             res.Pause.Should().Be(TimeSpan.FromMinutes(0));
@@ -645,7 +645,7 @@ namespace CoronaKurzArbeit.Tests.Services
 
             var sut = new InfoService2(awt, twt, config);
 
-            var res = await sut.LoadInfo(theDay);
+            var res = await sut.LoadInfoAsync(theDay);
 
             res.Worked.Should().Be(TimeSpan.FromHours(2).Add(TimeSpan.FromMinutes(57)));
             res.Pause.Should().Be(TimeSpan.Zero);
@@ -683,7 +683,7 @@ namespace CoronaKurzArbeit.Tests.Services
 
             var sut = new InfoService2(awt, twt, config);
 
-            var res = await sut.LoadInfo(theDay);
+            var res = await sut.LoadInfoAsync(theDay);
 
             res.Worked.Should().Be(TimeSpan.FromHours(3).Add(TimeSpan.FromMinutes(47)));
             res.Pause.Should().Be(TimeSpan.FromMinutes(0));
@@ -715,7 +715,7 @@ namespace CoronaKurzArbeit.Tests.Services
 
             var sut = new InfoService2(awt, twt, config);
 
-            var res = await sut.LoadInfo(theDay);
+            var res = await sut.LoadInfoAsync(theDay);
 
             res.Worked.Should().Be(TimeSpan.FromHours(2).Add(TimeSpan.FromMinutes(57)));
             res.Pause.Should().Be(TimeSpan.Zero);
@@ -754,7 +754,7 @@ namespace CoronaKurzArbeit.Tests.Services
 
             var sut = new InfoService2(awt, twt, config);
 
-            var res = await sut.LoadInfo(theDay);
+            var res = await sut.LoadInfoAsync(theDay);
 
             res.Worked.Should().Be(TimeSpan.FromHours(3).Add(TimeSpan.FromMinutes(47)));
             res.Pause.Should().Be(TimeSpan.FromMinutes(0));
@@ -786,7 +786,7 @@ namespace CoronaKurzArbeit.Tests.Services
 
             var sut = new InfoService2(awt, twt, config);
 
-            var res = await sut.LoadInfo(theDay);
+            var res = await sut.LoadInfoAsync(theDay);
 
             res.Worked.Should().Be(TimeSpan.FromHours(2).Add(TimeSpan.FromMinutes(57)));
             res.Pause.Should().Be(TimeSpan.Zero);

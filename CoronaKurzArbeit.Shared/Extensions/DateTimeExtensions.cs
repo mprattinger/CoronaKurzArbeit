@@ -75,5 +75,13 @@ namespace CoronaKurzArbeit.Shared.Extensions
         {
             return (int)(timespan.Days / 30.436875);
         }
+
+        public static string NiceTimespan(this TimeSpan ts)
+        {
+            var h = ts.Hours < 10 ? $"0{ts.Hours}" : ts.Hours.ToString();
+            var m = ts.Minutes < 10 ? $"0{ts.Minutes}" : ts.Minutes.ToString();
+
+            return $"{h}:{m} ({ts.TotalHours})";
+        }
     }
 }

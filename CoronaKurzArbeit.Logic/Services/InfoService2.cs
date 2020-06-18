@@ -9,7 +9,7 @@ namespace CoronaKurzArbeit.Logic.Services
     public interface IInfoService2
     {
         Task<DateTime> GoHomeAsync(DateTime theDate);
-        Task<InfoViewModel2> LoadInfo(DateTime theDate);
+        Task<InfoViewModel2> LoadInfoAsync(DateTime theDate);
     }
 
     public class InfoService2 : IInfoService2
@@ -62,7 +62,7 @@ namespace CoronaKurzArbeit.Logic.Services
             return actual.inTime.Add(worktime).Add(pauseTime);
         }
 
-        public async Task<InfoViewModel2> LoadInfo(DateTime theDate)
+        public async Task<InfoViewModel2> LoadInfoAsync(DateTime theDate)
         {
             var ret = new InfoViewModel2();
             var (plannedWorkTime, coronaDelta, _, targetPause) = _targetWorkTime.LoadData(theDate);

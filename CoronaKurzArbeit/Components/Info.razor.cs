@@ -15,15 +15,24 @@ namespace CoronaKurzArbeit.Components
         public IAppState AppState { get; set; } = default!;
 
         [Inject]
-        public KurzarbeitSettingsConfiguration KAConfig { get; set; } = default!;
+        public IInfoService2 InfoService { get; set; } = default!;
+
+        //[Inject]
+        //public KurzarbeitSettingsConfiguration KAConfig { get; set; } = default!;
+
+        //[Inject]
+        //public ITargetWorkTimeService Target { get; set; } = default!;
+
+        //[Inject]
+        //public IActualWorkTimeService Actual { get; set; } = default!;
 
         public DateTime TheDate { get; set; } = DateTime.MinValue;
 
-        public double SollArbeitszeit { get; set; } = 0;
+        public string SollArbeitszeit { get; set; } = string.Empty;
 
-        public double KAAusfall { get; set; } = 0;
+        public string KAAusfall { get; set; } = string.Empty;
 
-        public double Tagesarbeitszeit { get; set; } = 0;
+        public string Tagesarbeitszeit { get; set; } = string.Empty;
 
         public double IstArbeitszeitBrutto { get; set; } = 0;
 
@@ -67,8 +76,17 @@ namespace CoronaKurzArbeit.Components
         {
             if (TheDate > DateTime.MinValue)
             {
-                SollArbeitszeit = TheDate.GetWorkhours(KAConfig).ToDouble();
-                Tagesarbeitszeit = SollArbeitszeit - KAAusfall;
+                //var (plannedWorkTime, coronaDelta, targetWorkTime, targetPause) = Target.LoadData(TheDate);
+                //SollArbeitszeit = plannedWorkTime.NiceTimespan();
+                //KAAusfall = coronaDelta.NiceTimespan();
+                //Tagesarbeitszeit = targetWorkTime.NiceTimespan();
+
+                //var actual = await Actual.LoadDataAsync(TheDate);
+                //IstArbeitszeit = actual.workTime.NiceTimespan();
+
+                var info = await InfoService.LoadInfoAsync(TheDate);
+                SollArbeitszeit = info.
+
             }
         }
 
