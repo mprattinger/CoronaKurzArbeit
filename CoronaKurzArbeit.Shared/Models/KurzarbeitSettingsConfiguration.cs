@@ -7,6 +7,7 @@ namespace CoronaKurzArbeit.Shared.Models
     {
         public DateTime Started { get; set; }
         public decimal SollArbeitsZeit { get; set; }
+        public int SollPause { get; set; }
         public int PauseFree { get; set; }
         public List<CoronaAusfall> CoronaSoll { get; set; } = new List<CoronaAusfall>();
         public decimal Monday { get; set; }

@@ -28,6 +28,7 @@ namespace CoronaKurzArbeit.Tests.Services
                 new CoronaAusfall { Ausfall = 0.3m, Bis = new DateTime(2099, 1, 1) }
             },
                 PauseFree = 10,
+                SollPause = 30,
                 Monday = 8.2m,
                 Tuesday = 8.2m,
                 Wednesday = 8.2m,

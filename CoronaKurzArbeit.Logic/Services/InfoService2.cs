@@ -85,12 +85,17 @@ namespace CoronaKurzArbeit.Logic.Services
                 ret.Worked = ret.Worked.Add(TimeSpan.FromMinutes(_config.PauseFree));
             }
 
+            //Ist die Pause geringer als das soll?
+            if(ret.Pause < TimeSpan.FromMinutes(_config.SollPause))
+            {
+                var add = TimeSpan.FromMinutes(_config.SollPause).Subtract(ret.Pause);
+                ret.Worked = ret.Worked.Subtract(add);
+            }
+
             //Diff zur Sollzeit
             //ret.TargetDiff = workTime.Subtract(targetWorkTime);
             ret.TargetDiff = ret.Worked.Subtract(plannedWorkTime);
-
-            
-
+                      
             //Aktueller CoronaSaldo (eventuell mit aktueller Zeit vergleichen?)
             ret.KuaTarget = coronaDelta;
             if (ret.KuaTarget != TimeSpan.Zero)

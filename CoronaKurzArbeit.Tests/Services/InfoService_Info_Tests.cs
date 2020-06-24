@@ -33,6 +33,7 @@ namespace CoronaKurzArbeit.Tests.Services
                 new CoronaAusfall { Ausfall = 0.3m, Bis = new DateTime(2099, 1, 1) }
             },
                 PauseFree = 10,
+                SollPause = 30,
                 Monday = 8.2m,
                 Tuesday = 8.2m,
                 Wednesday = 8.2m,
@@ -205,7 +206,7 @@ namespace CoronaKurzArbeit.Tests.Services
             });
             ctx.TimeBookings.Add(new TimeBooking
             {
-                BookingTime = theDay.AddHours(14).AddMinutes(15)
+                BookingTime = theDay.AddHours(14).AddMinutes(25)
             });
             await ctx.SaveChangesAsync();
 
@@ -396,11 +397,11 @@ namespace CoronaKurzArbeit.Tests.Services
 
             var res = await sut.LoadInfoAsync(theDay);
 
-            res.Worked.Should().Be(TimeSpan.FromHours(8).Add(TimeSpan.FromMinutes(12)));//8:02 + 10Min geschenkt 8:12
+            res.Worked.Should().Be(TimeSpan.FromHours(8).Add(TimeSpan.FromMinutes(2)));//8:02 + 10Min geschenkt 8:12 Aber Pause weniger als 30 daher abziehen
             res.Pause.Should().Be(TimeSpan.FromMinutes(20));
             res.PauseTargetDiff.Should().Be(TimeSpan.FromMinutes(-10));
-            res.KuaActual.Should().Be(TimeSpan.Zero);
-            res.KuaDiff.Should().Be(TimeSpan.FromMinutes(-30));
+            res.KuaActual.Should().Be(TimeSpan.FromMinutes(10));
+            res.KuaDiff.Should().Be(TimeSpan.FromMinutes(-20));
             res.VAZ.Should().Be(TimeSpan.Zero);
         }
         #endregion
@@ -568,7 +569,7 @@ namespace CoronaKurzArbeit.Tests.Services
             });
             ctx.TimeBookings.Add(new TimeBooking
             {
-                BookingTime = theDay.AddHours(14).AddMinutes(15)
+                BookingTime = theDay.AddHours(14).AddMinutes(25)
             });
             await ctx.SaveChangesAsync();
 
@@ -616,11 +617,11 @@ namespace CoronaKurzArbeit.Tests.Services
 
             var res = await sut.LoadInfoAsync(theDay);
 
-            res.Worked.Should().Be(TimeSpan.FromHours(3).Add(TimeSpan.FromMinutes(57)));
+            res.Worked.Should().Be(TimeSpan.FromHours(3).Add(TimeSpan.FromMinutes(37)));
             res.Pause.Should().Be(TimeSpan.FromMinutes(10));
             res.PauseTargetDiff.Should().Be(TimeSpan.FromMinutes(-20));
             res.KuaActual.Should().Be(TimeSpan.Zero);
-            res.VAZ.Should().Be(TimeSpan.FromMinutes(-255));
+            res.VAZ.Should().Be(TimeSpan.FromMinutes(-275));
         }
 
         [Fact]
@@ -647,11 +648,11 @@ namespace CoronaKurzArbeit.Tests.Services
 
             var res = await sut.LoadInfoAsync(theDay);
 
-            res.Worked.Should().Be(TimeSpan.FromHours(2).Add(TimeSpan.FromMinutes(57)));
+            res.Worked.Should().Be(TimeSpan.FromHours(2).Add(TimeSpan.FromMinutes(27)));
             res.Pause.Should().Be(TimeSpan.Zero);
             res.PauseTargetDiff.Should().Be(TimeSpan.FromMinutes(-30));
             res.KuaActual.Should().Be(TimeSpan.Zero);
-            res.VAZ.Should().Be(TimeSpan.FromMinutes(-315));
+            res.VAZ.Should().Be(TimeSpan.FromMinutes(-345));
 
         }
         #endregion
@@ -685,11 +686,11 @@ namespace CoronaKurzArbeit.Tests.Services
 
             var res = await sut.LoadInfoAsync(theDay);
 
-            res.Worked.Should().Be(TimeSpan.FromHours(3).Add(TimeSpan.FromMinutes(57)));
+            res.Worked.Should().Be(TimeSpan.FromHours(3).Add(TimeSpan.FromMinutes(37)));
             res.Pause.Should().Be(TimeSpan.FromMinutes(10));
             res.PauseTargetDiff.Should().Be(TimeSpan.FromMinutes(-20));
-            res.KuaActual.Should().Be(TimeSpan.FromMinutes(255));
-            res.KuaDiff.Should().Be(TimeSpan.FromMinutes(225));
+            res.KuaActual.Should().Be(TimeSpan.FromMinutes(275));
+            res.KuaDiff.Should().Be(TimeSpan.FromMinutes(245));
             res.VAZ.Should().Be(TimeSpan.Zero);
         }
 
@@ -717,11 +718,11 @@ namespace CoronaKurzArbeit.Tests.Services
 
             var res = await sut.LoadInfoAsync(theDay);
 
-            res.Worked.Should().Be(TimeSpan.FromHours(2).Add(TimeSpan.FromMinutes(57)));
+            res.Worked.Should().Be(TimeSpan.FromHours(2).Add(TimeSpan.FromMinutes(27)));
             res.Pause.Should().Be(TimeSpan.Zero);
             res.PauseTargetDiff.Should().Be(TimeSpan.FromMinutes(-30));
-            res.KuaActual.Should().Be(TimeSpan.FromMinutes(315));
-            res.KuaDiff.Should().Be(TimeSpan.FromMinutes(285));
+            res.KuaActual.Should().Be(TimeSpan.FromMinutes(345));
+            res.KuaDiff.Should().Be(TimeSpan.FromMinutes(315));
             res.VAZ.Should().Be(TimeSpan.Zero);
 
         }
@@ -756,11 +757,11 @@ namespace CoronaKurzArbeit.Tests.Services
 
             var res = await sut.LoadInfoAsync(theDay);
 
-            res.Worked.Should().Be(TimeSpan.FromHours(3).Add(TimeSpan.FromMinutes(57)));
+            res.Worked.Should().Be(TimeSpan.FromHours(3).Add(TimeSpan.FromMinutes(37)));
             res.Pause.Should().Be(TimeSpan.FromMinutes(10));
             res.PauseTargetDiff.Should().Be(TimeSpan.FromMinutes(-20));
-            res.KuaActual.Should().Be(TimeSpan.FromMinutes(255));
-            res.KuaDiff.Should().Be(TimeSpan.FromMinutes(167.25));
+            res.KuaActual.Should().Be(TimeSpan.FromMinutes(275));
+            res.KuaDiff.Should().Be(TimeSpan.FromMinutes(187.25));
             res.VAZ.Should().Be(TimeSpan.Zero);
         }
 
@@ -788,11 +789,11 @@ namespace CoronaKurzArbeit.Tests.Services
 
             var res = await sut.LoadInfoAsync(theDay);
 
-            res.Worked.Should().Be(TimeSpan.FromHours(2).Add(TimeSpan.FromMinutes(57)));
+            res.Worked.Should().Be(TimeSpan.FromHours(2).Add(TimeSpan.FromMinutes(27)));
             res.Pause.Should().Be(TimeSpan.Zero);
             res.PauseTargetDiff.Should().Be(TimeSpan.FromMinutes(-30));
-            res.KuaActual.Should().Be(TimeSpan.FromMinutes(315));
-            res.KuaDiff.Should().Be(TimeSpan.FromMinutes(227.25));
+            res.KuaActual.Should().Be(TimeSpan.FromMinutes(345));
+            res.KuaDiff.Should().Be(TimeSpan.FromMinutes(257.25));
             res.VAZ.Should().Be(TimeSpan.Zero);
 
         }

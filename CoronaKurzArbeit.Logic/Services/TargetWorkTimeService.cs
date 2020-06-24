@@ -37,7 +37,7 @@ namespace CoronaKurzArbeit.Logic.Services
             TargetWorkTime = PlannedWorkTime.Subtract(CoronaDelta);
             if(TargetWorkTime.TotalHours >= 6)
             {
-                TargetPause = TimeSpan.FromMinutes(30);
+                TargetPause = TimeSpan.FromMinutes(_config.SollPause);
             }
             return (PlannedWorkTime, CoronaDelta, TargetWorkTime, TargetPause);
         }
