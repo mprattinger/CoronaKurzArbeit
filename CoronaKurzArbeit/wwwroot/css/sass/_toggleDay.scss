@@ -1,41 +1,18 @@
-﻿.toggle-day-container {
-    width: 100%;
+﻿.day-toggle {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    justify-content: center;
+    font-size: 40px;
+    padding-top: 30px;
+    padding-bottom: 30px;
 
-    .toggle-day-controls-container {
-        display: flex;
-        flex-direction: row;
-
-        .toggle-day-controls-left {
-            width: 50%;
-            display: flex;
-            flex-direction: column;
-            margin-right: 20px;
-
-            .toggle-day-controls {
-                display: flex;
-                flex-direction: row;
-                margin: 10px;
-                justify-content: space-around;
-                margin-bottom: 20px;
-            }
-
-            .toggle-day-content-register {
-                margin-bottom: 20px;
-            }
-        }
-
-        .toggle-day-controls-right {
-            .toggle-day-controls-info {
-                width: 100%;
-            }
-        }
+    .dt_left {
+        margin-right: 50px;
+        cursor: pointer;
     }
 
-    .toggle-day-content {
-        width: 100%;
-        display: flex;
-        flex-direction: column;
+    .dt_right {
+        margin-left: 50px;
+        cursor: pointer;
     }
 }

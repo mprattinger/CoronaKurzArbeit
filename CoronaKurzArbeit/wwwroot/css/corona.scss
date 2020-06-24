@@ -1,7 +1,43 @@
 ﻿@import "sass/toggleDay";
 @import "sass/flexTab";
+@import "sass/timeSpanDisplay";
 
 .line {
     display: flex;
     flex-direction: row;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    border: 1px solid black;
+}
+
+.list-container {
+    width: 60%;
+    border: 1px solid red;
+    margin-right: 20px;
+}
+
+.info-container {
+    width: 33%;
+    border: 1px solid blue;
+    justify-content: center;
+}
+
+.flex-left {
+    justify-content: left;
+}
+
+.flex-center {
+    justify-content: center;
+}
+
+.flex-right {
+    justify-content: right;
+}
+
+.top-spacer {
+    margin-top: 20px;
 }

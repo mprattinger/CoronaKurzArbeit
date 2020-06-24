@@ -1,0 +1,36 @@
+﻿<div class="day-toggle">
+    <div class="dt_left" @onclick="DayBack"><span class="oi oi-arrow-thick-left"></span></div>
+    <div class="dt_center"><span>@CurrentDay.DayOfWeek - @CurrentDay.ToShortDateString()</span></div>
+    <div class="dt_right" @onclick="DayNext"><span class="oi oi-arrow-thick-right"></span></div>
+</div>
+
+@code {
+
+    [Inject]
+    public IAppState AppState { get; set; } = default!;
+
+    public DateTime CurrentDay { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            CurrentDay = DateTime.Now;
+            await AppState.CurrentDayChangedAsync(CurrentDay);
+            StateHasChanged();
+        }
+    }
+
+    public async Task DayBack()
+    {
+        CurrentDay = CurrentDay.AddDays(-1);
+        await AppState.CurrentDayChangedAsync(CurrentDay);
+    }
+
+    public async Task DayNext()
+    {
+        CurrentDay = CurrentDay.AddDays(1);
+        await AppState.CurrentDayChangedAsync(CurrentDay);
+    }
+
+}

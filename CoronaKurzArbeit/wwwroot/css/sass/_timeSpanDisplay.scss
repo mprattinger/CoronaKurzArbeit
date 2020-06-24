@@ -1,0 +1,23 @@
+﻿.timespandisplay {
+    display: flex;
+    flex-direction: column;
+    margin-left: 10px;
+    margin-right: 10px;
+
+
+    span:first-child {
+        font-size: 10px;
+    }
+
+    span:last-child {
+        font-size: 15px;
+    }
+}
+
+.tsd-pos {
+    color: green;
+}
+
+.tsd-neg {
+    color: red;
+}

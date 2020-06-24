@@ -33,7 +33,7 @@ namespace CoronaKurzArbeit.Components
 
         public DateTime CurrentDate { get; set; } = DateTime.Now.Date;
 
-        private readonly string fixedClass = "btn btn-primary btn-block";
+        private readonly string fixedClass = "btn btn-primary";
         private string Classes
         {
             get

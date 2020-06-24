@@ -1,8 +1,17 @@
 ﻿@page "/"
 
-    <ToggleDays>
-        <BookingList Class="toggle-day-content-booking"/>
-    </ToggleDays>
+<div class="container">
+    <DayToggle />
+    <div class="line">
+        <div class="list-container">
+            <DayTimeList />
+        </div>
+        <div class="info-container">
+            <Info />
+        </div>
+    </div>
+</div>
+
 @code {
 
     

@@ -45,6 +45,7 @@ namespace CoronaKurzArbeit
             services.AddScoped<ITimeBookingsService, TimeBookingsService>();
             services.AddScoped<IActualWorkTimeService, ActualWorkTimeService>();
             services.AddScoped<ITargetWorkTimeService, TargetWorkTimeService>();
+            services.AddScoped<IInfoService2, InfoService2>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

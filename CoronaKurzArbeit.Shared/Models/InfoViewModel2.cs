@@ -6,6 +6,10 @@ namespace CoronaKurzArbeit.Shared.Models
 {
     public class InfoViewModel2
     {
+        public TimeSpan Worktime { get; set; } = TimeSpan.Zero;
+        public TimeSpan CoronaDelta { get; set; } = TimeSpan.Zero;
+        public TimeSpan WorktimeCorona { get; set; } = TimeSpan.Zero;
+
         public TimeSpan Worked { get; set; } = TimeSpan.Zero;
         
         public TimeSpan TargetDiff { get; set; } = TimeSpan.Zero;

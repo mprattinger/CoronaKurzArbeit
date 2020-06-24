@@ -7,11 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoronaKurzArbeit", "CoronaK
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoronaKurzArbeit.Tests", "CoronaKurzArbeit.Tests\CoronaKurzArbeit.Tests.csproj", "{A9302902-6045-4102-9436-0CD1924A58E0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoronaKurzArbeit.DAL", "CoronaKurzArbeit.DAL\CoronaKurzArbeit.DAL.csproj", "{6E43EB37-D0B2-47A0-9609-9125D3BEC23F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoronaKurzArbeit.DAL", "CoronaKurzArbeit.DAL\CoronaKurzArbeit.DAL.csproj", "{6E43EB37-D0B2-47A0-9609-9125D3BEC23F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoronaKurzArbeit.Shared", "CoronaKurzArbeit.Shared\CoronaKurzArbeit.Shared.csproj", "{F470A4D5-10FE-439C-BD93-D8F9420682DB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoronaKurzArbeit.Shared", "CoronaKurzArbeit.Shared\CoronaKurzArbeit.Shared.csproj", "{F470A4D5-10FE-439C-BD93-D8F9420682DB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoronaKurzArbeit.Logic", "CoronaKurzArbeit.Logic\CoronaKurzArbeit.Logic.csproj", "{E2EC0C93-09A4-4F28-8897-33E213BF3FC0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoronaKurzArbeit.Logic", "CoronaKurzArbeit.Logic\CoronaKurzArbeit.Logic.csproj", "{E2EC0C93-09A4-4F28-8897-33E213BF3FC0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

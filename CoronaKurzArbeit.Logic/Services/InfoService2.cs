@@ -65,44 +65,52 @@ namespace CoronaKurzArbeit.Logic.Services
         public async Task<InfoViewModel2> LoadInfoAsync(DateTime theDate)
         {
             var ret = new InfoViewModel2();
-            var (plannedWorkTime, coronaDelta, _, targetPause) = _targetWorkTime.LoadData(theDate);
+            var (plannedWorkTime, coronaDelta, targetWorkTime,  targetPause) = _targetWorkTime.LoadData(theDate);
             var (_, _, workTime, pauseTime) = await _actualWorkTime.LoadDataAsync(theDate, true);
 
-            //Gearbeitete Zeit
-            ret.Worked = workTime;
-            //Diff zur Sollzeit
-            //ret.TargetDiff = workTime.Subtract(targetWorkTime);
-            ret.TargetDiff = workTime.Subtract(plannedWorkTime);
+            //Basisinfo
+            ret.Worktime = plannedWorkTime;
+            ret.CoronaDelta = coronaDelta;
+            ret.WorktimeCorona = targetWorkTime;
 
             //Pausen
             ret.Pause = pauseTime;
-            //Diff zu Soll
             ret.PauseTargetDiff = pauseTime.Subtract(targetPause);
+
+            //Gearbeitete Zeit
+            ret.Worked = workTime;
+            //Gibt es eine geschenkte Pause?
             if (ret.Pause >= TimeSpan.FromMinutes(_config.PauseFree))
             {
-                ret.Pause = ret.Pause.Subtract(TimeSpan.FromMinutes(_config.PauseFree));
+                ret.Worked = ret.Worked.Add(TimeSpan.FromMinutes(_config.PauseFree));
             }
+
+            //Diff zur Sollzeit
+            //ret.TargetDiff = workTime.Subtract(targetWorkTime);
+            ret.TargetDiff = ret.Worked.Subtract(plannedWorkTime);
+
+            
 
             //Aktueller CoronaSaldo (eventuell mit aktueller Zeit vergleichen?)
             ret.KuaTarget = coronaDelta;
             if (ret.KuaTarget != TimeSpan.Zero)
             {
-                ret.KuaActual = plannedWorkTime.Subtract(workTime);
-                if(ret.KuaActual < TimeSpan.Zero)
+                ret.KuaActual = plannedWorkTime.Subtract(ret.Worked);
+                if (ret.KuaActual < TimeSpan.Zero)
                 {
                     //Es kann kein negatives Kua geben
                     ret.KuaActual = TimeSpan.Zero;
                 }
-                if(workTime > plannedWorkTime)
+                if(ret.Worked > plannedWorkTime)
                 {
                     //Bei Kua kann es nur pos VAZ geben
-                    ret.VAZ = workTime.Subtract(plannedWorkTime);
+                    ret.VAZ = ret.Worked.Subtract(plannedWorkTime);
                 }
                 ret.KuaDiff = ret.KuaActual.Subtract(ret.KuaTarget);
             } else
             {
                 //Kein Kua, gibt es VAZ?
-                ret.VAZ = plannedWorkTime.Subtract(workTime) != TimeSpan.Zero ? workTime.Subtract(plannedWorkTime) : TimeSpan.Zero;
+                ret.VAZ = plannedWorkTime.Subtract(ret.Worked) != TimeSpan.Zero ? ret.Worked.Subtract(plannedWorkTime) : TimeSpan.Zero;
             }
 
             return ret;

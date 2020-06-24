@@ -78,10 +78,23 @@ namespace CoronaKurzArbeit.Shared.Extensions
 
         public static string NiceTimespan(this TimeSpan ts)
         {
-            var h = ts.Hours < 10 ? $"0{ts.Hours}" : ts.Hours.ToString();
-            var m = ts.Minutes < 10 ? $"0{ts.Minutes}" : ts.Minutes.ToString();
+            if (ts == TimeSpan.Zero) return "00:00";
+            var tsw = ts;
+            var isneg = false;
+            if(ts < TimeSpan.Zero)
+            {
+                tsw = tsw.Negate();
+                isneg = true;
+            }
 
-            return $"{h}:{m} ({ts.TotalHours})";
+            var h = tsw.Hours < 10 ? $"0{tsw.Hours}" : tsw.Hours.ToString();
+            var m = tsw.Minutes < 10 ? $"0{tsw.Minutes}" : tsw.Minutes.ToString();
+
+            var th = Math.Round(tsw.TotalHours, 2);
+
+            var ret = $"{h}:{m} ({th})";
+            if (isneg) ret = "-" + ret;
+            return ret;
         }
     }
 }

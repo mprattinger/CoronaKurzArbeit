@@ -1,1 +1,22 @@
-﻿
+﻿<div class="container">
+    <div class="line flex-right">
+        @*<button class="btn btn-primary" @onclick="New">Neue Buchung</button>*@
+        <Register AtDate="@CurrentDate" />
+    </div>
+    <div class="line top-spacer">
+        <div class="container">
+            @if (Bookings.Count > 0)
+            {
+            @foreach (var booking in Bookings)
+            {
+                <div class="line flex-left">
+                    <span>@booking.BookingTime.ToShortTimeString()</span>
+                </div>
+            }
+            } else
+            {
+                <span>Leider keine Daten vorhanden...</span>
+            }
+        </div>
+    </div>
+</div>
