@@ -4,6 +4,8 @@ using CoronaKurzArbeit.Tests.Helpers;
 using FluentAssertions;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using Xunit;
 
@@ -35,6 +37,7 @@ namespace CoronaKurzArbeit.Tests.Services
             };
         }
 
+        #region Day
         [Fact]
         public void NormalDayNoCorona()
         {
@@ -221,5 +224,26 @@ namespace CoronaKurzArbeit.Tests.Services
             targetWorkTime.TotalMinutes.Should().Be(0);
             targetPause.TotalMinutes.Should().Be(0);
         }
+        #endregion
+
+        #region Week
+        [Fact]
+        public void NormalWeekNoCorona()
+        {
+            var start = new DateTime(2020, 04, 13);
+            var end = new DateTime(2020, 04, 19);
+            var fService = new FeiertagService(new FakeDateTimeProvider(start)); //Für das Feiertagsservice brauchen wir e nur das Jahr aus dem DateTimeProvider
+            var corona = new CoronaService(config, fService);
+
+            var sut = new TargetWorkTimeService(config, corona);
+
+            var res = sut.LoadData(start, end);
+
+            res.plannedWorkTime.Should().Be(TimeSpan.FromHours(38.5));
+            res.coronaDelta.Should().Be(TimeSpan.Zero);
+            res.targetWorkTime.Should().Be(TimeSpan.FromHours(38.5));
+            res.targetPause.Should().Be(TimeSpan.FromMinutes(150));
+        }
+        #endregion
     }
 }
