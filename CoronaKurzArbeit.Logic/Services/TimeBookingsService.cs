@@ -1,6 +1,7 @@
 ﻿using CoronaKurzArbeit.DAL.DataAccessSQL;
 using CoronaKurzArbeit.Shared.Extensions;
 using CoronaKurzArbeit.Shared.Models;
+using CoronaKurzArbeit.Shared.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging;
@@ -19,19 +20,27 @@ namespace CoronaKurzArbeit.Logic.Services
         Task AddBookingAsync(TimeBooking newBooking);
         Task UpdateBookingAsync(TimeBooking changed);
         Task DeleteBookingAsync(TimeBooking booking);
+        decimal GetWorkhours(DateTime current);
+        List<(DateTime day, decimal arbeitsZeit, WorkDayType type)> GetWorkDaysForWeek(DateTime dayInWeek);
     }
 
     public class TimeBookingsService : ITimeBookingsService
     {
         private readonly ILogger<TimeBookingsService> _logger;
         private readonly ApplicationDbContext _context;
+        private readonly KurzarbeitSettingsConfiguration _config;
+        private readonly IFeiertagService _feiertagService;
 
         public TimeBookingsService(
             ILogger<TimeBookingsService> logger, 
-            ApplicationDbContext context)
+            ApplicationDbContext context,
+            KurzarbeitSettingsConfiguration config,
+            IFeiertagService feiertagService)
         {
             _logger = logger;
             _context = context;
+            _config = config;
+            _feiertagService = feiertagService;
         }
 
         public async Task<List<TimeBooking>> GetBookingsForDayAsync(DateTime theDate)
@@ -94,6 +103,72 @@ namespace CoronaKurzArbeit.Logic.Services
                 _logger.LogError(ex, msg);
                 throw new Exception(msg, ex);
             }
+        }
+
+        public decimal GetWorkhours(DateTime current)
+        {
+            var wdays = GetWorkDaysForWeek(current);
+            var (day, arbeitsZeit, type) = wdays.Where(x => x.day.Date == current.Date).FirstOrDefault();
+            return type == WorkDayType.Workday || type == WorkDayType.KAday ? arbeitsZeit : 0;
+        }
+
+        public List<(DateTime day, decimal arbeitsZeit, WorkDayType type)> GetWorkDaysForWeek(DateTime dayInWeek)
+        {
+            var workDays = new List<(DateTime day, decimal arbeitsZeit, WorkDayType type)>();
+
+            //Arbeitstage ermitteln
+            var f = dayInWeek.FirstDayOfWeek(DayOfWeek.Monday);
+            while (f.DayOfWeek != DayOfWeek.Saturday)
+            {
+                //Ist der Tag ein Feiertag?
+                if (_feiertagService.IsFeiertag(f))
+                {
+                    //Ja
+                    workDays.Add((f, getWorkhoursFromConfig(f), WorkDayType.Free));
+                }
+                else
+                {
+                    //Nein
+                    //Ein Fenstertag
+                    if (_feiertagService.IsFenstertag(f))
+                    {
+                        //Ja
+                        workDays.Add((f, getWorkhoursFromConfig(f), WorkDayType.Free));
+                    }
+                    else
+                    {
+                        //Nein
+                        //Ist der Tag ein KA Tag?
+                        if (_config.CoronaDays.Contains(f.DayOfWeek) && f.Date >= _config.Started.Date)
+                        {
+                            //Ja
+                            workDays.Add((f, getWorkhoursFromConfig(f), WorkDayType.KAday));
+                        }
+                        else
+                        {
+                            //Nein
+                            //-> Arbeitstag
+                            workDays.Add((f, getWorkhoursFromConfig(f), WorkDayType.Workday));
+                        }
+                    }
+                }
+                f = f.AddDays(1);
+            }
+
+            return workDays;
+        }
+
+        private decimal getWorkhoursFromConfig(DateTime theDate)
+        {
+            var props = _config.GetType().GetProperties();
+            foreach (var p in props)
+            {
+                if (p.Name == theDate.DayOfWeek.ToString())
+                {
+                    return Convert.ToDecimal(p.GetValue(_config) ?? default(decimal));
+                }
+            }
+            return 0;
         }
     }
 }

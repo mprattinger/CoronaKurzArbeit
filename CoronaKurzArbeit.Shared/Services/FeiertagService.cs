@@ -1,10 +1,10 @@
-﻿using CoronaKurzArbeit.DAL.Models;
-using CoronaKurzArbeit.Shared.Extensions;
+﻿using CoronaKurzArbeit.Shared.Extensions;
+using CoronaKurzArbeit.Shared.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace CoronaKurzArbeit.Logic.Services
+namespace CoronaKurzArbeit.Shared.Services
 {
     public interface IFeiertagService
     {

@@ -2,6 +2,7 @@
 using CoronaKurzArbeit.DAL.DataAccessSQL;
 using CoronaKurzArbeit.Logic.Services;
 using CoronaKurzArbeit.Shared.Models;
+using CoronaKurzArbeit.Shared.Services;
 using CoronaKurzArbeit.Tests.Helpers;
 using FluentAssertions;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -17,11 +18,32 @@ namespace CoronaKurzArbeit.Tests.Services
     {
         private readonly NullLogger<TimeBookingsService> tbsLogger;
         private readonly ApplicationDbContext ctx;
+        private readonly KurzarbeitSettingsConfiguration config;
+        private readonly IFeiertagService fService;
 
         public ActualWorkTimeTests()
         {
             tbsLogger = new NullLogger<TimeBookingsService>();
             ctx = DbContextHelper.GetContext("tbs");
+            config = new KurzarbeitSettingsConfiguration
+            {
+                Started = new DateTime(2020, 4, 20),
+                SollArbeitsZeit = 38.5m,
+                CoronaSoll = new List<CoronaAusfall>
+            {
+                new CoronaAusfall { Ausfall = 0.2m, Bis = new DateTime(2020, 6, 1) },
+                new CoronaAusfall { Ausfall = 0.3m, Bis = new DateTime(2099, 1, 1) }
+            },
+                PauseFree = 10,
+                SollPause = 30,
+                Monday = 8.2m,
+                Tuesday = 8.2m,
+                Wednesday = 8.2m,
+                Thursday = 8.2m,
+                Friday = 5.7m,
+                CoronaDays = new List<DayOfWeek> { DayOfWeek.Friday }
+            };
+            fService = new FeiertagService(new FakeDateTimeProvider(new DateTime(2020, 05, 19)));
         }
 
         [Fact]
@@ -36,7 +58,7 @@ namespace CoronaKurzArbeit.Tests.Services
             });
             await ctx.SaveChangesAsync();
             var timeProvider = new FakeDateTimeProvider(theDay);
-            var tbs = new TimeBookingsService(tbsLogger, ctx);
+            var tbs = new TimeBookingsService(tbsLogger, ctx, config, fService);
 
             var sut = new ActualWorkTimeService(tbs, timeProvider);
             var (inTime, _, workTime, pauseTime) = await sut.LoadDataAsync(theDay);
@@ -65,7 +87,7 @@ namespace CoronaKurzArbeit.Tests.Services
             await ctx.SaveChangesAsync();
 
             var timeProvider = new FakeDateTimeProvider(theDay);
-            var tbs = new TimeBookingsService(tbsLogger, ctx);
+            var tbs = new TimeBookingsService(tbsLogger, ctx, config, fService);
 
             var sut = new ActualWorkTimeService(tbs, timeProvider);
             var (inTime, outTime, workTime, pauseTime) = await sut.LoadDataAsync(theDay);
@@ -96,7 +118,7 @@ namespace CoronaKurzArbeit.Tests.Services
             await ctx.SaveChangesAsync();
 
             var timeProvider = new FakeDateTimeProvider(theDay);
-            var tbs = new TimeBookingsService(tbsLogger, ctx);
+            var tbs = new TimeBookingsService(tbsLogger, ctx, config, fService);
 
             var sut = new ActualWorkTimeService(tbs, timeProvider);
             var (inTime, outTime, workTime, pauseTime) = await sut.LoadDataAsync(theDay);
@@ -131,7 +153,7 @@ namespace CoronaKurzArbeit.Tests.Services
             await ctx.SaveChangesAsync();
 
             var timeProvider = new FakeDateTimeProvider(theDay);
-            var tbs = new TimeBookingsService(tbsLogger, ctx);
+            var tbs = new TimeBookingsService(tbsLogger, ctx, config, fService);
 
             var sut = new ActualWorkTimeService(tbs, timeProvider);
             var (inTime, outTime, workTime, pauseTime) = await sut.LoadDataAsync(theDay);
@@ -169,7 +191,7 @@ namespace CoronaKurzArbeit.Tests.Services
             await ctx.SaveChangesAsync();
 
             var timeProvider = new FakeDateTimeProvider(theDay);
-            var tbs = new TimeBookingsService(tbsLogger, ctx);
+            var tbs = new TimeBookingsService(tbsLogger, ctx, config, fService);
 
             var sut = new ActualWorkTimeService(tbs, timeProvider);
             var (inTime, outTime, workTime, pauseTime) = await sut.LoadDataAsync(theDay);
@@ -212,7 +234,7 @@ namespace CoronaKurzArbeit.Tests.Services
             await ctx.SaveChangesAsync();
 
             var timeProvider = new FakeDateTimeProvider(theDay);
-            var tbs = new TimeBookingsService(tbsLogger, ctx);
+            var tbs = new TimeBookingsService(tbsLogger, ctx, config, fService);
 
             var sut = new ActualWorkTimeService(tbs, timeProvider);
             var (inTime, outTime, workTime, pauseTime) = await sut.LoadDataAsync(theDay);
@@ -258,7 +280,7 @@ namespace CoronaKurzArbeit.Tests.Services
             await ctx.SaveChangesAsync();
 
             var timeProvider = new FakeDateTimeProvider(theDay);
-            var tbs = new TimeBookingsService(tbsLogger, ctx);
+            var tbs = new TimeBookingsService(tbsLogger, ctx, config, fService);
 
             var sut = new ActualWorkTimeService(tbs, timeProvider);
             var (inTime, outTime, workTime, pauseTime) = await sut.LoadDataAsync(theDay);

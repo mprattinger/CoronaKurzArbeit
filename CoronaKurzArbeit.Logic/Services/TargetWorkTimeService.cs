@@ -17,32 +17,36 @@ namespace CoronaKurzArbeit.Logic.Services
         //private readonly ILogger<TargetWorkTimeService> _logger;
         private readonly KurzarbeitSettingsConfiguration _config;
         private readonly ICoronaService _coronaService;
+        private readonly ITimeBookingsService _bookingsService;
 
-        public TimeSpan PlannedWorkTime { get; set; } = TimeSpan.Zero;
-        public TimeSpan CoronaDelta { get; set; } = TimeSpan.Zero;
-        public TimeSpan TargetWorkTime { get; set; } = TimeSpan.Zero;
-        public TimeSpan TargetPause { get; set; } = TimeSpan.Zero;
+        //public TimeSpan PlannedWorkTime { get; set; } = TimeSpan.Zero;
+        //public TimeSpan CoronaDelta { get; set; } = TimeSpan.Zero;
+        //public TimeSpan TargetWorkTime { get; set; } = TimeSpan.Zero;
+        //public TimeSpan TargetPause { get; set; } = TimeSpan.Zero;
 
         public TargetWorkTimeService(
             //ILogger<TargetWorkTimeService> logger,
             KurzarbeitSettingsConfiguration config,
-            ICoronaService coronaService)
+            ICoronaService coronaService,
+            ITimeBookingsService bookingsService)
         {
             //_logger = logger;
             _config = config;
             _coronaService = coronaService;
+            _bookingsService = bookingsService;
         }
 
         public (TimeSpan plannedWorkTime, TimeSpan coronaDelta, TimeSpan targetWorkTime, TimeSpan targetPause) LoadData(DateTime theDate)
         {
-            PlannedWorkTime = TimeSpan.FromHours(theDate.GetWorkhours(_config).ToDouble());
-            CoronaDelta = TimeSpan.FromHours(_coronaService.KAAusfallPerDay(theDate).ToDouble());
-            TargetWorkTime = PlannedWorkTime.Subtract(CoronaDelta);
-            if(TargetWorkTime.TotalHours >= 6)
+            var plannedWorkTime = TimeSpan.FromHours(_bookingsService.GetWorkhours(theDate).ToDouble());
+            var coronaDelta = TimeSpan.FromHours(_coronaService.KAAusfallPerDay(theDate).ToDouble());
+            var targetWorkTime = plannedWorkTime.Subtract(coronaDelta);
+            var targetPause = TimeSpan.Zero;
+            if (targetWorkTime.TotalHours >= 6)
             {
-                TargetPause = TimeSpan.FromMinutes(_config.SollPause);
+                targetPause = TimeSpan.FromMinutes(_config.SollPause);
             }
-            return (PlannedWorkTime, CoronaDelta, TargetWorkTime, TargetPause);
+            return (plannedWorkTime, coronaDelta, targetWorkTime, targetPause);
         }
 
         public (TimeSpan plannedWorkTime, TimeSpan coronaDelta, TimeSpan targetWorkTime, TimeSpan targetPause, List<(TimeSpan plannedWorkTime, TimeSpan coronaDelta, TimeSpan targetWorkTime, TimeSpan targetPause)>) LoadData(DateTime from, DateTime to)

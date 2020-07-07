@@ -1,4 +1,4 @@
-﻿using CoronaKurzArbeit.Logic.Services;
+﻿using CoronaKurzArbeit.Shared.Services;
 using CoronaKurzArbeit.Tests.Helpers;
 using FluentAssertions;
 using System;

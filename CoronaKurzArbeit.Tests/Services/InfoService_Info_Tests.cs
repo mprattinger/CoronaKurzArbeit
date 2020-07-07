@@ -1,13 +1,12 @@
 ﻿using CoronaKurzArbeit.DAL.DataAccessSQL;
 using CoronaKurzArbeit.Logic.Services;
 using CoronaKurzArbeit.Shared.Models;
+using CoronaKurzArbeit.Shared.Services;
 using CoronaKurzArbeit.Tests.Helpers;
 using FluentAssertions;
 using Microsoft.Extensions.Logging.Abstractions;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -804,11 +803,12 @@ namespace CoronaKurzArbeit.Tests.Services
             var timeProvider = new FakeDateTimeProvider(theDay);
 
             var fs = new FeiertagService(timeProvider);
-            var cs = new CoronaService(config, fs);
-            var tbs = new TimeBookingsService(tbslogger, ctx);
+            var tbs = new TimeBookingsService(tbslogger, ctx, config, fs);
+            var cs = new CoronaService(config, fs, tbs);
+            
             var awt = new ActualWorkTimeService(tbs, timeProvider);
 
-            var twt = new TargetWorkTimeService(config, cs);
+            var twt = new TargetWorkTimeService(config, cs, tbs);
 
             return (awt, twt);
         }

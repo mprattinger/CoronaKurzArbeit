@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace CoronaKurzArbeit.Logic.Services
+namespace CoronaKurzArbeit.Shared.Services
 {
     public interface IDateTimeProvider
     {

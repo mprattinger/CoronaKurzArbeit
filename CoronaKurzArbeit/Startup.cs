@@ -3,6 +3,7 @@ using CoronaKurzArbeit.DAL.DataAccessSQL;
 using CoronaKurzArbeit.Logic.Services;
 using CoronaKurzArbeit.Services;
 using CoronaKurzArbeit.Shared.Models;
+using CoronaKurzArbeit.Shared.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
