@@ -16,7 +16,7 @@ namespace CoronaKurzArbeit.Logic.Services
 {
     public interface ITimeBookingsService
     {
-        Task<List<TimeBooking>> GetBookingsForDayAsync(DateTime theDate);
+        Task<List<TimeBooking>> GetBookingsAsync(DateTime start, DateTime? end = null);
         Task AddBookingAsync(TimeBooking newBooking);
         Task UpdateBookingAsync(TimeBooking changed);
         Task DeleteBookingAsync(TimeBooking booking);
@@ -43,16 +43,17 @@ namespace CoronaKurzArbeit.Logic.Services
             _feiertagService = feiertagService;
         }
 
-        public async Task<List<TimeBooking>> GetBookingsForDayAsync(DateTime theDate)
+        public async Task<List<TimeBooking>> GetBookingsAsync(DateTime start, DateTime? end = null)
         {
             var ret = new List<TimeBooking>();
+            var ending = end?.Date.AddDays(1) ?? start.Date.AddDays(1);
             try
             {
-                ret = await _context.TimeBookings.Where(x => x.BookingTime >= theDate.Date && x.BookingTime < theDate.Date.AddDays(1)).ToListAsync();
+                ret = await _context.TimeBookings.Where(x => x.BookingTime >= start.Date && x.BookingTime < ending).ToListAsync();
             }
             catch (Exception ex)
             {
-                var msg = $"Error reading all bookings for day {theDate.Date.ToShortDateString()}";
+                var msg = $"Error reading all bookings for periode {start.Date.ToShortDateString()} to {ending.Date.ToShortDateString()}";
                 _logger.LogError(ex, msg);
                 throw new Exception(msg, ex);
             }

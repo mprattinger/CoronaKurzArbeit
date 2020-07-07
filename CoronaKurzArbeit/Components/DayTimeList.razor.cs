@@ -31,12 +31,12 @@ namespace CoronaKurzArbeit.Components
             await InvokeAsync(async () =>
             {
                 CurrentDate = arg.Date;
-                Bookings = await BookingsService.GetBookingsForDayAsync(CurrentDate);
+                Bookings = await BookingsService.GetBookingsAsync(CurrentDate);
                 StateHasChanged();
             });
         }
 
-        private async Task New()
+        private async Task newEntry()
         {
 
         }

@@ -69,7 +69,7 @@ namespace CoronaKurzArbeit.Tests.Services
             await ctx.SaveChangesAsync();
 
             var sut = new TimeBookingsService(logger, ctx, config, fService);
-            (await sut.GetBookingsForDayAsync(theDay.Date)).Count.Should().Be(1);
+            (await sut.GetBookingsAsync(theDay.Date)).Count.Should().Be(1);
         }
         #endregion
 

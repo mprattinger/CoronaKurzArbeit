@@ -12,11 +12,13 @@ namespace CoronaKurzArbeit.Services
         Task RegisteredAsync(TimeBooking newBooking);
         Task CurrentDayChangedAsync(DateTime newDate);
         Task InfoLoadedFinishedAsync(DateTime newDate);
+        Task DayTimeListLoadedFinishedAsync(DateTime newDate);
 
         event Func<List<TimeBooking>, Task> OnBookingListChanged;
         event Func<TimeBooking, Task> OnRegistered;
         event Func<DateTime, Task> OnCurrentDayChanged;
         event Func<DateTime, Task> OnInfoLoadedFinished;
+        event Func<DateTime, Task> OnDayTimeListLoadedFinished;
     }
 
     public class AppState : IAppState
@@ -25,6 +27,7 @@ namespace CoronaKurzArbeit.Services
         public event Func<TimeBooking, Task>? OnRegistered;
         public event Func<DateTime, Task>? OnCurrentDayChanged;
         public event Func<DateTime, Task>? OnInfoLoadedFinished;
+        public event Func<DateTime, Task>? OnDayTimeListLoadedFinished;
 
         public async Task BookingListChangedAsync(List<TimeBooking> list)
         {
@@ -55,6 +58,14 @@ namespace CoronaKurzArbeit.Services
             if(OnInfoLoadedFinished != null)
             {
                 await OnInfoLoadedFinished.Invoke(newDate);
+            }
+        }
+
+        public async Task DayTimeListLoadedFinishedAsync(DateTime newDate)
+        {
+            if(OnDayTimeListLoadedFinished != null)
+            {
+                await OnDayTimeListLoadedFinished.Invoke(newDate);
             }
         }
     }

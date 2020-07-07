@@ -54,7 +54,7 @@ namespace CoronaKurzArbeit.Tests.Services
 
             var sut = new TargetWorkTimeService(config, corona, tbs);
 
-            var (plannedWorkTime, coronaDelta, targetWorkTime, targetPause) = sut.LoadData(theDate);
+            var (_, plannedWorkTime, coronaDelta, targetWorkTime, targetPause) = sut.LoadData(theDate);
 
             plannedWorkTime.TotalHours.Should().Be(8.2);
             coronaDelta.TotalHours.Should().Be(0);
@@ -70,7 +70,7 @@ namespace CoronaKurzArbeit.Tests.Services
 
             var sut = new TargetWorkTimeService(config, corona, tbs);
 
-            var (plannedWorkTime, coronaDelta, targetWorkTime, targetPause) = sut.LoadData(theDate);
+            var (_, plannedWorkTime, coronaDelta, targetWorkTime, targetPause) = sut.LoadData(theDate);
 
             plannedWorkTime.TotalHours.Should().Be(5.7);
             coronaDelta.TotalHours.Should().Be(0);
@@ -86,7 +86,7 @@ namespace CoronaKurzArbeit.Tests.Services
 
             var sut = new TargetWorkTimeService(config, corona, tbs);
 
-            var (plannedWorkTime, coronaDelta, targetWorkTime, targetPause) = sut.LoadData(theDate);
+            var (_, plannedWorkTime, coronaDelta, targetWorkTime, targetPause) = sut.LoadData(theDate);
 
             plannedWorkTime.TotalHours.Should().Be(8.2);
             coronaDelta.TotalHours.Should().Be(0.5);
@@ -102,7 +102,7 @@ namespace CoronaKurzArbeit.Tests.Services
 
             var sut = new TargetWorkTimeService(config, corona, tbs);
 
-            var (plannedWorkTime, coronaDelta, targetWorkTime, targetPause) = sut.LoadData(theDate);
+            var (_, plannedWorkTime, coronaDelta, targetWorkTime, targetPause) = sut.LoadData(theDate);
 
             plannedWorkTime.TotalHours.Should().Be(8.2);
             coronaDelta.TotalHours.Should().Be(0.5);
@@ -118,7 +118,7 @@ namespace CoronaKurzArbeit.Tests.Services
 
             var sut = new TargetWorkTimeService(config, corona, tbs);
 
-            var (plannedWorkTime, coronaDelta, targetWorkTime, targetPause) = sut.LoadData(theDate);
+            var (_, plannedWorkTime, coronaDelta, targetWorkTime, targetPause) = sut.LoadData(theDate);
 
             plannedWorkTime.TotalHours.Should().Be(8.2);
             coronaDelta.TotalHours.Should().Be(1.925);
@@ -134,7 +134,7 @@ namespace CoronaKurzArbeit.Tests.Services
 
             var sut = new TargetWorkTimeService(config, corona, tbs);
 
-            var (plannedWorkTime, coronaDelta, targetWorkTime, targetPause) = sut.LoadData(theDate);
+            var (_, plannedWorkTime, coronaDelta, targetWorkTime, targetPause) = sut.LoadData(theDate);
 
             plannedWorkTime.TotalMinutes.Should().Be(492);
             coronaDelta.TotalMinutes.Should().Be(154);
@@ -150,7 +150,7 @@ namespace CoronaKurzArbeit.Tests.Services
 
             var sut = new TargetWorkTimeService(config, corona, tbs);
 
-            var (plannedWorkTime, coronaDelta, targetWorkTime, targetPause) = sut.LoadData(theDate);
+            var (_, plannedWorkTime, coronaDelta, targetWorkTime, targetPause) = sut.LoadData(theDate);
 
             plannedWorkTime.TotalMinutes.Should().Be(342);
             coronaDelta.TotalMinutes.Should().Be(342);
@@ -166,7 +166,7 @@ namespace CoronaKurzArbeit.Tests.Services
 
             var sut = new TargetWorkTimeService(config, corona, tbs);
 
-            var (plannedWorkTime, coronaDelta, targetWorkTime, targetPause) = sut.LoadData(theDate);
+            var (_, plannedWorkTime, coronaDelta, targetWorkTime, targetPause) = sut.LoadData(theDate);
 
             plannedWorkTime.TotalMinutes.Should().Be(492);
             coronaDelta.TotalMinutes.Should().Be(87.75);
@@ -182,7 +182,7 @@ namespace CoronaKurzArbeit.Tests.Services
 
             var sut = new TargetWorkTimeService(config, corona, tbs);
 
-            var (plannedWorkTime, coronaDelta, targetWorkTime, targetPause) = sut.LoadData(theDate);
+            var (_, plannedWorkTime, coronaDelta, targetWorkTime, targetPause) = sut.LoadData(theDate);
 
             plannedWorkTime.TotalMinutes.Should().Be(492);
             coronaDelta.TotalMinutes.Should().Be(117);
@@ -198,7 +198,7 @@ namespace CoronaKurzArbeit.Tests.Services
 
             var sut = new TargetWorkTimeService(config, corona, tbs);
 
-            var (plannedWorkTime, coronaDelta, targetWorkTime, targetPause) = sut.LoadData(theDate);
+            var (_, plannedWorkTime, coronaDelta, targetWorkTime, targetPause) = sut.LoadData(theDate);
 
             plannedWorkTime.TotalMinutes.Should().Be(492);
             coronaDelta.TotalMinutes.Should().Be(231);
@@ -214,7 +214,7 @@ namespace CoronaKurzArbeit.Tests.Services
 
             var sut = new TargetWorkTimeService(config, corona, tbs);
 
-            var (plannedWorkTime, coronaDelta, targetWorkTime, targetPause) = sut.LoadData(theDate);
+            var (_, plannedWorkTime, coronaDelta, targetWorkTime, targetPause) = sut.LoadData(theDate);
 
             plannedWorkTime.TotalMinutes.Should().Be(342);
             coronaDelta.TotalMinutes.Should().Be(342);
@@ -232,13 +232,12 @@ namespace CoronaKurzArbeit.Tests.Services
             var corona = new CoronaService(config, tbs);
 
             var sut = new TargetWorkTimeService(config, corona, tbs);
+            var (plannedWorkTime, coronaDelta, targetWorkTime, targetPause, _) = sut.LoadData(start, end);
 
-            var res = sut.LoadData(start, end);
-
-            res.plannedWorkTime.Should().Be(TimeSpan.FromHours(38.5));
-            res.coronaDelta.Should().Be(TimeSpan.Zero);
-            res.targetWorkTime.Should().Be(TimeSpan.FromHours(38.5));
-            res.targetPause.Should().Be(TimeSpan.FromMinutes(120));
+            plannedWorkTime.Should().Be(TimeSpan.FromHours(38.5));
+            coronaDelta.Should().Be(TimeSpan.Zero);
+            targetWorkTime.Should().Be(TimeSpan.FromHours(38.5));
+            targetPause.Should().Be(TimeSpan.FromMinutes(120));
         }
 
         [Fact]
@@ -249,13 +248,12 @@ namespace CoronaKurzArbeit.Tests.Services
             var corona = new CoronaService(config, tbs);
 
             var sut = new TargetWorkTimeService(config, corona, tbs);
+            var (plannedWorkTime, coronaDelta, targetWorkTime, targetPause, _) = sut.LoadData(start, end);
 
-            var res = sut.LoadData(start, end);
-
-            res.plannedWorkTime.Should().Be(TimeSpan.FromHours(38.5));
-            res.coronaDelta.Should().Be(TimeSpan.FromMinutes(462));
-            res.targetWorkTime.Should().Be(TimeSpan.FromMinutes(1848));
-            res.targetPause.Should().Be(TimeSpan.FromMinutes(120));
+            plannedWorkTime.Should().Be(TimeSpan.FromHours(38.5));
+            coronaDelta.Should().Be(TimeSpan.FromMinutes(462));
+            targetWorkTime.Should().Be(TimeSpan.FromMinutes(1848));
+            targetPause.Should().Be(TimeSpan.FromMinutes(120));
         }
 
         [Fact]
@@ -266,13 +264,12 @@ namespace CoronaKurzArbeit.Tests.Services
             var corona = new CoronaService(config, tbs);
 
             var sut = new TargetWorkTimeService(config, corona, tbs);
+            var (plannedWorkTime, coronaDelta, targetWorkTime, targetPause, _) = sut.LoadData(start, end);
 
-            var res = sut.LoadData(start, end);
-
-            res.plannedWorkTime.Should().Be(TimeSpan.FromHours(24.6));
-            res.coronaDelta.Should().Be(TimeSpan.FromMinutes(462));
-            res.targetWorkTime.Should().Be(TimeSpan.FromMinutes(1014));
-            res.targetPause.Should().Be(TimeSpan.Zero); //Die tägl. AZ ist unter 6h
+            plannedWorkTime.Should().Be(TimeSpan.FromHours(24.6));
+            coronaDelta.Should().Be(TimeSpan.FromMinutes(462));
+            targetWorkTime.Should().Be(TimeSpan.FromMinutes(1014));
+            targetPause.Should().Be(TimeSpan.Zero); //Die tägl. AZ ist unter 6h
         }
 
         [Fact]
@@ -283,13 +280,12 @@ namespace CoronaKurzArbeit.Tests.Services
             var corona = new CoronaService(config, tbs);
 
             var sut = new TargetWorkTimeService(config, corona, tbs);
+            var (plannedWorkTime, coronaDelta, targetWorkTime, targetPause, _) = sut.LoadData(start, end);
 
-            var res = sut.LoadData(start, end);
-
-            res.plannedWorkTime.Should().Be(TimeSpan.FromHours(38.5));
-            res.coronaDelta.Should().Be(TimeSpan.FromMinutes(693));
-            res.targetWorkTime.Should().Be(TimeSpan.FromMinutes(1617));
-            res.targetPause.Should().Be(TimeSpan.FromMinutes(120));
+            plannedWorkTime.Should().Be(TimeSpan.FromHours(38.5));
+            coronaDelta.Should().Be(TimeSpan.FromMinutes(693));
+            targetWorkTime.Should().Be(TimeSpan.FromMinutes(1617));
+            targetPause.Should().Be(TimeSpan.FromMinutes(120));
         }
         #endregion
     }

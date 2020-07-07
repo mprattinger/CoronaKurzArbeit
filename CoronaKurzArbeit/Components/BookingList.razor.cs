@@ -92,7 +92,7 @@ namespace CoronaKurzArbeit.Components
         private async Task loadData()
         {
             var baseDate = AtDate == DateTime.MinValue ? TheDate : AtDate;
-            Bookings = await BookingsService.GetBookingsForDayAsync(baseDate);
+            Bookings = await BookingsService.GetBookingsAsync(baseDate);
             //Bookings = await Context.TimeBookings
             //    .Where(x => x.BookingTime > baseDate.Date && x.BookingTime <= baseDate.Date.AddDays(1))
             //    .OrderBy(x => x.BookingTime)

@@ -61,7 +61,7 @@ namespace CoronaKurzArbeit.Tests.Services
             var tbs = new TimeBookingsService(tbsLogger, ctx, config, fService);
 
             var sut = new ActualWorkTimeService(tbs, timeProvider);
-            var (inTime, _, workTime, pauseTime) = await sut.LoadDataAsync(theDay);
+            var (_,inTime, _, workTime, pauseTime) = await sut.LoadDataAsync(theDay);
 
             inTime.Hour.Should().Be(6);
             inTime.Minute.Should().Be(3);
@@ -90,7 +90,7 @@ namespace CoronaKurzArbeit.Tests.Services
             var tbs = new TimeBookingsService(tbsLogger, ctx, config, fService);
 
             var sut = new ActualWorkTimeService(tbs, timeProvider);
-            var (inTime, outTime, workTime, pauseTime) = await sut.LoadDataAsync(theDay);
+            var (_, inTime, outTime, workTime, pauseTime) = await sut.LoadDataAsync(theDay);
 
             inTime.Hour.Should().Be(6);
             inTime.Minute.Should().Be(3);
@@ -121,7 +121,7 @@ namespace CoronaKurzArbeit.Tests.Services
             var tbs = new TimeBookingsService(tbsLogger, ctx, config, fService);
 
             var sut = new ActualWorkTimeService(tbs, timeProvider);
-            var (inTime, outTime, workTime, pauseTime) = await sut.LoadDataAsync(theDay);
+            var (_, inTime, outTime, workTime, pauseTime) = await sut.LoadDataAsync(theDay);
 
             inTime.Hour.Should().Be(6);
             inTime.Minute.Should().Be(3);
@@ -156,7 +156,7 @@ namespace CoronaKurzArbeit.Tests.Services
             var tbs = new TimeBookingsService(tbsLogger, ctx, config, fService);
 
             var sut = new ActualWorkTimeService(tbs, timeProvider);
-            var (inTime, outTime, workTime, pauseTime) = await sut.LoadDataAsync(theDay);
+            var (_, inTime, outTime, workTime, pauseTime) = await sut.LoadDataAsync(theDay);
 
             inTime.Hour.Should().Be(6);
             inTime.Minute.Should().Be(3);
@@ -194,7 +194,7 @@ namespace CoronaKurzArbeit.Tests.Services
             var tbs = new TimeBookingsService(tbsLogger, ctx, config, fService);
 
             var sut = new ActualWorkTimeService(tbs, timeProvider);
-            var (inTime, outTime, workTime, pauseTime) = await sut.LoadDataAsync(theDay);
+            var (_, inTime, outTime, workTime, pauseTime) = await sut.LoadDataAsync(theDay);
 
             inTime.Hour.Should().Be(6);
             inTime.Minute.Should().Be(3);
@@ -237,7 +237,7 @@ namespace CoronaKurzArbeit.Tests.Services
             var tbs = new TimeBookingsService(tbsLogger, ctx, config, fService);
 
             var sut = new ActualWorkTimeService(tbs, timeProvider);
-            var (inTime, outTime, workTime, pauseTime) = await sut.LoadDataAsync(theDay);
+            var (_, inTime, outTime, workTime, pauseTime) = await sut.LoadDataAsync(theDay);
 
             inTime.Hour.Should().Be(6);
             inTime.Minute.Should().Be(3);
@@ -283,7 +283,7 @@ namespace CoronaKurzArbeit.Tests.Services
             var tbs = new TimeBookingsService(tbsLogger, ctx, config, fService);
 
             var sut = new ActualWorkTimeService(tbs, timeProvider);
-            var (inTime, outTime, workTime, pauseTime) = await sut.LoadDataAsync(theDay);
+            var (_, inTime, outTime, workTime, pauseTime) = await sut.LoadDataAsync(theDay);
 
             inTime.Hour.Should().Be(6);
             inTime.Minute.Should().Be(3);
