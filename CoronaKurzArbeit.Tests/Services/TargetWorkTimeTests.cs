@@ -16,7 +16,6 @@ namespace CoronaKurzArbeit.Tests.Services
         private readonly NullLogger<TimeBookingsService> logger;
         private readonly ApplicationDbContext ctx;
         private readonly KurzarbeitSettingsConfiguration config;
-        private readonly IFeiertagService fService;
         private readonly ITimeBookingsService tbs;
 
         public TargetWorkTimeTests()
@@ -42,7 +41,7 @@ namespace CoronaKurzArbeit.Tests.Services
                 Friday = 5.7m,
                 CoronaDays = new List<DayOfWeek> { DayOfWeek.Friday }
             };
-            fService = new FeiertagService(new FakeDateTimeProvider(new DateTime(2020, 05, 19)));
+            var fService = new FeiertagService(new FakeDateTimeProvider(new DateTime(2020, 05, 19)));
             tbs = new TimeBookingsService(logger, ctx, config, fService);
         }
 
@@ -51,8 +50,7 @@ namespace CoronaKurzArbeit.Tests.Services
         public void NormalDayNoCorona()
         {
             var theDate = new DateTime(2020, 04, 15);
-            var fService = new FeiertagService(new FakeDateTimeProvider(theDate));
-            var corona = new CoronaService(config, fService, tbs);
+            var corona = new CoronaService(config, tbs);
 
             var sut = new TargetWorkTimeService(config, corona, tbs);
 
@@ -68,8 +66,7 @@ namespace CoronaKurzArbeit.Tests.Services
         public void FridayDayNoCorona()
         {
             var theDate = new DateTime(2020, 04, 17);
-            var fService = new FeiertagService(new FakeDateTimeProvider(theDate));
-            var corona = new CoronaService(config, fService, tbs);
+            var corona = new CoronaService(config, tbs);
 
             var sut = new TargetWorkTimeService(config, corona, tbs);
 
@@ -85,8 +82,7 @@ namespace CoronaKurzArbeit.Tests.Services
         public void NormalDay20()
         {
             var theDate = new DateTime(2020, 04, 21);
-            var fService = new FeiertagService(new FakeDateTimeProvider(theDate));
-            var corona = new CoronaService(config, fService, tbs);
+            var corona = new CoronaService(config, tbs);
 
             var sut = new TargetWorkTimeService(config, corona, tbs);
 
@@ -102,8 +98,7 @@ namespace CoronaKurzArbeit.Tests.Services
         public void NormalDay202()
         {
             var theDate = new DateTime(2020, 04, 20);
-            var fService = new FeiertagService(new FakeDateTimeProvider(theDate));
-            var corona = new CoronaService(config, fService, tbs);
+            var corona = new CoronaService(config, tbs);
 
             var sut = new TargetWorkTimeService(config, corona, tbs);
 
@@ -119,8 +114,7 @@ namespace CoronaKurzArbeit.Tests.Services
         public void FridayHoliday20()
         {
             var theDate = new DateTime(2020, 04, 28);
-            var fService = new FeiertagService(new FakeDateTimeProvider(theDate));
-            var corona = new CoronaService(config, fService, tbs);
+            var corona = new CoronaService(config, tbs);
 
             var sut = new TargetWorkTimeService(config, corona, tbs);
 
@@ -136,8 +130,7 @@ namespace CoronaKurzArbeit.Tests.Services
         public void ThursdayHoliday20()
         {
             var theDate = new DateTime(2020, 05, 19);
-            var fService = new FeiertagService(new FakeDateTimeProvider(theDate));
-            var corona = new CoronaService(config, fService, tbs);
+            var corona = new CoronaService(config, tbs);
 
             var sut = new TargetWorkTimeService(config, corona, tbs);
 
@@ -153,8 +146,7 @@ namespace CoronaKurzArbeit.Tests.Services
         public void Friday20()
         {
             var theDate = new DateTime(2020, 04, 24);
-            var fService = new FeiertagService(new FakeDateTimeProvider(theDate));
-            var corona = new CoronaService(config, fService, tbs);
+            var corona = new CoronaService(config, tbs);
 
             var sut = new TargetWorkTimeService(config, corona, tbs);
 
@@ -170,8 +162,7 @@ namespace CoronaKurzArbeit.Tests.Services
         public void NormalDay30()
         {
             var theDate = new DateTime(2020, 06, 16);
-            var fService = new FeiertagService(new FakeDateTimeProvider(theDate));
-            var corona = new CoronaService(config, fService, tbs);
+            var corona = new CoronaService(config, tbs);
 
             var sut = new TargetWorkTimeService(config, corona, tbs);
 
@@ -187,8 +178,7 @@ namespace CoronaKurzArbeit.Tests.Services
         public void MondayHoliday30()
         {
             var theDate = new DateTime(2020, 06, 2);
-            var fService = new FeiertagService(new FakeDateTimeProvider(theDate));
-            var corona = new CoronaService(config, fService, tbs);
+            var corona = new CoronaService(config, tbs);
 
             var sut = new TargetWorkTimeService(config, corona, tbs);
 
@@ -204,8 +194,7 @@ namespace CoronaKurzArbeit.Tests.Services
         public void ThursdayHoliday30()
         {
             var theDate = new DateTime(2020, 06, 9);
-            var fService = new FeiertagService(new FakeDateTimeProvider(theDate));
-            var corona = new CoronaService(config, fService, tbs);
+            var corona = new CoronaService(config, tbs);
 
             var sut = new TargetWorkTimeService(config, corona, tbs);
 
@@ -221,8 +210,7 @@ namespace CoronaKurzArbeit.Tests.Services
         public void Friday30()
         {
             var theDate = new DateTime(2020, 04, 24);
-            var fService = new FeiertagService(new FakeDateTimeProvider(theDate));
-            var corona = new CoronaService(config, fService, tbs);
+            var corona = new CoronaService(config, tbs);
 
             var sut = new TargetWorkTimeService(config, corona, tbs);
 
@@ -241,8 +229,7 @@ namespace CoronaKurzArbeit.Tests.Services
         {
             var start = new DateTime(2020, 03, 30);
             var end = new DateTime(2020, 04, 5);
-            var fService = new FeiertagService(new FakeDateTimeProvider(start)); //Für das Feiertagsservice brauchen wir e nur das Jahr aus dem DateTimeProvider
-            var corona = new CoronaService(config, fService, tbs);
+            var corona = new CoronaService(config, tbs);
 
             var sut = new TargetWorkTimeService(config, corona, tbs);
 
@@ -259,8 +246,7 @@ namespace CoronaKurzArbeit.Tests.Services
         {
             var start = new DateTime(2020, 04, 20);
             var end = new DateTime(2020, 04, 26);
-            var fService = new FeiertagService(new FakeDateTimeProvider(start)); //Für das Feiertagsservice brauchen wir e nur das Jahr aus dem DateTimeProvider
-            var corona = new CoronaService(config, fService, tbs);
+            var corona = new CoronaService(config, tbs);
 
             var sut = new TargetWorkTimeService(config, corona, tbs);
 
@@ -277,8 +263,7 @@ namespace CoronaKurzArbeit.Tests.Services
         {
             var start = new DateTime(2020, 05, 18);
             var end = new DateTime(2020, 05, 24);
-            var fService = new FeiertagService(new FakeDateTimeProvider(start)); //Für das Feiertagsservice brauchen wir e nur das Jahr aus dem DateTimeProvider
-            var corona = new CoronaService(config, fService, tbs);
+            var corona = new CoronaService(config, tbs);
 
             var sut = new TargetWorkTimeService(config, corona, tbs);
 
@@ -295,8 +280,7 @@ namespace CoronaKurzArbeit.Tests.Services
         {
             var start = new DateTime(2020, 06, 15);
             var end = new DateTime(2020, 06, 19);
-            var fService = new FeiertagService(new FakeDateTimeProvider(start)); //Für das Feiertagsservice brauchen wir e nur das Jahr aus dem DateTimeProvider
-            var corona = new CoronaService(config, fService, tbs);
+            var corona = new CoronaService(config, tbs);
 
             var sut = new TargetWorkTimeService(config, corona, tbs);
 

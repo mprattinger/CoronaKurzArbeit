@@ -804,7 +804,7 @@ namespace CoronaKurzArbeit.Tests.Services
 
             var fs = new FeiertagService(timeProvider);
             var tbs = new TimeBookingsService(tbslogger, ctx, config, fs);
-            var cs = new CoronaService(config, fs, tbs);
+            var cs = new CoronaService(config, tbs);
             
             var awt = new ActualWorkTimeService(tbs, timeProvider);
 
